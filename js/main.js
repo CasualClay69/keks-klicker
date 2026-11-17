@@ -271,7 +271,7 @@ function richteHaustierEin() {
   $("tierAdoptieren").addEventListener("click", () => {
     if (!adoptiere(tierAuswahl.id, $("tierName").value)) return;
     sound.erfolg();
-    meldung(`💕 Willkommen, ${haustier().name}!`, `Dein ${tierAuswahl.name} wohnt jetzt bei Marie. Vergiss nicht, es zu füttern!`);
+    meldung(`💕 Willkommen, ${haustier().name}!`, `Dein ${tierAuswahl.name} wohnt jetzt bei ${figurName()}. Vergiss nicht, es zu füttern!`);
     speichern();
     zeigeTierFenster();
     aktualisiereAnzeige();
@@ -660,7 +660,7 @@ function pruefeErfolgeUndStatistik() {
 
   for (const erfolg of pruefeNeueErfolge()) {
     const prozent = Math.round(KONFIG.erfolgBonus * 100);
-    meldung(`🏆 ${erfolg.icon} ${erfolg.name}`, `${erfolg.beschr} (+${prozent} % Herzen)`);
+    meldung(`🏆 ${erfolg.icon} ${mitName(erfolg.name)}`, `${mitName(erfolg.beschr)} (+${prozent} % Herzen)`);
     sound.erfolg();
     sag("erfolg", { wichtig: true });
   }
@@ -998,7 +998,7 @@ function richteAppEin() {
 
   window.addEventListener("appinstalled", () => {
     ui.installBtn.hidden = true;
-    meldung("📲 Installiert!", "Du findest den Marie Clicker jetzt bei deinen Apps.");
+    meldung("📲 Installiert!", `Du findest den ${figurName()} Clicker jetzt bei deinen Apps.`);
   });
 }
 

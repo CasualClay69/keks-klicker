@@ -12,6 +12,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   (je +10 % Herzen für immer). Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben (`js/neustart.js`)
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
+- Zwei Figuren 👧: unter Skins → „Wer wird geklickt?“ zwischen Marie (7, hellbraune Haare) und
+  Hannah (5, blonde Haare) wechseln. Logo und Texte passen sich an (`figur` in `js/skins.js`)
 - 35 Erfolge (je +1 % Herzen)
 - Offline-Fortschritt 🌙: Die Herzschenker sammeln weiter, während die App zu ist (bis zu 8 Stunden,
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute

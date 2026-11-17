@@ -55,7 +55,7 @@
     <h1 id="titel" aria-label="Marie Clicker">
       <span class="logo-krone" aria-hidden="true">👑</span>
       <span class="logo-deko" aria-hidden="true"></span>
-      <span class="logo-marie" aria-hidden="true">Marie</span>
+      <span class="logo-marie figurName" aria-hidden="true">Marie</span>
       <span class="logo-clicker" aria-hidden="true">Clicker</span>
       <span class="logo-version" id="version"></span>
       <span class="funkeln f1" aria-hidden="true">✦</span>
@@ -97,10 +97,10 @@
             <stop offset="0" stop-color="#fff2ea"/>
             <stop offset="1" stop-color="#ffd8c4"/>
           </radialGradient>
-          <!-- Hellbraune Haare -->
+          <!-- Haarfarbe: wird von der gewählten Figur gesetzt (skins.js) -->
           <linearGradient id="haar" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#d4a373"/>
-            <stop offset="1" stop-color="#b07d4f"/>
+            <stop id="haarHell" offset="0" stop-color="#d4a373"/>
+            <stop id="haarDunkel" offset="1" stop-color="#b07d4f"/>
           </linearGradient>
         </defs>
 
@@ -109,7 +109,7 @@
 
         <!-- Hals, Kleid, Kragen -->
         <rect x="89" y="142" width="22" height="32" rx="10" fill="#ffd8c4"/>
-        <path d="M40 220 Q44 174 100 168 Q156 174 160 220 Z" fill="#ff7eb6"/>
+        <path id="kleid" d="M40 220 Q44 174 100 168 Q156 174 160 220 Z" fill="#ff7eb6"/>
         <path d="M81 170 Q100 192 119 170 Q100 179 81 170 Z" fill="#fff"/>
         <circle cx="76" cy="204" r="4" fill="#fff" opacity=".8"/>
         <circle cx="124" cy="204" r="4" fill="#fff" opacity=".8"/>
@@ -134,12 +134,12 @@
         <!-- Augen offen (blinzeln per CSS) -->
         <g class="augen-offen">
           <g class="auge">
-            <ellipse cx="78" cy="109" rx="10" ry="13" fill="#3b2240"/>
+            <ellipse class="pupille" cx="78" cy="109" rx="10" ry="13" fill="#3b2240"/>
             <circle cx="81.5" cy="103.5" r="4" fill="#fff"/>
             <circle cx="74.5" cy="114" r="1.8" fill="#fff"/>
           </g>
           <g class="auge">
-            <ellipse cx="122" cy="109" rx="10" ry="13" fill="#3b2240"/>
+            <ellipse class="pupille" cx="122" cy="109" rx="10" ry="13" fill="#3b2240"/>
             <circle cx="125.5" cy="103.5" r="4" fill="#fff"/>
             <circle cx="118.5" cy="114" r="1.8" fill="#fff"/>
           </g>
@@ -221,7 +221,7 @@
     </section>
 
     <section id="seiteSkins" class="seite" role="tabpanel" hidden>
-      <p class="seitenInfo">Wähle aus, wie Marie und dein Spiel aussehen und klingen. Neue Skins kommen mit den Season-Pässen!</p>
+      <p class="seitenInfo">Wähle aus, wie <span class="figurName">Marie</span> und dein Spiel aussehen und klingen. Neue Skins kommen mit den Season-Pässen!</p>
       <div id="skinBereich"></div>
     </section>
 
@@ -242,7 +242,7 @@
       <h2 id="albumSeitenTitel"></h2>
       <div id="albumRaster" class="albumRaster"></div>
       <p class="seitenInfo">
-        💡 Sticker gibt es ab und zu beim Klicken auf Marie, beim Fangen von Sternschnuppen und bei jeder Season-Stufe.
+        💡 Sticker gibt es ab und zu beim Klicken auf <span class="figurName">Marie</span>, beim Fangen von Sternschnuppen und bei jeder Season-Stufe.
         Doppelte Sticker werden zu Herzen. Eine volle Seite bringt eine große Belohnung!
         Season-Sticker (goldener Rahmen oben) gibt es nur, solange ihre Season läuft.
       </p>
@@ -326,7 +326,7 @@
 
   <!-- Nur auf dem Handy: Symbolleiste unten -->
   <nav id="untenNav" aria-label="Menü">
-    <button type="button" data-seite="" class="aktiv"><i class="navIcon" data-symbol="marie">💖</i><span>Marie</span></button>
+    <button type="button" data-seite="" class="aktiv"><i class="navIcon" data-symbol="marie">💖</i><span class="figurName">Marie</span></button>
     <button type="button" data-seite="seiteShop"><i class="navIcon" data-symbol="shop">🛍️</i><span>Shop</span><b id="shopBadge" class="badge" hidden></b></button>
     <button type="button" data-seite="seiteSkins"><i class="navIcon" data-symbol="skins">🎨</i><span>Skins</span></button>
     <button type="button" data-seite="seiteErfolge"><i class="navIcon" data-symbol="erfolge">🏆</i><span>Erfolge</span></button>
@@ -382,8 +382,8 @@
       <button id="tierZu" type="button" class="overlayZu" aria-label="Schließen">✕</button>
 
       <div id="tierAdoption" hidden>
-        <h2>🥚 Ein Haustier für Marie!</h2>
-        <p class="geschenkSerie">Such dir ein kleines Tier aus. Es bleibt bei Marie, freut sich über Futter und wächst mit dir!</p>
+        <h2>🥚 Ein Haustier für <span class="figurName">Marie</span>!</h2>
+        <p class="geschenkSerie">Such dir ein kleines Tier aus. Es bleibt bei <span class="figurName">Marie</span>, freut sich über Futter und wächst mit dir!</p>
         <div id="tierAuswahl" class="tierAuswahl"></div>
         <label class="feld">Wie soll es heißen?
           <input id="tierName" type="text" maxlength="12" autocomplete="off">

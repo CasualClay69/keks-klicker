@@ -69,7 +69,7 @@ function aufgabeIcon(a) {
 
 function aufgabeText(a) {
   switch (a.typ) {
-    case "klicks":         return `Klicke ${a.ziel}-mal auf Marie`;
+    case "klicks":         return `Klicke ${a.ziel}-mal auf ${figurName()}`;
     case "kaufeSorte": {
       const g = GEBAEUDE.find(x => x.id === a.param);
       return `Kaufe ${a.ziel} ${a.ziel === 1 ? g.name : g.mehrzahl}`;
@@ -79,7 +79,7 @@ function aufgabeText(a) {
     case "herzen":         return `Sammle ${format(a.ziel)} Herzen`;
     case "upgrade":        return "Kaufe ein Upgrade";
     case "spielzeit":      return `Spiele ${a.ziel / 60} Minuten`;
-    case "finger":         return "Tippe mit 3 Fingern gleichzeitig auf Marie";
+    case "finger":         return `Tippe mit 3 Fingern gleichzeitig auf ${figurName()}`;
   }
   return "";
 }

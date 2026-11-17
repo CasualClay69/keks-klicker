@@ -92,8 +92,12 @@ function erstelleItem(container, item, beimKlick, { klasse = "", medaille = "", 
 function erstelleErfolg(container, erfolg) {
   const el = document.createElement("div");
   el.className = "erfolg gesperrt";
-  el.title = `${erfolg.name} – ${erfolg.beschr}`;
-  el.append(erfolg.icon, Object.assign(document.createElement("small"), { textContent: erfolg.name }));
+  // Texte mit "Marie" passt zeigeFigur() an die gewählte Figur an (data-vorlage)
+  el.dataset.titelVorlage = `${erfolg.name} – ${erfolg.beschr}`;
+  el.title = mitName(el.dataset.titelVorlage);
+  const name = Object.assign(document.createElement("small"), { textContent: mitName(erfolg.name) });
+  name.dataset.vorlage = erfolg.name;
+  el.append(erfolg.icon, name);
   container.append(el);
   elemente.set(erfolg, { wurzel: el });
 }
@@ -128,7 +132,9 @@ function erstelleStatistik() {
   const tabelle = $("statistik");
   for (const [beschriftung] of STATISTIK_ZEILEN) {
     const zeile = tabelle.insertRow();
-    zeile.insertCell().textContent = beschriftung;
+    const zelle = zeile.insertCell();
+    zelle.textContent = mitName(beschriftung);
+    zelle.dataset.vorlage = beschriftung;
     statistikZellen.push(zeile.insertCell());
   }
 }
@@ -156,7 +162,7 @@ function baueOberflaeche(aktionen) {
 function zeigeKopf() {
   setzeText(ui.herzen, `${format(spiel.herzen)} ${herz()}`);
   setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
-  document.title = `${format(spiel.herzen)} Herzen – Marie Clicker`;
+  document.title = `${format(spiel.herzen)} Herzen – ${figurName()} Clicker`;
 
   const rest = bonusRestSekunden();
   const b = aktuellerBonus();
@@ -329,7 +335,7 @@ function baueSkinSeite(beimWaehlen) {
     }
 
     // Solange es nur den normalen Skin gibt: Vorschau auf kommende Season-Pässe
-    if (skinsDerKategorie(kategorie.id).every(s => s.standard)) {
+    if (!kategorie.ohneTeaser && skinsDerKategorie(kategorie.id).every(s => s.standard)) {
       const teaser = document.createElement("div");
       teaser.className = "skinKarte teaser";
       teaser.append(span("skinIcon", "🔒"), span("skinName", "Bald mehr!"), span("skinStatus", "mit dem Season-Pass"));
@@ -394,7 +400,27 @@ function tauscheVariablen(alteNamen, farben) {
   return Object.keys(farben);
 }
 
+// Figur: Name überall einsetzen und die Zeichnung einfärben (Haare, Kleid, Augen)
+function zeigeFigur() {
+  const figur = aktiverSkin("figur");
+  const name = figur.rufname;
+  for (const el of document.querySelectorAll(".figurName")) setzeText(el, name);
+  for (const el of document.querySelectorAll("[data-vorlage]")) setzeText(el, mitName(el.dataset.vorlage));
+  for (const el of document.querySelectorAll("[data-titel-vorlage]")) el.title = mitName(el.dataset.titelVorlage);
+  $("titel").setAttribute("aria-label", `${name} Clicker`);
+  ui.marie.setAttribute("aria-label", `${name} anklicken`);
+  document.body.dataset.figur = figur.id;
+
+  const a = figur.aussehen;
+  $("haarHell").setAttribute("stop-color", a.haar[0]);
+  $("haarDunkel").setAttribute("stop-color", a.haar[1]);
+  $("kleid").setAttribute("fill", a.kleid);
+  for (const pupille of document.querySelectorAll("#marie .pupille")) pupille.setAttribute("fill", a.augen);
+}
+
 function wendeSkinsAn() {
+  zeigeFigur();
+
   // Hintergrund: per Attribut (Aussehen in style.css) oder als Emoji-Muster (Seasons ab 2027)
   setzeHintergrund(aktiverSkin("hintergrund"));
 

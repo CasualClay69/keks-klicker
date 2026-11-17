@@ -2,7 +2,7 @@
 // =====================================================
 //  SKINS & SEASON-PÄSSE
 //
-//  Vier Kategorien: Hintergrund, Hut, HUD, Musik.
+//  Kategorien: Figur (Marie oder Hannah), Hintergrund, Hut, HUD, Logo, Musik.
 //  Am Anfang ist nur der "normale" Skin jeder Kategorie freigeschaltet
 //  (standard: true). Weitere Skins kommen später über Season-Pässe.
 //
@@ -21,8 +21,9 @@
 // =====================================================
 
 const SKIN_KATEGORIEN = [
+  { id: "figur",       name: "Wer wird geklickt?", icon: "👧", ohneTeaser: true },
   { id: "hintergrund", name: "Hintergrund",   icon: "🖼️" },
-  { id: "hut",         name: "Hut für Marie", icon: "👒" },
+  { id: "hut",         name: "Hut",           icon: "👒" },
   { id: "hud",         name: "HUD-Farben",    icon: "🎨" },
   { id: "logo",        name: "Logo",          icon: "✨" },
   { id: "musik",       name: "Musik",         icon: "🎵" },
@@ -145,6 +146,15 @@ const PARTYHUT_SVG = `<g transform="rotate(-10 100 44)">
 // ----- Alle Skins -----
 
 const SKINS = [
+  // Figur – beide sind von Anfang an frei. rufname steht im Logo und in allen Texten,
+  // aussehen färbt die Zeichnung (Haare hell/dunkel, Kleid, Augen)
+  { id: "figur-marie", kategorie: "figur", standard: true,
+    name: "Marie", icon: "👧", rufname: "Marie",
+    aussehen: { haar: ["#d4a373", "#b07d4f"], kleid: "#ff7eb6", augen: "#3b2240" } },
+  { id: "figur-hannah", kategorie: "figur", standard: true,
+    name: "Hannah", icon: "👱‍♀️", rufname: "Hannah",
+    aussehen: { haar: ["#fbe39a", "#e3b14f"], kleid: "#b48cff", augen: "#2f4f8f" } },
+
   // Hintergrund – das Aussehen steht in style.css (body[data-hintergrund="..."])
   { id: "hintergrund-normal", kategorie: "hintergrund", standard: true,
     name: "Herzchen-Wolke", icon: "💗", wert: "normal" },
@@ -401,6 +411,16 @@ function aktiverSkin(kategorie) {
   const gewaehlt = SKINS.find(s => s.id === skinStand.aktiv[kategorie] && s.kategorie === kategorie);
   if (gewaehlt && skinFreigeschaltet(gewaehlt)) return gewaehlt;
   return SKINS.find(s => s.kategorie === kategorie && s.standard);
+}
+
+// Name der gewählten Figur ("Marie" oder "Hannah")
+function figurName() {
+  return aktiverSkin("figur").rufname;
+}
+
+// Ersetzt "Marie" in einem Text durch den Namen der gewählten Figur ("Marienkäfer" bleibt)
+function mitName(text) {
+  return String(text).replace(/\bMarie(s?)\b/g, (_, s) => figurName() + s);
 }
 
 // Gibt true zurück, wenn der Skin gewählt werden konnte
