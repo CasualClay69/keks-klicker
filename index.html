@@ -33,6 +33,7 @@
   <script src="js/geschenk.js" defer></script>
   <script src="js/gluecksrad.js" defer></script>
   <script src="js/album.js" defer></script>
+  <script src="js/haustier.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -74,6 +75,8 @@
     <div id="hps">0 pro Sekunde</div>
     <div id="bonus" aria-live="polite"></div>
 
+    <!-- Marie (mit Haustier daneben) -->
+    <div id="marieBereich">
     <!-- Marie – als SVG gezeichnet, damit sie blinzeln und lächeln kann -->
     <button id="marie" type="button" aria-label="Marie anklicken">
       <svg viewBox="-10 0 220 220" aria-hidden="true">
@@ -149,6 +152,13 @@
         <g id="hut"></g>
       </svg>
     </button>
+
+    <!-- Haustier: sitzt unten rechts an Marie. Ohne Haustier liegt hier ein Ei zum Adoptieren -->
+    <button id="haustier" type="button" aria-label="Haustier">
+      <span id="haustierEmoji">🥚</span>
+      <span id="haustierBlase" class="haustierBlase" hidden></span>
+    </button>
+    </div>
 
     <button id="stern" type="button" aria-label="Sternschnuppe fangen" hidden>🌟</button>
   </main>
@@ -311,6 +321,43 @@
       <div class="knopfReihe">
         <button id="updateJetzt" type="button" class="knopf haupt">🔄 Jetzt aktualisieren</button>
         <button id="updateSpaeter" type="button" class="knopf">Später</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Haustier: adoptieren und pflegen -->
+  <div id="tierOverlay" class="overlay" hidden>
+    <div class="geschenkKarte tierKarte" role="dialog" aria-modal="true" aria-label="Haustier">
+      <button id="tierZu" type="button" class="overlayZu" aria-label="Schließen">✕</button>
+
+      <div id="tierAdoption" hidden>
+        <h2>🥚 Ein Haustier für Marie!</h2>
+        <p class="geschenkSerie">Such dir ein kleines Tier aus. Es bleibt bei Marie, freut sich über Futter und wächst mit dir!</p>
+        <div id="tierAuswahl" class="tierAuswahl"></div>
+        <label class="feld">Wie soll es heißen?
+          <input id="tierName" type="text" maxlength="12" autocomplete="off">
+        </label>
+        <div class="knopfReihe">
+          <button id="tierAdoptieren" type="button" class="knopf haupt">💕 Adoptieren</button>
+        </div>
+      </div>
+
+      <div id="tierPflege" hidden>
+        <button id="tierGross" type="button" class="tierGross" aria-label="Streicheln"></button>
+        <h2 id="tierNameTitel"></h2>
+        <p id="tierLaune" class="geschenkSerie"></p>
+        <div class="tierWerte">
+          <div class="tierZeile"><span>⭐ Level <b id="tierLevel"></b> · <span id="tierStufe"></span></span><span id="tierXpText"></span></div>
+          <div class="tierBalken"><div id="tierXpBalken"></div></div>
+          <div class="tierZeile"><span>🍽️ Satt</span><span id="tierSattText"></span></div>
+          <div class="tierBalken satt"><div id="tierSattBalken"></div></div>
+          <div id="tierBonus" class="tierBonus"></div>
+        </div>
+        <div class="knopfReihe">
+          <button id="tierLeckerli" type="button" class="knopf haupt"></button>
+          <button id="tierFestmahl" type="button" class="knopf haupt"></button>
+        </div>
+        <button id="tierStreicheln" type="button" class="knopf tierStreicheln"></button>
       </div>
     </div>
   </div>

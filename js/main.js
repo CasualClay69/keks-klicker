@@ -41,8 +41,76 @@ function klickAufMarie(position) {
   meldeAufgaben(aufgabenEreignis("klick"));
   meldeSticker(versucheSticker("klick"), position);   // ab und zu fällt ein Sticker heraus
 
+  // Das Haustier hüpft mit – und alle 25 Klicks schickt es ein Herzchen
+  haustierHopst();
+  if (haustier() && spiel.klicks % 25 === 0) {
+    const r = ui.haustier.getBoundingClientRect();
+    zeigeSchwebeText({ x: r.left + r.width / 2, y: r.top }, "💕");
+  }
+
   aktualisiereAnzeige();
 }
+
+// ----- Haustier -----
+
+function meldeTierWachstum(ergebnis) {
+  const t = haustier();
+  if (ergebnis.gewachsen) {
+    sound.erfolg();
+    meldung(`🎉 ${t.name} ist gewachsen!`, `Jetzt: ${ergebnis.gewachsen.name} – und noch ein bisschen größer!`);
+  } else if (ergebnis.aufgestiegen) {
+    sound.stern();
+    meldung(`⭐ ${t.name} ist jetzt Level ${t.level}!`, `+${Math.round(TIER.bonusProLevel * 100)} % Herzen mehr`);
+  }
+}
+
+function richteHaustierEin() {
+  ui.haustier.addEventListener("click", () => {
+    sound.klick();
+    zeigeTierFenster();
+  });
+  $("tierZu").addEventListener("click", () => { $("tierOverlay").hidden = true; });
+
+  $("tierAdoptieren").addEventListener("click", () => {
+    if (!adoptiere(tierAuswahl.id, $("tierName").value)) return;
+    sound.erfolg();
+    meldung(`💕 Willkommen, ${haustier().name}!`, `Dein ${tierAuswahl.name} wohnt jetzt bei Marie. Vergiss nicht, es zu füttern!`);
+    speichern();
+    zeigeTierFenster();
+    aktualisiereAnzeige();
+  });
+
+  const fuettern = sorte => {
+    const ergebnis = fuettere(sorte);
+    if (!ergebnis.ok) {
+      sound.fehler();
+      if (ergebnis.grund === "herzen") meldung("💖 Nicht genug Herzen", "Sammle noch ein paar Herzen und versuch es dann nochmal.");
+      return;
+    }
+    sound.kauf();
+    tierFreutSich();
+    const t = haustier();
+    const r = $("tierGross").getBoundingClientRect();
+    zeigeSchwebeText({ x: r.left + r.width / 2, y: r.top }, `${tierArt(t)[sorte].icon} Mmmh!`);
+    meldeTierWachstum(ergebnis);
+    aktualisiereAnzeige();
+  };
+  $("tierLeckerli").addEventListener("click", () => fuettern("leckerli"));
+  $("tierFestmahl").addEventListener("click", () => fuettern("festmahl"));
+
+  const streicheln = () => {
+    const ergebnis = streichle();
+    if (!ergebnis.ok) return;
+    spieleTon(900 + Math.random() * 200, 0.15, "sine", 0.1, 1300);   // zufriedenes "Schnurr-Pling"
+    tierFreutSich();
+    meldeTierWachstum(ergebnis);
+    zeigeTierPflege();
+  };
+  $("tierStreicheln").addEventListener("click", streicheln);
+  $("tierGross").addEventListener("click", streicheln);
+}
+
+// ----- Sticker-Album (Fortsetzung) -----
 
 // ----- Sticker-Album -----
 
@@ -333,6 +401,7 @@ function tick() {
 }
 
 function pruefeErfolgeUndStatistik() {
+  aktualisiereHunger();   // das Haustier wird langsam hungrig
   pruefeTageswechsel();
   pruefeGeschenk();   // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
@@ -684,6 +753,7 @@ function richteAppEin() {
 function starte() {
   $("version").textContent = "v" + APP_VERSION;
   laden();
+  aktualisiereHunger();   // Hunger seit dem letzten Spielen nachrechnen
   ladeSkins();
   const nachgeliefert = seasonSkinsNachliefern();   // z.B. neues Logo für schon erreichte Stufe 40
   setzeAufgabenAbholAktion(beimAufgabeAbholen);
@@ -695,6 +765,7 @@ function starte() {
   richteSicherungEin();
   richteGeschenkEin();
   richteGluecksradEin();
+  richteHaustierEin();
   richteBestenlisteEin();
   richteAppEin();
   richteUpdateEin();

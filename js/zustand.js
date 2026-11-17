@@ -21,6 +21,7 @@ function neuerSpielstand() {
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)
     sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)
     stickerNeu: [],    // neue, noch nicht angeschaute Sticker
+    haustier: null,    // Maries Haustier (siehe haustier.js)
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

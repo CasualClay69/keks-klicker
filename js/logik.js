@@ -71,9 +71,11 @@ function gebaeudeFaktor(gebaeude) {
   return Math.pow(2, gekauft);
 }
 
-// Herzen pro Sekunde von EINEM Stück dieser Sorte (ohne Sternschnuppen-Bonus)
+// Herzen pro Sekunde von EINEM Stück dieser Sorte (ohne Sternschnuppen-Bonus).
+// haustierFaktor(): ein sattes Haustier gibt +1 % pro Level (siehe haustier.js)
 function hpsProStueck(gebaeude) {
-  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor();
+  const tier = typeof haustierFaktor === "function" ? haustierFaktor() : 1;
+  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier;
 }
 
 // Herzen pro Sekunde insgesamt, ohne Sternschnuppen-Bonus

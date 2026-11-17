@@ -22,6 +22,8 @@ const ui = {
   aufgabenBadge:  $("aufgabenBadge"),
   radBtn:         $("radBtn"),
   radBadge:       $("radBadge"),
+  haustier:       $("haustier"),
+  marieBereich:   $("marieBereich"),
   albumBtn:       $("albumBtn"),
   albumBadge:     $("albumBadge"),
   installBtn:     $("installBtn"),
@@ -112,6 +114,7 @@ const STATISTIK_ZEILEN = [
   ["Längste Geschenk-Serie",  () => `${(spiel.geschenk && spiel.geschenk.beste) || 0} Tage`],
   ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
   ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker(sichtbareSticker())} / ${sichtbareSticker().length}`],
+  ["Haustier",                () => haustier() ? `${haustier().name} (Level ${haustier().level})` : "noch keins"],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -239,6 +242,9 @@ function aktualisiereAnzeige() {
   zeigeSeason();
   zeigeAufgaben();
   ui.radBadge.hidden = !gluecksradBereit();   // "!" am Glücksrad, solange heute noch gedreht werden kann
+
+  zeigeHaustier();
+  if (!$("tierOverlay").hidden) zeigeTierPflege();
 
   const neueSticker = (spiel.stickerNeu || []).length;   // Zahl am Album: neue, ungesehene Sticker
   ui.albumBadge.hidden = neueSticker === 0;
@@ -753,6 +759,132 @@ function zeigeRadErgebnis(ergebnis) {
   setzeText($("radInfo"), "Glückwunsch! Morgen kannst du wieder drehen.");
   $("radZu").disabled = false;
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
+}
+
+// ----- Haustier -----
+
+// Das Tier wächst und schrumpft mit Marie: ihre Breite als CSS-Variable bereitstellen
+if (typeof ResizeObserver === "function") {
+  new ResizeObserver(([eintrag]) => {
+    ui.marieBereich.style.setProperty("--marie-breite", eintrag.contentRect.width + "px");
+  }).observe(ui.marie);
+}
+
+// Bild eines Tiers in ein Element setzen: eigenes SVG (z.B. die grau-weiße Katze) oder Emoji
+function setzeTierBild(el, art, stufenIndex = 0) {
+  const schluessel = art ? `${art.id}-${stufenIndex}` : "ei";
+  if (el.dataset.bild === schluessel) return;   // nur bei Änderung neu zeichnen
+  el.dataset.bild = schluessel;
+  if (!art) el.textContent = "🥚";
+  else if (art.svg) el.innerHTML = art.svg;     // eigenes SVG aus haustier.js
+  else el.textContent = art.stufen[stufenIndex];
+}
+
+// Das Tier neben Marie: Bild, Größe, Gedankenblase
+function zeigeHaustier() {
+  const t = haustier();
+  const el = ui.haustier;
+  el.classList.toggle("ei", !t);
+  const stufe = tierStufe(t);
+  setzeTierBild($("haustierEmoji"), tierArt(t), TIER_STUFEN.indexOf(stufe));
+  el.style.setProperty("--tier-groesse", t ? stufe.groesse : 1);
+  el.setAttribute("aria-label", t ? `${t.name} – Haustier pflegen` : "Ei – Haustier adoptieren");
+
+  const laune = tierLaune(t);
+  const blase = $("haustierBlase");
+  const zeichen = !t ? "❓" : laune === "schlaeft" ? "💤" : laune === "hungrig" ? tierArt(t).leckerli.icon : "";
+  blase.hidden = !zeichen;
+  setzeText(blase, zeichen);
+  el.classList.toggle("schlaeft", laune === "schlaeft");
+}
+
+// Klick auf Marie: das Tier hüpft mit
+function haustierHopst() {
+  if (!haustier()) return;
+  ui.haustier.classList.remove("hopst");
+  void ui.haustier.offsetWidth;
+  ui.haustier.classList.add("hopst");
+}
+
+let tierAuswahl = HAUSTIER_ARTEN[0];
+
+// Fenster: Adoption (noch kein Tier) oder Pflege
+function zeigeTierFenster() {
+  const t = haustier();
+  $("tierAdoption").hidden = Boolean(t);
+  $("tierPflege").hidden = !t;
+  if (!t) baueTierAuswahl();
+  else zeigeTierPflege();
+  $("tierOverlay").hidden = false;
+}
+
+function baueTierAuswahl() {
+  const auswahl = $("tierAuswahl");
+  auswahl.textContent = "";
+  for (const art of HAUSTIER_ARTEN) {
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.classList.toggle("aktiv", art === tierAuswahl);
+    const bild = span("tierBild");
+    setzeTierBild(bild, art, 0);
+    knopf.append(bild, Object.assign(document.createElement("small"), { textContent: art.name }));
+    knopf.addEventListener("click", () => {
+      tierAuswahl = art;
+      $("tierName").value = zufallAus(art.namen);
+      sound.klick();
+      baueTierAuswahl();
+    });
+    auswahl.append(knopf);
+  }
+  if (!$("tierName").value) $("tierName").value = tierAuswahl.namen[0];
+}
+
+function zeigeTierPflege() {
+  const t = haustier();
+  if (!t) return;
+  const art = tierArt(t);
+  const stufe = tierStufe(t);
+  const gross = $("tierGross");
+  setzeTierBild(gross, art, TIER_STUFEN.indexOf(stufe));
+  gross.style.setProperty("--tier-groesse", stufe.groesse);
+
+  setzeText($("tierNameTitel"), `${t.name} · ${art.name}`);
+  const laune = tierLaune(t);
+  setzeText($("tierLaune"), laune === "schlaeft"
+    ? `${t.name} hat großen Hunger und ist eingeschlafen 💤 – füttere es, dann wacht es auf!`
+    : laune === "hungrig" ? `${t.name} hat Hunger 🥺` : `${t.name} ist glücklich! 💕`);
+
+  setzeText($("tierLevel"), String(t.level));
+  setzeText($("tierStufe"), stufe.name);
+  const maxLevel = t.level >= TIER.maxLevel;
+  setzeText($("tierXpText"), maxLevel ? "Höchstes Level! 👑" : `${t.xp} / ${tierXpFuerLevel(t.level)} ⭐`);
+  $("tierXpBalken").style.width = (maxLevel ? 100 : t.xp / tierXpFuerLevel(t.level) * 100).toFixed(1) + "%";
+  setzeText($("tierSattText"), `${Math.round(t.sattheit)} %`);
+  $("tierSattBalken").style.width = t.sattheit.toFixed(1) + "%";
+  $("tierSattBalken").parentElement.classList.toggle("leer", t.sattheit < 30);
+
+  const prozent = Math.round(t.level * TIER.bonusProLevel * 100);
+  setzeText($("tierBonus"), t.sattheit > 0
+    ? `✨ ${t.name} gibt dir +${prozent} % Herzen`
+    : `💤 Schlafend kein Bonus (sonst +${prozent} % Herzen)`);
+
+  const satt = t.sattheit >= 100;
+  for (const sorte of ["leckerli", "festmahl"]) {
+    const knopf = $(sorte === "leckerli" ? "tierLeckerli" : "tierFestmahl");
+    const preis = futterPreis(sorte);
+    setzeText(knopf, satt ? `${art[sorte].icon} Satt!` : `${art[sorte].icon} ${art[sorte].name} · ${herz()} ${format(preis)}`);
+    knopf.disabled = satt || spiel.herzen < preis;
+  }
+  const uebrig = streichelnUebrig();
+  setzeText($("tierStreicheln"), uebrig > 0 ? `🤗 Streicheln (noch ${uebrig}× heute)` : "🤗 Genug gestreichelt für heute – morgen wieder!");
+  $("tierStreicheln").disabled = uebrig <= 0;
+}
+
+function tierFreutSich() {
+  const gross = $("tierGross");
+  gross.classList.remove("freut");
+  void gross.offsetWidth;
+  gross.classList.add("freut");
 }
 
 // ----- Sticker-Album -----

@@ -9,7 +9,9 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
-- 28 Erfolge (je +1 % Herzen)
+- 30 Erfolge (je +1 % Herzen)
+- Haustier 🐾: Kätzchen (grau-weiß, selbst gezeichnet), Häschen, Hündchen oder Einhorn-Baby – füttern, streicheln,
+  wächst von Baby über Kind zu Groß; satt gibt es +1 % Herzen pro Level (bis +20 %), hungrig schläft es nur
 - Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten,
   dazu pro Season eine eigene Sticker-Seite, die nur während der Season sammelbar ist (🦃 Thanksgiving, 🎅 Weihnachten)
 - Glücksrad 🎡: einmal am Tag drehen – Herzen, Boni, Sternschnuppe, Season-Punkte oder Jackpot
@@ -103,6 +105,7 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/geschenk.js` | Tägliches Geschenk mit Serie (`GESCHENK_FAKTOREN`, `GESCHENK_SEASON_PUNKTE`) |
 | `js/gluecksrad.js` | Glücksrad: Felder, Gewinnchancen (`GLUECKSRAD_FELDER`) |
 | `js/album.js` | Sticker-Album: Seiten und Sticker (`STICKER_SEITEN`), Seltenheiten, Chancen (`STICKER_CHANCE`) |
+| `js/haustier.js` | Haustier: Arten (`HAUSTIER_ARTEN`, inkl. Katzen-SVG), Stufen, Hunger, Futter, Erfahrung |
 | `js/bestenliste.js` | Online-Bestenliste (Supabase-Verbindung) |
 | `supabase/bestenliste.sql` | Datenbank-Tabelle und -Funktionen für die Bestenliste |
 | `js/sound.js` | Klänge und Musik-Abspieler (Web Audio API) |
