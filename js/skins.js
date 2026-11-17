@@ -151,10 +151,10 @@ const SEASON_PAESSE = [
     ende:  "2026-12-01T00:00:00",   // = bis einschließlich 30. November
     stufen: 50,
     // Klicks für Stufe n: klicksBasis + klicksProStufe · n
-    // -> Stufe 1: 2.090 Klicks … Stufe 50: 6.500 Klicks, zusammen ~215.000 Klicks
-    // -> bei durchschnittlich 2 Klicks pro Sekunde etwa 30 Stunden
-    klicksBasis: 2000,
-    klicksProStufe: 90,
+    // -> Stufe 1: 700 Klicks … Stufe 50: 2.170 Klicks, zusammen ~71.750 Klicks
+    // -> bei durchschnittlich 2 Klicks pro Sekunde etwa 10 Stunden
+    klicksBasis: 670,
+    klicksProStufe: 30,
     // Auf diesen Stufen gibt es Skins, auf allen anderen Herzen
     skinBelohnungen: { 10: "hut-pilgerhut", 20: "musik-erntedank", 30: "hud-herbstlaub", 50: "hintergrund-herbst" },
   },

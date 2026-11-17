@@ -47,8 +47,8 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 ### Season 1: Thanksgiving 🦃 (1.–30. November 2026)
 
 - Erreichbar über das 🦃-Symbol oben rechts (nur sichtbar, solange die Season läuft)
-- 50 Stufen, aufsteigen durch Klicks auf Marie: Stufe n braucht `2000 + 90·n` Klicks,
-  zusammen ~215.000 Klicks ≈ 30 Stunden bei 2 Klicks/Sekunde
+- 50 Stufen, aufsteigen durch Klicks auf Marie: Stufe n braucht `670 + 30·n` Klicks,
+  zusammen ~71.750 Klicks ≈ 10 Stunden bei 2 Klicks/Sekunde
 - Belohnungen: Herzen auf jeder Stufe, dazu
   🎩 Pilgerhut (Stufe 10), 🎻 Erntedank-Walzer (20), 🍂 Herbstlaub-HUD (30), 🍁 Blätterregen (50, animiert)
 - Fortschritt und Skins bleiben auch nach dem Season-Ende und beim „Spielstand löschen“ erhalten
