@@ -41,9 +41,11 @@
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
   <script src="js/herzregen.js" defer></script>
+  <script src="js/minispiele.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
+  <script src="js/spielhalle.js" defer></script>
   <script src="js/main.js"    defer></script>
 </head>
 <body>
@@ -54,6 +56,7 @@
     <button id="musikBtn" type="button" title="Musik an/aus" aria-label="Musik an/aus">🎵</button>
     <button id="aufgabenBtn" type="button" title="Tagesaufgaben" aria-label="Tagesaufgaben öffnen">📋<b id="aufgabenBadge" hidden></b></button>
     <button id="bestenlisteBtn" type="button" title="Bestenliste" aria-label="Bestenliste öffnen" hidden>🏅</button>
+    <button id="spieleBtn" type="button" title="Minispiele" aria-label="Minispiele öffnen">🎮</button>
     <h1 id="titel" aria-label="Marie Clicker">
       <span class="logo-krone" aria-hidden="true">👑</span>
       <span class="logo-deko" aria-hidden="true"></span>
@@ -275,6 +278,14 @@
       </p>
     </section>
 
+    <section id="seiteSpiele" class="seite" role="tabpanel" hidden>
+      <div class="blKopf spieleKopf">
+        <div class="blTitel">🎮 Minispiele</div>
+        <div class="blUnter">Spiel, gewinn Herzen und Season-Punkte! Jedes Spiel bringt 5-mal am Tag die volle Belohnung.</div>
+      </div>
+      <div id="spieleListe" class="spieleListe"></div>
+    </section>
+
     <section id="seiteBestenliste" class="seite" role="tabpanel" hidden>
       <!-- Noch nicht dabei -->
       <div id="blBeitreten" hidden>
@@ -405,6 +416,27 @@
         <div id="gbBetrag" class="geschenkBetrag" style="white-space: pre-line"></div>
         <p id="gbSkins" class="geschenkMorgen"></p>
         <button id="gbZu" class="knopf haupt" type="button">Danke! 💖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minispiel-Fenster (Memory, Finde die Figur, Leckerli-Fangen – siehe spielhalle.js) -->
+  <div id="spielOverlay" class="overlay" hidden>
+    <div class="spielKarte" role="dialog" aria-modal="true" aria-labelledby="spielTitel">
+      <div class="spielKopf">
+        <h2 id="spielTitel"></h2>
+        <button id="spielZu" type="button" class="spielZu" aria-label="Spiel beenden">✕</button>
+      </div>
+      <div id="spielInfo" class="spielInfo" aria-live="polite"></div>
+      <div id="spielFlaeche" class="spielFlaeche"></div>
+      <div id="spielErgebnis" class="spielErgebnis" hidden>
+        <div id="spielErgebnisTitel" class="spielErgebnisTitel"></div>
+        <div id="spielErgebnisText" class="spielErgebnisText"></div>
+        <div id="spielBelohnung" class="geschenkBetrag"></div>
+        <div class="knopfReihe">
+          <button id="spielNochmal" type="button" class="knopf haupt">🔁 Nochmal</button>
+          <button id="spielFertig" type="button" class="knopf">Fertig</button>
+        </div>
       </div>
     </div>
   </div>

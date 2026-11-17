@@ -567,6 +567,21 @@ function verbindeEreignisse() {
     $("seitenleiste").scrollTop = 0;
   });
 
+  // Minispiele über das 🎮-Symbol öffnen (nochmal tippen = schließen)
+  $("spieleBtn").addEventListener("click", () => {
+    if (menueOffen && aktuelleSeite === "seiteSpiele") {
+      setzeMenue(false);
+      return;
+    }
+    zeigeSeite("seiteSpiele");
+    setzeMenue(true);
+    zeigeSpieleListe(starteMinispiel);
+    $("seitenleiste").scrollTop = 0;
+  });
+  $("spielZu").addEventListener("click", () => { sound.klick(); schliesseMinispiel(); });
+  $("spielFertig").addEventListener("click", () => { sound.klick(); schliesseMinispiel(); });
+  $("spielNochmal").addEventListener("click", () => starteMinispiel($("spielOverlay").dataset.spiel));
+
   // Zimmer über das 🏠-Symbol öffnen (nochmal tippen = schließen)
   $("zimmerBtn").addEventListener("click", () => {
     if (menueOffen && aktuelleSeite === "seiteZimmer") {
@@ -623,6 +638,39 @@ function tick() {
   spiel.zuletztAktiv = jetzt;
   aktualisiereAnzeige();
   pruefeZimmerPreise();
+}
+
+// ----- Minispiele -----
+
+function starteMinispiel(id) {
+  if (regenLaeuft) {
+    sound.fehler();
+    meldung("💖 Gerade regnet es Herzen!", "Spiel erst den Herzregen zu Ende.");
+    return;
+  }
+  const grund = minispielGesperrt(id);
+  if (grund) {
+    sound.fehler();
+    meldung("🔒 Noch nicht möglich", grund);
+    return;
+  }
+  sound.klick();
+  oeffneMinispiel(id, beimMinispielEnde);
+}
+
+// Ein Minispiel ist zu Ende: Season-Stufen, Haustier, Erfolge melden, speichern
+function beimMinispielEnde(ergebnis) {
+  for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+  if (ergebnis.tier) {
+    const t = haustier();
+    if (ergebnis.tier.gewachsen) meldung(`🎉 ${t.name} ist gewachsen!`, `Jetzt: ${ergebnis.tier.gewachsen.name}`);
+    else if (ergebnis.tier.aufgestiegen) meldung(`⭐ ${t.name} ist jetzt Level ${t.level}!`, "Vom vielen Leckerli-Fangen.");
+    zeigeHaustier();
+  }
+  pruefeErfolgeUndStatistik();
+  speichern();
+  aktualisiereAnzeige();
+  if (!$("seiteSpiele").hidden) zeigeSpieleListe(starteMinispiel);
 }
 
 // ----- Zimmer -----

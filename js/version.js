@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.44";
-const APP_NEU = "Neu: Der Wochen-Wettbewerb! Wer diese Woche die meisten Herzen sammelt, bekommt den goldenen 👑-Rahmen in der Bestenliste.";
+const APP_VERSION = "1.45";
+const APP_NEU = "Neu: Drei Minispiele unter 🎮 – Sticker-Memory, Finde Marie und Leckerli-Fangen mit deinem Haustier!";

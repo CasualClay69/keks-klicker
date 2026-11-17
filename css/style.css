@@ -294,7 +294,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 
 /* ----- Obere Zeile: Ton – Titel – Installieren ----- */
-#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #installBtn {
+#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #installBtn {
   position: absolute; top: max(12px, env(safe-area-inset-top));
   z-index: 7;
   padding: 6px 12px;
@@ -303,11 +303,12 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
 /* Links untereinander: Ton, Musik, Aufgaben, Bestenliste */
 #musikBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
 #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
 #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 144px); }
+#spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 192px); }
 #aufgabenBtn.feiern { animation: feiern 0.9s ease-out; }
 
 /* Grüne Zahl: so viele Belohnungen liegen zum Abholen bereit */
@@ -1127,6 +1128,136 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .zimmerKarte.zuTeuer .skinStatus { opacity: 0.55; }
 .zimmerKarte .skinStatus { white-space: nowrap; }
 
+/* ----- Minispiele ----- */
+.spieleKopf { background: linear-gradient(135deg, #e9f6ff, #ffe6f2); color: #3b2a5a; }
+.spieleListe { display: grid; gap: 10px; }
+.spielEintrag {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 2px 10px;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid var(--rand);
+  border-radius: 18px;
+  background: var(--karte);
+}
+.spielEintrag .spielIcon { grid-row: span 3; font-size: 2.4rem; text-align: center; }
+.spielEintrag .spielName { font-weight: 900; font-size: 1.05rem; color: var(--akzent-dunkel); }
+.spielEintrag .spielBeschr { font-size: 0.85rem; }
+.spielEintrag .spielRekord { font-size: 0.75rem; color: var(--text-sanft); }
+.spielEintrag .knopf { grid-column: 1 / 3; margin-top: 6px; }
+.spielEintrag .knopf:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Das Spielfenster */
+.spielKarte {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 560px);
+  height: min(100%, 760px);
+  padding: 12px 14px 14px;
+  border: 3px solid var(--rand);
+  border-radius: 26px;
+  background: linear-gradient(180deg, #ffffff, var(--panel));
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: aufploppen 0.35s ease-out;
+}
+.spielKopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.spielKopf h2 { margin: 0; font-size: 1.25rem; color: var(--akzent-dunkel); }
+.spielZu {
+  width: 40px; height: 40px; flex: none;
+  border: 2px solid var(--rand); border-radius: 50%;
+  background: var(--karte); color: var(--text);
+  font-size: 1.1rem; cursor: pointer;
+}
+.spielInfo {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; margin: 6px 0;
+  font-weight: bold; color: var(--text-sanft); text-align: center;
+}
+.spielFlaeche {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border: 2px solid var(--rand);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff7fb, #ffe9f4);
+  touch-action: none;           /* Wischen bewegt das Tier, nicht die Seite */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.spielErgebnis { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; text-align: center; position: relative; }
+.spielErgebnisTitel { font-size: 1.6rem; font-weight: 900; color: var(--akzent-dunkel); }
+.spielErgebnisText { font-weight: bold; color: var(--text-sanft); }
+.spielErgebnis .geschenkBetrag { white-space: pre-line; }
+
+/* Memory: 4 × 3 Karten */
+.memoryRaster {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+  height: 100%;
+  padding: 8px;
+}
+.memoryKarte {
+  position: relative;
+  min-height: 0;
+  border: 3px solid var(--rand);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ff9cc9, #b48cff);
+  font-size: clamp(1.8rem, 9vw, 3rem);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.memoryKarte .vorne { display: none; }
+.memoryKarte .hinten { opacity: 0.85; font-size: 0.7em; }
+.memoryKarte.offen { background: #fff; transform: scale(1.03); }
+.memoryKarte.offen .vorne { display: inline; }
+.memoryKarte.offen .hinten { display: none; }
+.memoryKarte.gefunden { border-color: #6fd38a; background: #effff3; transform: none; }
+
+/* Finde die Figur */
+.findeLabel { font-size: 0.9rem; }
+.findeVorschau {
+  display: inline-block; width: 46px; height: 46px;
+  border: 2px solid var(--akzent); border-radius: 50%;
+  background: #fff; overflow: hidden;
+}
+.findeVorschau svg, .findeFigur svg { display: block; width: 100%; height: 100%; }
+.findeFigur {
+  position: absolute; left: 0; top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+.findeFigur .augen-zu, .findeFigur .mund-offen,
+.findeVorschau .augen-zu, .findeVorschau .mund-offen { display: none; }
+.findeFigur.falsch { animation: falschWackeln 0.4s; }
+@keyframes falschWackeln {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -6px 0; }
+  75% { translate: 6px 0; }
+}
+
+/* Leckerli-Fangen */
+.spiel-fangen { background: linear-gradient(180deg, #e7f4ff 0%, #fff4fa 70%, #c9f0c4 70%, #b4e6ae 100%); cursor: grab; }
+.fangTier {
+  position: absolute; left: 0; bottom: 4%;
+  display: grid; place-items: center;
+  width: 76px; height: 76px;
+  font-size: 58px;
+  line-height: 1;
+}
+.fangTier svg { width: 100%; height: 100%; }
+.fangTier.happs { animation: happs 0.25s; }
+.fangTier.autsch { animation: falschWackeln 0.4s; filter: hue-rotate(-30deg) saturate(2); }
+@keyframes happs { 50% { scale: 1.18; } }
+.fangTeil { position: absolute; left: 0; top: 0; font-size: 34px; line-height: 1; pointer-events: none; }
+.fangTeil.festmahl { font-size: 40px; filter: drop-shadow(0 0 6px #ffd23f); }
+
 /* ----- Season-Seite ----- */
 .seasonKopf {
   /* Beim Scrollen der Stufen-Liste scrollen Logo und Zeit mit weg, "Stufe x / 50" und der
@@ -1915,10 +2046,11 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   .logo-krone   { font-size: 2rem; }
   #herzen       { font-size: 3.4rem; }
   #hps          { font-size: 1.25rem; }
-  #tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn { font-size: 1.6rem; }
+  #tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn { font-size: 1.6rem; }
   #musikBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
   #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
   #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
+  #spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 224px); }
   #seasonBtn    { width: 64px; height: 64px; }
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }

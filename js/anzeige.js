@@ -123,6 +123,7 @@ const STATISTIK_ZEILEN = [
   ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker(sichtbareSticker())} / ${sichtbareSticker().length}`],
   ["Zimmer-Teile",            () => `${anzahlZimmerTeile()} / ${anzahlZimmerTeileGesamt()} (+${Math.round((zimmerFaktor() - 1) * 100)} %)`],
   ["Haustier",                () => haustier() ? `${haustier().name} (Level ${haustier().level})` : "noch keins"],
+  ["Minispiele gespielt",     () => String((spiel.minispiele && spiel.minispiele.anzahl) || 0)],
   ["Bester Herzregen",        () => `${spiel.regenBest || 0} Punkte`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
@@ -1444,6 +1445,7 @@ function zeigeSeite(seiteId) {
   if (seiteId === "seiteAufgaben") titel = "📋 Tagesaufgaben";
   if (seiteId === "seiteBestenliste") titel = "🏅 Bestenliste";
   if (seiteId === "seiteAlbum") titel = "📒 Sticker-Album";
+  if (seiteId === "seiteSpiele") titel = "🎮 Minispiele";
   if (seiteId === "seiteZimmer") titel = `🏠 ${figurName()}s Zimmer`;
   setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();
