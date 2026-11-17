@@ -28,8 +28,25 @@ function klickAufMarie(position) {
   const plus = klickeMarie();
   sound.klick();
   marieFreutSich();
-  zeigeSchwebeText(position, `+${format(plus)} 💖`);
+  zeigeSchwebeText(position, `+${format(plus)} ${herz()}`);
+
+  // Season-Pass: jeder Klick zählt
+  for (const neueStufe of seasonKlick(1)) meldeSeasonStufe(neueStufe);
+
   aktualisiereAnzeige();
+}
+
+// Neue Season-Stufe erreicht -> Meldung, Sound, Symbol leuchtet
+function meldeSeasonStufe({ pass, stufe, belohnung }) {
+  sound.erfolg();
+  seasonSymbolFeiern();
+  if (belohnung.typ === "herzen") {
+    meldung(`${pass.icon} Season-Stufe ${stufe}!`, `+${format(belohnung.menge)} ${herz()}`);
+  } else {
+    const s = belohnung.skin;
+    meldung(`${pass.icon} Stufe ${stufe}: Neuer Skin! ${s.icon}`, `„${s.name}“ – jetzt unter Skins auswählbar`);
+    zeigeSkins();
+  }
 }
 
 // ----- Skin auswählen -----
@@ -77,7 +94,7 @@ function beimStern(ereignis) {
 
   const { effekt, gewinn } = fangeStern();
   const text = effekt.typ === "sofort"
-    ? `💖 Herzregen! +${format(gewinn)}`
+    ? `${herz()} Herzregen! +${format(gewinn)}`
     : `${effekt.name}! ${effekt.text}`;
 
   zeigeSchwebeText(position, text, true);
@@ -174,6 +191,18 @@ function verbindeEreignisse() {
     });
   }
   $("sheetZu").addEventListener("click", () => setzeMenue(false));
+
+  // Season-Pass über das eigene Symbol öffnen (nochmal tippen = schließen)
+  ui.seasonBtn.addEventListener("click", () => {
+    if (menueOffen && aktuelleSeite === "seiteSeason") {
+      setzeMenue(false);
+      return;
+    }
+    zeigeSeite("seiteSeason");
+    setzeMenue(true);
+    zeigeSeason();
+    scrolleZuAktuellerStufe();
+  });
   document.addEventListener("keydown", e => { if (e.key === "Escape") setzeMenue(false); });
 
   $("reset").addEventListener("click", () => {

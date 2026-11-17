@@ -11,7 +11,7 @@
 //  und VERSION erhöhen, damit der alte Cache gelöscht wird.
 // =====================================================
 
-const VERSION = "v10";
+const VERSION = "v11";
 const CACHE = "marie-clicker-" + VERSION;
 
 const DATEIEN = [

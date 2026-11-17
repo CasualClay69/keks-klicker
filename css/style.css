@@ -17,6 +17,11 @@
   --gold:          #f5b942;
   --gefahr:        #e05570;
   --schatten:      0 4px 14px rgba(214, 51, 132, 0.15);
+  --logo-1:        #ff9fd0;   /* Farbverlauf im Logo */
+  --logo-2:        #ff4f9a;
+  --logo-3:        #b56bff;
+  --medaillon-1:   #ffd1e6;   /* Hintergrund hinter Marie */
+  --medaillon-2:   #e6ccff;
 
   /* Runde, verspielte Schrift – nimmt die erste, die auf dem Gerät vorhanden ist.
      (Bewusst keine Google Fonts: funktioniert offline und ohne Datenübertragung an Dritte.) */
@@ -105,6 +110,32 @@ button {
   opacity: 0.85;
 }
 
+/* ----- Hintergrund-Skin "Blätterregen" (Season 1) -----
+   Herbstblätter fallen nach links unten – hinten klein und langsam, vorne groß und schneller. */
+body[data-hintergrund="herbst"] {
+  background: linear-gradient(160deg, #fff0d9 0%, #ffdcb5 55%, #f8c497 100%);
+}
+body[data-hintergrund="herbst"] #spielfeld::before {
+  --kachel: 70px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cg transform='translate(6 8) scale(.8) rotate(-30 12 12)'%3E%3Cpath d='M12 1C19 5 21 13 12 23C3 13 5 5 12 1Z' fill='%23f2b33d'/%3E%3Cpath d='M12 3V22' stroke='%23c98a1e' stroke-width='1.2'/%3E%3C/g%3E%3Cg transform='translate(40 38) scale(.7) rotate(50 12 12)'%3E%3Cpath d='M12 1C19 5 21 13 12 23C3 13 5 5 12 1Z' fill='%23f0a36b'/%3E%3Cpath d='M12 3V22' stroke='%23c9733a' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.8;
+  animation: blaetterHinten 9s linear infinite;
+}
+body[data-hintergrund="herbst"] #spielfeld::after {
+  --kachel: 140px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg transform='translate(14 16) scale(1.5) rotate(25 12 12)'%3E%3Cpath d='M12 1C19 5 21 13 12 23C3 13 5 5 12 1Z' fill='%23e8772e'/%3E%3Cpath d='M12 3V22' stroke='%23a0461c' stroke-width='1'/%3E%3C/g%3E%3Cg transform='translate(86 80) scale(1.3) rotate(-55 12 12)'%3E%3Cpath d='M12 1C19 5 21 13 12 23C3 13 5 5 12 1Z' fill='%23d9532c'/%3E%3Cpath d='M12 3V22' stroke='%238f2f14' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.9;
+  animation: blaetterVorne 6.5s linear infinite;
+}
+@keyframes blaetterHinten {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-70px, 70px); }
+}
+@keyframes blaetterVorne {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-140px, 140px); }
+}
+
 /* Genau eine Kachel nach rechts oben (Werte = --kachel der jeweiligen Ebene) */
 @keyframes diagonalHinten {
   from { transform: translate(0, 0); }
@@ -136,12 +167,126 @@ button {
 /* Ausgeschaltet: blass und durchgestrichen */
 #musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
 #installBtn {
+  top: calc(max(12px, env(safe-area-inset-top)) + 64px);   /* unter dem Season-Symbol */
   right: 12px;
   border-color: var(--akzent);
   background: var(--akzent);
   color: #fff;
   font-weight: bold;
 }
+
+/* Symbole, die ein HUD-Skin austauschen kann (<i class="navIcon">) */
+.navIcon { font-style: normal; }
+
+/* ----- Season-Pass-Symbol oben rechts -----
+   Der Ring zeigt den Fortschritt zur nächsten Stufe: conic-gradient = "Tortendiagramm",
+   --fortschritt (0 … 1) wird von anzeige.js gesetzt. */
+#seasonBtn {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 7;
+  width: 54px; height: 54px;
+  padding: 4px;
+  border: none;
+  border-radius: 50%;
+  background: conic-gradient(var(--akzent) calc(var(--fortschritt, 0) * 360deg), var(--rand) 0);
+  box-shadow: var(--schatten);
+  cursor: pointer;
+}
+#seasonBtnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: var(--karte);
+  font-size: 1.6rem;
+}
+#seasonBtnStufe {
+  position: absolute;
+  right: -4px; bottom: -4px;
+  min-width: 24px; height: 22px;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  border-radius: 11px;
+  background: var(--akzent-dunkel);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+}
+#seasonBtn.feiern { animation: feiern 0.9s ease-out; }
+@keyframes feiern {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(255, 180, 60, 0.9); }
+  30%  { transform: scale(1.25); }
+  100% { transform: scale(1);   box-shadow: 0 0 0 22px rgba(255, 180, 60, 0); }
+}
+
+/* ----- Season-Seite ----- */
+.seasonKopf {
+  /* bleibt beim Scrollen der Stufen-Liste oben stehen – direkt unter Tabs bzw. Menü-Kopf */
+  position: sticky;
+  top: var(--sticky-oben, 0px);
+  z-index: 1;
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 2px solid var(--rand);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff3e0, #ffe0c4);
+  box-shadow: var(--schatten);
+  color: #5a3317;
+}
+.seasonTitel { font-size: 1.15rem; font-weight: 900; }
+.seasonZeit  { margin: 2px 0 8px; font-size: 0.8rem; opacity: 0.8; }
+.seasonStufeAnzeige { font-size: 0.95rem; }
+.seasonStufeAnzeige b { font-size: 1.5rem; color: #c2581e; }
+.seasonBalken {
+  height: 14px;
+  margin: 6px 0;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+}
+#seasonBalkenFuellung {
+  height: 100%;
+  width: 0;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #ffb347, #e8772e);
+  transition: width 0.2s;
+}
+.seasonHinweis { font-size: 0.8rem; font-weight: bold; }
+
+.seasonStufen { margin: 0; padding: 0; list-style: none; }
+.seasonZeile {
+  display: grid;
+  grid-template-columns: 34px 36px 1fr 28px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding: 7px 8px;
+  border: 2px solid var(--rand);
+  border-radius: 14px;
+  background: var(--karte);
+  font-size: 0.85rem;
+}
+.seasonZeile .nr     { font-weight: 900; color: var(--text-sanft); text-align: center; }
+.seasonZeile .icon   { font-size: 1.4rem; text-align: center; }
+.seasonZeile .status { text-align: center; }
+.seasonZeile.erreicht { opacity: 0.55; }
+.seasonZeile.erreicht .status { color: #2e9d55; font-weight: bold; }
+.seasonZeile.aktuell {
+  border-color: var(--akzent);
+  box-shadow: 0 0 0 3px rgba(232, 119, 46, 0.2);
+}
+/* Skin-Belohnungen hervorheben */
+.seasonZeile.skin {
+  border-color: #f0b75a;
+  background: linear-gradient(90deg, #fff6df, #ffffff);
+  font-weight: bold;
+}
+.seasonZeile.skin .icon { font-size: 1.7rem; }
 
 /* ----- Logo "Marie Clicker" -----
    top: env(safe-area-inset-top) = so viel Platz, wie Kamera/Statusleiste brauchen.
@@ -168,7 +313,7 @@ button {
   font-size: clamp(3rem, 5vw, 4.4rem);
   font-weight: 900;
   letter-spacing: 0.02em;
-  background: linear-gradient(180deg, #ff9fd0 0%, #ff4f9a 50%, #b56bff 100%);
+  background: linear-gradient(180deg, var(--logo-1) 0%, var(--logo-2) 50%, var(--logo-3) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -253,7 +398,7 @@ button {
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  background: radial-gradient(circle at 50% 40%, #fff 0%, #ffd1e6 60%, #e6ccff 100%);
+  background: radial-gradient(circle at 50% 40%, #fff 0%, var(--medaillon-1) 60%, var(--medaillon-2) 100%);
   /* Rosa Ring + weißer Schimmer (hebt Marie vom bewegten Hintergrund ab) + Schatten */
   box-shadow:
     0 0 0 10px rgba(255, 95, 162, 0.15),
@@ -788,5 +933,6 @@ button {
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  #spielfeld::before, #spielfeld::after, .logo-marie, .funkeln { animation: none; }
+  #spielfeld::before, #spielfeld::after, .logo-marie, .funkeln, #seasonBtn.feiern,
+  body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

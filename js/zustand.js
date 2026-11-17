@@ -31,6 +31,7 @@ function speichern() {
   try {
     localStorage.setItem(KONFIG.speicherSchluessel, JSON.stringify(spiel));
   } catch (e) { /* Speichern nicht möglich (z.B. privater Modus) */ }
+  speichereSkins();   // inkl. Season-Pass-Fortschritt
 }
 
 function laden() {
@@ -57,7 +58,8 @@ function zuruecksetzen() {
 //  SKINS – eigener Speicher, unabhängig vom Spielstand
 // =====================================================
 
-let skinStand = { freigeschaltet: [], aktiv: {} };
+// freigeschaltet: Skin-IDs · aktiv: gewählter Skin je Kategorie · seasons: Pass-Fortschritt je Pass-ID
+let skinStand = { freigeschaltet: [], aktiv: {}, seasons: {} };
 
 function speichereSkins() {
   try {
@@ -72,6 +74,7 @@ function ladeSkins() {
       skinStand = {
         freigeschaltet: Array.isArray(daten.freigeschaltet) ? daten.freigeschaltet : [],
         aktiv: daten.aktiv && typeof daten.aktiv === "object" ? daten.aktiv : {},
+        seasons: daten.seasons && typeof daten.seasons === "object" ? daten.seasons : {},
       };
     }
   } catch (e) { /* kaputte Daten -> Standard behalten */ }

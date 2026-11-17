@@ -50,6 +50,33 @@ const SPIELUHR = {
   ],
 };
 
+// "Erntedank-Walzer" (Season 1) – ¾-Takt: 6 Achtel pro Takt
+// Akkorde: G – C – D – G | Em – C – D – G
+const ERNTEDANK_WALZER = {
+  achtelSek: 0.24,
+  melodie: [
+    ["D5", 2], ["G5", 2], ["B5", 2],      // G
+    ["C6", 3], ["B5", 1], ["A5", 2],      // C
+    ["A5", 2], ["F#5", 2], ["D5", 2],     // D
+    ["G5", 4], [null, 2],                 // G
+    ["E5", 2], ["G5", 2], ["B5", 2],      // Em
+    ["E6", 3], ["D6", 1], ["C6", 2],      // C
+    ["B5", 2], ["A5", 2], ["F#5", 2],     // D
+    ["G5", 4], ["D5", 2],                 // G
+  ],
+  // Walzer-Bass "Umm – pa – pa"
+  bass: [
+    ["G2", 2], ["D3", 2], ["D3", 2],
+    ["C3", 2], ["G3", 2], ["G3", 2],
+    ["D3", 2], ["A3", 2], ["A3", 2],
+    ["G2", 2], ["D3", 2], ["D3", 2],
+    ["E2", 2], ["B2", 2], ["B2", 2],
+    ["C3", 2], ["G3", 2], ["G3", 2],
+    ["D3", 2], ["A3", 2], ["A3", 2],
+    ["G2", 2], ["D3", 2], ["B2", 2],
+  ],
+};
+
 // ----- Alle Skins -----
 
 const SKINS = [
@@ -67,25 +94,71 @@ const SKINS = [
             <circle r="7" fill="#ff7eb6"/>
           </g>` },
 
-  // HUD – Farben der Oberfläche. Leer = die Standardfarben aus style.css
+  // HUD – Farben (CSS-Variablen) und Symbole der Oberfläche. Leer = Standard aus style.css/index.html
   { id: "hud-normal", kategorie: "hud", standard: true,
-    name: "Zuckerwatte", icon: "🍬", farben: {} },
+    name: "Zuckerwatte", icon: "🍬", farben: {}, symbole: {} },
 
   // Musik
   { id: "musik-normal", kategorie: "musik", standard: true,
     name: "Spieluhr", icon: "🎶", musik: SPIELUHR },
 
-  // ── Beispiel für einen späteren Season-Skin (auskommentiert) ──
-  // { id: "hud-minze", kategorie: "hud", season: "s1",
-  //   name: "Minz-Eis", icon: "🍦",
-  //   farben: { "--akzent": "#2ec4a6", "--akzent-dunkel": "#178f78", "--rand": "#b5eadf",
-  //             "--hintergrund": "#e3fbf5", "--hintergrund-2": "#e8f0ff", "--panel": "#f4fffc" } },
+  // ───────── Season 1: Thanksgiving ─────────
+
+  // Pilgerhut: schwarzer Hut mit braunem Band, goldener Schnalle und Herbstblatt
+  { id: "hut-pilgerhut", kategorie: "hut", season: "s1",
+    name: "Pilgerhut", icon: "🎩",
+    svg: `<g transform="rotate(-6 100 40)">
+            <ellipse cx="100" cy="41" rx="54" ry="10" fill="#2f2622"/>
+            <path d="M71 41 L77 4 Q100 0 123 4 L129 41 Z" fill="#3a2f2a"/>
+            <path d="M74 31 L126 31 L127.5 39 L72.5 39 Z" fill="#8b5a2b"/>
+            <rect x="91" y="28" width="18" height="14" rx="2" fill="none" stroke="#f5c542" stroke-width="3.5"/>
+            <path d="M80 10 Q86 8 90 9" stroke="#fff" stroke-opacity=".25" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <g transform="translate(116 22) rotate(30) scale(.75)">
+              <path d="M0 -12 C7 -8 9 0 0 10 C-9 0 -7 -8 0 -12 Z" fill="#e8772e"/>
+              <path d="M0 -10 V10" stroke="#a0461c" stroke-width="1.5"/>
+            </g>
+          </g>` },
+
+  { id: "musik-erntedank", kategorie: "musik", season: "s1",
+    name: "Erntedank-Walzer", icon: "🎻", musik: ERNTEDANK_WALZER },
+
+  { id: "hud-herbstlaub", kategorie: "hud", season: "s1",
+    name: "Herbstlaub", icon: "🍂",
+    farben: {
+      "--hintergrund": "#fff1e0", "--hintergrund-2": "#ffe2c2", "--panel": "#fff8ef",
+      "--karte-hover": "#fff0dc", "--karte-upgrade": "#fff6dc", "--rand": "#f2c79a",
+      "--akzent": "#e8772e", "--akzent-dunkel": "#b4521b", "--lila": "#c0843d",
+      "--text": "#4a2c17", "--text-sanft": "#8a6446", "--gold": "#e0a526",
+      "--schatten": "0 4px 14px rgba(180, 82, 27, 0.15)",
+      "--logo-1": "#ffd27a", "--logo-2": "#e8772e", "--logo-3": "#a0461c",
+      "--medaillon-1": "#ffdcb0", "--medaillon-2": "#f7c08f",
+    },
+    // Symbole: Schlüssel = data-symbol in index.html, "herz" = Währungssymbol
+    symbole: { herz: "🧡", marie: "🦃", shop: "🧺", skins: "🍁", erfolge: "🏆", statistik: "📜" } },
+
+  { id: "hintergrund-herbst", kategorie: "hintergrund", season: "s1",
+    name: "Blätterregen", icon: "🍁", wert: "herbst" },
 ];
 
-// ----- Season-Pässe (kommen später) -----
-// Beispiel:
-// { id: "s1", name: "Season 1: Frühlingszauber", icon: "🌸", skins: ["hud-minze"] },
-const SEASON_PAESSE = [];
+// ----- Season-Pässe -----
+// start/ende in Ortszeit des Geräts. "ende" ist der erste Moment, an dem der Pass NICHT mehr läuft.
+const SEASON_PAESSE = [
+  {
+    id: "s1",
+    name: "Season 1: Thanksgiving",
+    icon: "🦃",
+    start: "2026-11-01T00:00:00",
+    ende:  "2026-12-01T00:00:00",   // = bis einschließlich 30. November
+    stufen: 50,
+    // Klicks für Stufe n: klicksBasis + klicksProStufe · n
+    // -> Stufe 1: 2.090 Klicks … Stufe 50: 6.500 Klicks, zusammen ~215.000 Klicks
+    // -> bei durchschnittlich 2 Klicks pro Sekunde etwa 30 Stunden
+    klicksBasis: 2000,
+    klicksProStufe: 90,
+    // Auf diesen Stufen gibt es Skins, auf allen anderen Herzen
+    skinBelohnungen: { 10: "hut-pilgerhut", 20: "musik-erntedank", 30: "hud-herbstlaub", 50: "hintergrund-herbst" },
+  },
+];
 
 // =====================================================
 //  ABFRAGEN & AKTIONEN (Spielstand der Skins steht in zustand.js: skinStand)
@@ -113,13 +186,15 @@ function waehleSkin(skin) {
   return true;
 }
 
-// Für später: schaltet alle Skins eines Season-Passes frei
+function schalteSkinFrei(skinId) {
+  if (!skinStand.freigeschaltet.includes(skinId)) skinStand.freigeschaltet.push(skinId);
+}
+
+// Schaltet alle Skins eines Season-Passes auf einmal frei (z.B. für Tests oder Geschenk-Codes)
 function schalteSeasonFrei(seasonId) {
   const pass = SEASON_PAESSE.find(p => p.id === seasonId);
   if (!pass) return false;
-  for (const id of pass.skins) {
-    if (!skinStand.freigeschaltet.includes(id)) skinStand.freigeschaltet.push(id);
-  }
+  Object.values(pass.skinBelohnungen).forEach(schalteSkinFrei);
   speichereSkins();
   return true;
 }
@@ -127,4 +202,71 @@ function schalteSeasonFrei(seasonId) {
 function seasonName(seasonId) {
   const pass = SEASON_PAESSE.find(p => p.id === seasonId);
   return pass ? pass.name : "Season-Pass";
+}
+
+// =====================================================
+//  SEASON-PASS: Stufen und Belohnungen
+// =====================================================
+
+// Der Pass, der gerade (laut Uhr des Geräts) läuft – oder undefined
+function aktiverSeasonPass(jetzt = Date.now()) {
+  return SEASON_PAESSE.find(p => jetzt >= Date.parse(p.start) && jetzt < Date.parse(p.ende));
+}
+
+function seasonRestMs(pass) {
+  return Math.max(0, Date.parse(pass.ende) - Date.now());
+}
+
+// Fortschritt eines Passes: erreichte Stufe + Klicks in der aktuellen Stufe
+function seasonStand(pass) {
+  if (!skinStand.seasons[pass.id]) skinStand.seasons[pass.id] = { stufe: 0, xp: 0 };
+  return skinStand.seasons[pass.id];
+}
+
+function klicksFuerStufe(pass, n) {
+  return pass.klicksBasis + pass.klicksProStufe * n;
+}
+
+// Rundet auf 2 "schöne" Stellen: 1234 -> 1200, 56789 -> 57000
+function rundeHuebsch(x) {
+  const stufe = Math.pow(10, Math.max(0, Math.floor(Math.log10(x)) - 1));
+  return Math.round(x / stufe) * stufe;
+}
+
+// Was gibt es auf Stufe n?  { typ: "skin", skin }  oder  { typ: "herzen", menge }
+function seasonBelohnung(pass, n) {
+  const skinId = pass.skinBelohnungen[n];
+  if (skinId) return { typ: "skin", skin: SKINS.find(s => s.id === skinId) };
+  return { typ: "herzen", menge: rundeHuebsch(100 * Math.pow(1.32, n)) };   // 130 … 82 Mio.
+}
+
+// Auf welcher Stufe gibt es diesen Skin? (für "🔒 Stufe 10")
+function skinStufe(skin) {
+  const pass = SEASON_PAESSE.find(p => p.id === skin.season);
+  if (!pass) return null;
+  const eintrag = Object.entries(pass.skinBelohnungen).find(([, id]) => id === skin.id);
+  return eintrag ? Number(eintrag[0]) : null;
+}
+
+// Wird bei jedem Klick auf Marie aufgerufen. Gibt die neu erreichten Stufen zurück
+// (meist leer) – die Belohnungen sind dann schon gutgeschrieben.
+function seasonKlick(anzahl = 1) {
+  const pass = aktiverSeasonPass();
+  if (!pass) return [];
+  const stand = seasonStand(pass);
+  if (stand.stufe >= pass.stufen) return [];
+
+  stand.xp += anzahl;
+  const neu = [];
+  while (stand.stufe < pass.stufen && stand.xp >= klicksFuerStufe(pass, stand.stufe + 1)) {
+    stand.xp -= klicksFuerStufe(pass, stand.stufe + 1);
+    stand.stufe++;
+    const belohnung = seasonBelohnung(pass, stand.stufe);
+    if (belohnung.typ === "herzen") herzenDazu(belohnung.menge);
+    else schalteSkinFrei(belohnung.skin.id);
+    neu.push({ pass, stufe: stand.stufe, belohnung });
+  }
+  if (stand.stufe >= pass.stufen) stand.xp = 0;
+  if (neu.length) speichereSkins();
+  return neu;
 }

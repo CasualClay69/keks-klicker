@@ -19,6 +19,9 @@ const ui = {
   tonBtn:         $("tonBtn"),
   musikBtn:       $("musikBtn"),
   installBtn:     $("installBtn"),
+  seasonBtn:      $("seasonBtn"),
+  seasonBtnIcon:  $("seasonBtnIcon"),
+  seasonBtnStufe: $("seasonBtnStufe"),
   upgradeBereich: $("upgradeBereich"),
   shopBadge:      $("shopBadge"),
   sheetTitel:     $("sheetTitel"),
@@ -29,7 +32,10 @@ const ui = {
   kaufModusBtns:  document.querySelectorAll("#kaufModus button"),
 };
 
-const HERZ = "💖";
+// Währungssymbol – kann vom HUD-Skin geändert werden (z.B. 🧡 beim Herbstlaub)
+function herz() {
+  return aktiverSkin("hud").symbole.herz || "💖";
+}
 
 // Zu jedem Datenobjekt (Herzschenker, Upgrade, Erfolg …) merken wir uns seine HTML-Teile
 const elemente = new Map();
@@ -113,14 +119,13 @@ function erstelleStatistik() {
 // aktionen = { kaufeItem, kaufeUpgrade } – was beim Klick passieren soll
 function baueOberflaeche(aktionen) {
   for (const k of KLICK_ITEMS) {
-    erstelleItem($("klickListe"), k, aktionen.kaufeItem, { beschr: `+${format(k.proKlick)} ${HERZ} pro Klick` });
+    erstelleItem($("klickListe"), k, aktionen.kaufeItem);
   }
   for (const g of GEBAEUDE) {
     erstelleItem($("gebaeudeListe"), g, aktionen.kaufeItem);
   }
   for (const u of UPGRADES) {
     erstelleItem($("upgradeListe"), u, aktionen.kaufeUpgrade, { klasse: "upgrade", medaille: u.medaille });
-    elemente.get(u).betrag.textContent = `${HERZ} ${format(u.preis)}`;
     elemente.get(u).wurzel.hidden = true;
   }
   for (const e of ERFOLGE) {
@@ -132,7 +137,7 @@ function baueOberflaeche(aktionen) {
 // ----- Aktualisieren -----
 
 function zeigeKopf() {
-  setzeText(ui.herzen, `${format(spiel.herzen)} ${HERZ}`);
+  setzeText(ui.herzen, `${format(spiel.herzen)} ${herz()}`);
   setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
   document.title = `${format(spiel.herzen)} Herzen – Marie Clicker`;
 
@@ -145,7 +150,8 @@ function zeigeKlickItems() {
   for (const k of KLICK_ITEMS) {
     const teile = elemente.get(k);
     const kosten = preis(k);
-    setzeText(teile.betrag, `${HERZ} ${format(kosten)}`);
+    setzeText(teile.betrag, `${herz()} ${format(kosten)}`);
+    setzeText(teile.beschr, `+${format(k.proKlick)} ${herz()} pro Klick`);
     setzeText(teile.anzahl, String(anzahl(k) || ""));
     teile.wurzel.classList.toggle("zuteuer", spiel.herzen < kosten);
   }
@@ -166,7 +172,7 @@ function zeigeGebaeude() {
     setzeText(teile.anzahl, String(n || ""));
 
     // Herzen pro Stück und insgesamt
-    let beschr = `+${formatKomma(hpsProStueck(g))} ${HERZ}/Sek. je Stück`;
+    let beschr = `+${formatKomma(hpsProStueck(g))} ${herz()}/Sek. je Stück`;
     if (n > 0) beschr += ` · gesamt ${formatKomma(n * hpsProStueck(g))}`;
     setzeText(teile.beschr, beschr);
 
@@ -181,7 +187,7 @@ function zeigeGebaeude() {
     let mengeText = menge > 1 ? `für ${menge} Stück` : "";
     if (spiel.kaufModus === "next") mengeText = `${menge}× bis ${naechsteStufe(g).medaille}`;
 
-    setzeText(teile.betrag, `${HERZ} ${format(kosten)}`);
+    setzeText(teile.betrag, `${herz()} ${format(kosten)}`);
     setzeText(teile.menge, mengeText);
     teile.wurzel.classList.toggle("zuteuer", spiel.herzen < kosten);
   }
@@ -202,6 +208,7 @@ function zeigeUpgrades() {
     }
     el.hidden = !zeigen;
     el.classList.toggle("zuteuer", spiel.herzen < u.preis);
+    if (zeigen) setzeText(elemente.get(u).betrag, `${herz()} ${format(u.preis)}`);
     if (zeigen) sichtbar++;
     if (zeigen && spiel.herzen >= u.preis) leistbar++;
   }
@@ -219,6 +226,7 @@ function aktualisiereAnzeige() {
   zeigeKaufModus();
   zeigeGebaeude();
   zeigeUpgrades();
+  zeigeSeason();
 }
 
 // Wird 1× pro Sekunde aufgerufen
@@ -289,7 +297,9 @@ function zeigeSkins() {
     wurzel.classList.toggle("aktiv", aktiv);
     wurzel.classList.toggle("gesperrt", !frei);
     wurzel.setAttribute("aria-pressed", String(aktiv));
-    setzeText(status, aktiv ? "✓ Ausgewählt" : frei ? "Auswählen" : `🔒 ${seasonName(skin.season)}`);
+    const stufe = skinStufe(skin);
+    const gesperrtText = stufe ? `🔒 Season-Stufe ${stufe}` : `🔒 ${seasonName(skin.season)}`;
+    setzeText(status, aktiv ? "✓ Ausgewählt" : frei ? "Auswählen" : gesperrtText);
   }
 }
 
@@ -309,6 +319,110 @@ function wendeSkinsAn() {
   const farben = aktiverSkin("hud").farben;
   for (const [name, wert] of Object.entries(farben)) wurzel.setProperty(name, wert);
   hudVariablen = Object.keys(farben);
+
+  // HUD: Symbole (Elemente mit data-symbol). Das ursprüngliche Symbol merken wir uns beim ersten Mal.
+  const symbole = aktiverSkin("hud").symbole;
+  for (const el of document.querySelectorAll("[data-symbol]")) {
+    if (el.dataset.standard === undefined) el.dataset.standard = el.textContent;
+    setzeText(el, symbole[el.dataset.symbol] || el.dataset.standard);
+  }
+  zeigeSeite(aktuelleSeite);   // Menü-Titel mit neuem Symbol
+}
+
+// ----- Season-Pass -----
+
+let seasonListe = { passId: null, stufe: -1, herz: "" };   // was die Stufen-Liste gerade zeigt
+
+// Stufen-Liste neu aufbauen (nur wenn sich Stufe oder Herz-Symbol geändert haben)
+function baueSeasonListe(pass, stand) {
+  const liste = $("seasonStufen");
+  liste.textContent = "";
+  for (let n = 1; n <= pass.stufen; n++) {
+    const b = seasonBelohnung(pass, n);
+    const li = document.createElement("li");
+    li.className = "seasonZeile";
+    if (b.typ === "skin") li.classList.add("skin");
+    if (n <= stand.stufe) li.classList.add("erreicht");
+    if (n === stand.stufe + 1) li.classList.add("aktuell");
+
+    const text = b.typ === "skin"
+      ? `${SKIN_KATEGORIEN.find(k => k.id === b.skin.kategorie).name}: ${b.skin.name}`
+      : `${format(b.menge)} ${herz()}`;
+    li.append(
+      span("nr", String(n)),
+      span("icon", b.typ === "skin" ? b.skin.icon : herz()),
+      span("text", text),
+      span("status", n <= stand.stufe ? "✓" : n === stand.stufe + 1 ? "▶" : "🔒"),
+    );
+    liste.append(li);
+  }
+  seasonListe = { passId: pass.id, stufe: stand.stufe, herz: herz() };
+}
+
+function formatRestzeit(ms) {
+  const tage = Math.floor(ms / 86400000);
+  if (tage >= 2) return `noch ${tage} Tage`;
+  const std = Math.floor(ms / 3600000);
+  const min = Math.floor((ms % 3600000) / 60000);
+  return std > 0 ? `noch ${std} Std. ${min} Min.` : `noch ${min} Min.`;
+}
+
+// Wird 10× pro Sekunde aufgerufen: Symbol mit Ring + Season-Seite
+function zeigeSeason() {
+  const pass = aktiverSeasonPass();
+  ui.seasonBtn.hidden = !pass;
+  if (!pass) {
+    setzeText($("seasonName"), "Gerade läuft keine Season.");
+    return;
+  }
+  const stand = seasonStand(pass);
+  const fertig = stand.stufe >= pass.stufen;
+  const noetig = fertig ? 1 : klicksFuerStufe(pass, stand.stufe + 1);
+  const anteil = fertig ? 1 : stand.xp / noetig;
+
+  // Symbol im Spielfeld
+  setzeText(ui.seasonBtnIcon, pass.icon);
+  setzeText(ui.seasonBtnStufe, String(stand.stufe));
+  ui.seasonBtn.style.setProperty("--fortschritt", anteil.toFixed(3));
+
+  // Season-Seite
+  setzeText($("seasonName"), `${pass.icon} ${pass.name}`);
+  setzeText($("seasonZeit"), `⏳ ${formatRestzeit(seasonRestMs(pass))} · bis 30. November`);
+  setzeText($("seasonStufe"), String(stand.stufe));
+  setzeText($("seasonMax"), String(pass.stufen));
+  $("seasonBalkenFuellung").style.width = (anteil * 100).toFixed(1) + "%";
+  setzeText($("seasonHinweis"), fertig
+    ? "🎉 Alle Stufen geschafft – du bist großartig!"
+    : `Noch ${format(noetig - stand.xp)} Klicks bis Stufe ${stand.stufe + 1}`);
+
+  if (seasonListe.passId !== pass.id || seasonListe.stufe !== stand.stufe || seasonListe.herz !== herz()) {
+    baueSeasonListe(pass, stand);
+  }
+}
+
+// Kurzes Aufleuchten des Season-Symbols bei einer neuen Stufe
+function seasonSymbolFeiern() {
+  ui.seasonBtn.classList.remove("feiern");
+  void ui.seasonBtn.offsetWidth;
+  ui.seasonBtn.classList.add("feiern");
+}
+
+// Season-Seite: zur aktuellen Stufe scrollen
+function scrolleZuAktuellerStufe() {
+  const aktuell = document.querySelector(".seasonZeile.aktuell") || document.querySelector(".seasonZeile:last-child");
+  if (!aktuell) return;
+  const leiste = $("seitenleiste");
+  const kopf = document.querySelector(".seasonKopf");
+
+  // Wie hoch ist der oben klebende Bereich? Desktop: Tabs, Handy: Menü-Kopf
+  const stickyOben = $("tabs").offsetHeight || $("sheetKopf").offsetHeight;
+  leiste.style.setProperty("--sticky-oben", stickyOben + "px");
+
+  // Nur die Seitenleiste scrollen (scrollIntoView würde evtl. die ganze Seite verschieben).
+  // Ziel: aktuelle Stufe direkt unter dem (klebenden) Season-Kopf, eine erledigte Stufe davor sichtbar.
+  const zeileOben = aktuell.getBoundingClientRect().top;
+  const kopfUnten = leiste.getBoundingClientRect().top + stickyOben + kopf.offsetHeight;
+  leiste.scrollTop += zeileOben - kopfUnten - aktuell.offsetHeight - 18;
 }
 
 // ----- Seiten (Shop / Erfolge / Statistik) und Handy-Menü -----
@@ -316,15 +430,24 @@ function wendeSkinsAn() {
 let aktuelleSeite = "seiteShop";
 let menueOffen = false;
 
-// Zeigt eine Seite an – am Desktop über die Tabs, am Handy im Menü von unten
+// Zeigt eine Seite an – am Desktop über die Tabs, am Handy im Menü von unten.
+// Die Season-Seite hat keinen Tab, sondern das eigene Symbol im Spielfeld.
 function zeigeSeite(seiteId) {
   aktuelleSeite = seiteId;
+  for (const seite of document.querySelectorAll(".seite")) {
+    seite.hidden = seite.id !== seiteId;
+  }
+  let titel = "";
   for (const btn of ui.tabBtns) {
     const aktiv = btn.dataset.seite === seiteId;
     btn.setAttribute("aria-selected", String(aktiv));
-    $(btn.dataset.seite).hidden = !aktiv;
-    if (aktiv) setzeText(ui.sheetTitel, btn.textContent);
+    if (aktiv) titel = btn.textContent;
   }
+  if (seiteId === "seiteSeason") {
+    const pass = aktiverSeasonPass();
+    titel = `${pass ? pass.icon : "🎟️"} Season-Pass`;
+  }
+  setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();
 }
 

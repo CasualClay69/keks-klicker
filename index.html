@@ -45,6 +45,12 @@
     </h1>
     <button id="installBtn" type="button" title="Als App installieren" hidden>📲<span class="lang"> Installieren</span></button>
 
+    <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
+    <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
+      <span id="seasonBtnIcon">🦃</span>
+      <span id="seasonBtnStufe">0</span>
+    </button>
+
     <div id="herzen">0 Herzen</div>
     <div id="hps">0 pro Sekunde</div>
     <div id="bonus" aria-live="polite"></div>
@@ -137,10 +143,10 @@
     </div>
 
     <nav id="tabs" role="tablist">
-      <button type="button" role="tab" data-seite="seiteShop" aria-selected="true">🛍️ Shop</button>
-      <button type="button" role="tab" data-seite="seiteSkins" aria-selected="false">🎨 Skins</button>
-      <button type="button" role="tab" data-seite="seiteErfolge" aria-selected="false">🏆 Erfolge</button>
-      <button type="button" role="tab" data-seite="seiteStatistik" aria-selected="false">📊 Statistik</button>
+      <button type="button" role="tab" data-seite="seiteShop" aria-selected="true"><i class="navIcon" data-symbol="shop">🛍️</i> Shop</button>
+      <button type="button" role="tab" data-seite="seiteSkins" aria-selected="false"><i class="navIcon" data-symbol="skins">🎨</i> Skins</button>
+      <button type="button" role="tab" data-seite="seiteErfolge" aria-selected="false"><i class="navIcon" data-symbol="erfolge">🏆</i> Erfolge</button>
+      <button type="button" role="tab" data-seite="seiteStatistik" aria-selected="false"><i class="navIcon" data-symbol="statistik">📊</i> Statistik</button>
     </nav>
 
     <section id="seiteShop" class="seite" role="tabpanel">
@@ -167,6 +173,17 @@
       <div id="skinBereich"></div>
     </section>
 
+    <section id="seiteSeason" class="seite" role="tabpanel" hidden>
+      <div class="seasonKopf">
+        <div class="seasonTitel" id="seasonName"></div>
+        <div class="seasonZeit" id="seasonZeit"></div>
+        <div class="seasonStufeAnzeige">Stufe <b id="seasonStufe">0</b> / <span id="seasonMax">50</span></div>
+        <div class="seasonBalken"><div id="seasonBalkenFuellung"></div></div>
+        <div class="seasonHinweis" id="seasonHinweis"></div>
+      </div>
+      <ol id="seasonStufen" class="seasonStufen"></ol>
+    </section>
+
     <section id="seiteErfolge" class="seite" role="tabpanel" hidden>
       <p id="erfolgInfo"></p>
       <div id="erfolgRaster"></div>
@@ -180,11 +197,11 @@
 
   <!-- Nur auf dem Handy: Symbolleiste unten -->
   <nav id="untenNav" aria-label="Menü">
-    <button type="button" data-seite="" class="aktiv">💖<span>Marie</span></button>
-    <button type="button" data-seite="seiteShop">🛍️<span>Shop</span><b id="shopBadge" class="badge" hidden></b></button>
-    <button type="button" data-seite="seiteSkins">🎨<span>Skins</span></button>
-    <button type="button" data-seite="seiteErfolge">🏆<span>Erfolge</span></button>
-    <button type="button" data-seite="seiteStatistik">📊<span>Statistik</span></button>
+    <button type="button" data-seite="" class="aktiv"><i class="navIcon" data-symbol="marie">💖</i><span>Marie</span></button>
+    <button type="button" data-seite="seiteShop"><i class="navIcon" data-symbol="shop">🛍️</i><span>Shop</span><b id="shopBadge" class="badge" hidden></b></button>
+    <button type="button" data-seite="seiteSkins"><i class="navIcon" data-symbol="skins">🎨</i><span>Skins</span></button>
+    <button type="button" data-seite="seiteErfolge"><i class="navIcon" data-symbol="erfolge">🏆</i><span>Erfolge</span></button>
+    <button type="button" data-seite="seiteStatistik"><i class="navIcon" data-symbol="statistik">📊</i><span>Statistik</span></button>
   </nav>
 
   <div id="meldungen" aria-live="polite"></div>
