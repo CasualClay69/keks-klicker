@@ -67,6 +67,10 @@ Unter **📊 Statistik → 💾 Spielstand sichern**:
 - Eine gemeinsame Liste für alle Spieler: Spitzname eingeben, „Mitmachen“ – fertig
   (intern immer die Gruppe `BESTENLISTE.gruppe` = `marie-clicker`)
 - Gespeichert werden nur Spitzname, Herzen insgesamt, Herzen/Sek., Season-Stufe und Anzahl Erfolge
+- Wochen-Wettbewerb 📅: In der Bestenliste umschalten zwischen „Gesamt“ und „Diese Woche“. Wer von Montag 0 Uhr
+  bis Sonntag 24 Uhr (deutsche Zeit) die meisten Herzen sammelt, bekommt eine Woche lang einen goldenen 👑-Rahmen.
+  Die Wochenwerte rechnet die Datenbank aus – nach einem Update von `supabase/bestenliste.sql` diese Datei
+  einmal neu im Supabase-Dashboard (SQL Editor → Run) ausführen
 - Server: [Supabase](https://supabase.com) – Datenbank-Regeln in `supabase/bestenliste.sql`
 - Einrichtung: SQL im Supabase-„SQL Editor“ ausführen, dann Projekt-URL und öffentlichen Schlüssel
   in `js/bestenliste.js` (`BESTENLISTE.url` / `BESTENLISTE.schluessel`) eintragen.

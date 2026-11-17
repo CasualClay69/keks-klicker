@@ -1352,8 +1352,30 @@ function vorWieLangeText(zeitpunkt) {
   return `vor ${Math.floor(stunden / 24)} Tagen`;
 }
 
-// Liste zeichnen. Die Namen kommen von anderen Spielern -> nur als Text einsetzen (textContent)
-function zeigeBestenlisteEintraege(eintraege) {
+// Wie lange läuft die Woche noch? z.B. "3 Tage 4 Std." oder "5 Std. 12 Min."
+function wochenRestText() {
+  const sekunden = Math.max(0, (wochenEnde() - Date.now()) / 1000);
+  const tage = Math.floor(sekunden / 86400);
+  if (tage < 1) return formatDauer(sekunden);
+  const stunden = Math.floor((sekunden % 86400) / 3600);
+  return `${tage} ${tage === 1 ? "Tag" : "Tage"}${stunden ? ` ${stunden} Std.` : ""}`;
+}
+
+// Liste zeichnen – ansicht: "gesamt" (alle Herzen) oder "woche" (Wochen-Wettbewerb).
+// Die Namen kommen von anderen Spielern -> nur als Text einsetzen (textContent)
+function zeigeBestenlisteEintraege(eintraege, ansicht = "gesamt") {
+  const wochenwerte = hatWochenwerte(eintraege);
+  $("blAnsicht").hidden = !wochenwerte;
+  if (!wochenwerte) ansicht = "gesamt";
+  for (const btn of $("blAnsicht").children) btn.classList.toggle("aktiv", btn.dataset.ansicht === ansicht);
+
+  const info = $("blWocheInfo");
+  info.hidden = ansicht !== "woche";
+  if (ansicht === "woche") {
+    setzeText(info, `📅 Wer bis Sonntag 24 Uhr die meisten Herzen sammelt, bekommt eine Woche lang den goldenen 👑-Rahmen! Noch ${wochenRestText()}.`);
+    eintraege = [...eintraege].sort((a, b) => b.woche_herzen - a.woche_herzen);
+  }
+
   const liste = $("blListe");
   liste.textContent = "";
   if (!eintraege.length) {
@@ -1369,17 +1391,30 @@ function zeigeBestenlisteEintraege(eintraege) {
     zeile.className = "blZeile";
     const istDu = mitglied && e.spieler_id === mitglied.spielerId;
     if (istDu) zeile.classList.add("du");
+    if (e.wochen_sieger) zeile.classList.add("sieger");   // goldener Rahmen für die Gewinner der letzten Woche
 
-    const details = [`${formatKomma(e.hps)} ${herz()}/Sek.`];
-    if (e.season_stufe > 0) details.push(`Season-Stufe ${e.season_stufe}`);
-    details.push(`🏆 ${e.erfolge}`, vorWieLangeText(e.aktualisiert));
+    let punkte, details;
+    if (ansicht === "woche") {
+      punkte = `+${format(e.woche_herzen)} ${herz()}`;
+      details = [`insgesamt ${format(e.herzen_gesamt)} ${herz()}`, vorWieLangeText(e.aktualisiert)];
+      if (e.woche_herzen <= 0) zeile.classList.add("nochNichts");
+    } else {
+      punkte = `${format(e.herzen_gesamt)} ${herz()}`;
+      details = [`${formatKomma(e.hps)} ${herz()}/Sek.`];
+      if (e.season_stufe > 0) details.push(`Season-Stufe ${e.season_stufe}`);
+      details.push(`🏆 ${e.erfolge}`, vorWieLangeText(e.aktualisiert));
+    }
+    const keineMedaille = ansicht === "woche" && e.woche_herzen <= 0;
 
     zeile.append(
-      span("platz", medaillen[i] || String(i + 1)),
+      span("platz", keineMedaille ? "–" : medaillen[i] || String(i + 1)),
       span("name", istDu ? `${e.name} (du)` : e.name),
-      span("punkte", `${format(e.herzen_gesamt)} ${herz()}`),
+      span("punkte", punkte),
       span("details", details.join(" · ")),
     );
+    if (e.wochen_sieger) {
+      zeile.append(span("siegerBadge", `👑 Gewinner der letzten Woche · ${format(e.vorwoche_herzen)} ${herz()}`));
+    }
     liste.append(zeile);
   });
 }

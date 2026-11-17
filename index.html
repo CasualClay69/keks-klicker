@@ -297,6 +297,12 @@
           <div class="blTitel">🏅 Bestenliste</div>
           <div class="blUnter" id="blStatus"></div>
         </div>
+        <!-- Gesamt oder Wochen-Wettbewerb (nur sichtbar, wenn die Datenbank Wochenwerte liefert) -->
+        <div id="blAnsicht" class="blAnsicht" hidden>
+          <button type="button" data-ansicht="gesamt" class="aktiv">🏆 Gesamt</button>
+          <button type="button" data-ansicht="woche">📅 Diese Woche</button>
+        </div>
+        <p id="blWocheInfo" class="blWocheInfo" hidden></p>
         <ol id="blListe" class="blListe"></ol>
         <div class="knopfReihe">
           <button id="blAktualisieren" type="button" class="knopf haupt">🔄 Aktualisieren</button>

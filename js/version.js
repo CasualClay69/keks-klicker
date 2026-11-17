@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.43";
-const APP_NEU = "Neu: Der Season-Pass zeigt beim Öffnen immer zuerst das Logo, und das Aktualisieren klappt jetzt zuverlässig. 🛠️";
+const APP_VERSION = "1.44";
+const APP_NEU = "Neu: Der Wochen-Wettbewerb! Wer diese Woche die meisten Herzen sammelt, bekommt den goldenen 👑-Rahmen in der Bestenliste.";

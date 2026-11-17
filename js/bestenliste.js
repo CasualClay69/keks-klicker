@@ -102,6 +102,40 @@ async function sendePunkte() {
   });
 }
 
+// ----- Wochen-Wettbewerb -----
+// Die Wochenwerte rechnet die Datenbank aus (Montag 0 Uhr bis Sonntag 24 Uhr, deutsche Zeit).
+
+// Liefert die Datenbank schon Wochenwerte? (erst nachdem supabase/bestenliste.sql neu ausgeführt wurde)
+function hatWochenwerte(eintraege) {
+  return eintraege.length > 0 && "woche_herzen" in eintraege[0];
+}
+
+// Wann endet die Woche? Nächster Montag, 0 Uhr (Uhr des Geräts)
+function wochenEnde(jetzt = new Date(Date.now())) {
+  const tageSeitMontag = (jetzt.getDay() + 6) % 7;
+  return new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() - tageSeitMontag + 7);
+}
+
+// Kennung der letzten Woche, z.B. "2026-11-09" (deren Montag) – damit die Sieg-Meldung nur einmal kommt
+function letzteWocheKennung() {
+  const montag = wochenEnde();
+  montag.setDate(montag.getDate() - 14);
+  return datumText(montag);
+}
+
+// Habe ich letzte Woche gewonnen und das noch nicht erfahren? Dann den Eintrag zurückgeben.
+function neuerWochenSieg(eintraege) {
+  if (!mitglied || !hatWochenwerte(eintraege)) return null;
+  const ich = eintraege.find(e => e.spieler_id === mitglied.spielerId && e.wochen_sieger);
+  if (!ich) return null;
+  const schluessel = BESTENLISTE_SPEICHER + "-sieg";
+  try {
+    if (localStorage.getItem(schluessel) === letzteWocheKennung()) return null;
+    localStorage.setItem(schluessel, letzteWocheKennung());
+  } catch (e) { return null; }
+  return ich;
+}
+
 async function holeBestenliste() {
   if (!mitglied) return [];
   return (await rufeBestenlisteAuf("hole_bestenliste", { p_gruppe: mitglied.gruppe })) || [];

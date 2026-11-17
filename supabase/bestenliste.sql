@@ -9,6 +9,11 @@
 --  • Zugriff NUR über die drei Funktionen unten.
 --  • Lesen nur mit dem genauen Gruppen-Code – Gruppen lassen sich nicht auflisten.
 --  • Jeder Spieler hat ein Geheimnis: Nur wer es kennt, kann seinen Eintrag ändern oder löschen.
+--
+--  Wochen-Wettbewerb: Wer sammelt von Montag 0 Uhr bis Sonntag 24 Uhr (deutsche Zeit) die
+--  meisten Herzen? Das rechnet die Datenbank selbst aus – aus "herzen_gesamt" beim ersten
+--  Melden in der Woche (woche_start). Die Gewinner der letzten Woche bekommen
+--  in der Liste einen besonderen Rahmen (wochen_sieger = true).
 -- =====================================================
 
 create table if not exists public.bestenliste (
@@ -24,7 +29,24 @@ create table if not exists public.bestenliste (
   primary key (gruppe, spieler_id)
 );
 
+-- Wochen-Wettbewerb (seit v1.44) – bestehende Einträge bleiben erhalten
+alter table public.bestenliste add column if not exists woche           text;
+alter table public.bestenliste add column if not exists woche_start     double precision not null default 0;
+alter table public.bestenliste add column if not exists vorwoche        text;
+alter table public.bestenliste add column if not exists vorwoche_herzen double precision not null default 0;
+
 alter table public.bestenliste enable row level security;
+
+
+-- ----- Welche Woche ist gerade? z.B. "2026-W47" (deutsche Zeit, Woche beginnt Montag) -----
+create or replace function public.bl_woche(p_zeit timestamptz)
+returns text
+language sql
+stable
+as $$
+  select to_char(p_zeit at time zone 'Europe/Berlin', 'IYYY-"W"IW');
+$$;
+revoke all on function public.bl_woche(timestamptz) from public;
 revoke all on public.bestenliste from anon, authenticated;
 
 
@@ -46,6 +68,7 @@ as $$
 declare
   v_gruppe text := lower(trim(p_gruppe));
   v_name   text := trim(p_name);
+  v_woche  text := bl_woche(now());
 begin
   if length(v_gruppe) < 4 or length(v_gruppe) > 32 then
     raise exception 'Der Gruppen-Code muss 4 bis 32 Zeichen lang sein.';
@@ -68,11 +91,20 @@ begin
   end if;
 
   insert into bestenliste as b
-    (gruppe, spieler_id, geheimnis, name, herzen_gesamt, hps, season_stufe, erfolge, aktualisiert)
+    (gruppe, spieler_id, geheimnis, name, herzen_gesamt, hps, season_stufe, erfolge, aktualisiert, woche, woche_start)
   values
-    (v_gruppe, p_spieler_id, p_geheimnis, v_name, p_herzen_gesamt, p_hps, p_season_stufe, p_erfolge, now())
+    (v_gruppe, p_spieler_id, p_geheimnis, v_name, p_herzen_gesamt, p_hps, p_season_stufe, p_erfolge, now(), v_woche, p_herzen_gesamt)
   on conflict (gruppe, spieler_id) do update
-    set name          = excluded.name,
+    set -- Neue Woche? Dann wird die alte Woche als "Vorwoche" gemerkt und neu gezählt.
+        -- (Alle Ausdrücke rechts benutzen die Werte VOR dem Update.)
+        vorwoche        = case when b.woche is distinct from v_woche then b.woche else b.vorwoche end,
+        vorwoche_herzen = case when b.woche is null then 0
+                               when b.woche <> v_woche then greatest(0, b.herzen_gesamt - b.woche_start)
+                               else b.vorwoche_herzen end,
+        woche_start     = case when b.woche is distinct from v_woche then least(b.herzen_gesamt, excluded.herzen_gesamt)
+                               else least(b.woche_start, excluded.herzen_gesamt) end,   -- nach "Spielstand löschen" nicht negativ
+        woche           = v_woche,
+        name          = excluded.name,
         herzen_gesamt = excluded.herzen_gesamt,
         hps           = excluded.hps,
         season_stufe  = excluded.season_stufe,
@@ -84,24 +116,43 @@ $$;
 
 
 -- ----- Bestenliste einer Gruppe holen (Top 50) -----
-create or replace function public.hole_bestenliste(p_gruppe text)
+-- woche_herzen    = in dieser Woche gesammelt
+-- vorwoche_herzen = in der letzten Woche gesammelt
+-- wochen_sieger   = hat die letzte Woche gewonnen (bei Gleichstand alle mit dem Höchstwert)
+drop function if exists public.hole_bestenliste(text);   -- die Rückgabe hat neue Spalten bekommen
+create function public.hole_bestenliste(p_gruppe text)
 returns table (
-  spieler_id    uuid,
-  name          text,
-  herzen_gesamt double precision,
-  hps           double precision,
-  season_stufe  integer,
-  erfolge       integer,
-  aktualisiert  timestamptz
+  spieler_id      uuid,
+  name            text,
+  herzen_gesamt   double precision,
+  hps             double precision,
+  season_stufe    integer,
+  erfolge         integer,
+  aktualisiert    timestamptz,
+  woche_herzen    double precision,
+  vorwoche_herzen double precision,
+  wochen_sieger   boolean
 )
 language sql
 stable
 security definer
 set search_path = public
 as $$
-  select spieler_id, name, herzen_gesamt, hps, season_stufe, erfolge, aktualisiert
-  from bestenliste
-  where gruppe = lower(trim(p_gruppe))
+  with w as (
+    select bl_woche(now()) as jetzt, bl_woche(now() - interval '7 days') as letzte
+  ),
+  d as (
+    select b.spieler_id, b.name, b.herzen_gesamt, b.hps, b.season_stufe, b.erfolge, b.aktualisiert,
+           case when b.woche = w.jetzt then greatest(0, b.herzen_gesamt - b.woche_start) else 0 end as diese,
+           case when b.woche = w.letzte then greatest(0, b.herzen_gesamt - b.woche_start)
+                when b.vorwoche = w.letzte then b.vorwoche_herzen
+                else 0 end as letzte
+    from bestenliste b, w
+    where b.gruppe = lower(trim(p_gruppe))
+  )
+  select spieler_id, name, herzen_gesamt, hps, season_stufe, erfolge, aktualisiert,
+         diese, letzte, (letzte > 0 and letzte = max(letzte) over ())
+  from d
   order by herzen_gesamt desc
   limit 50;
 $$;

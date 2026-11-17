@@ -883,6 +883,19 @@ function richteGluecksradEin() {
 // ----- Online-Bestenliste -----
 
 let bestenlisteLaedt = false;
+let bestenlisteDaten = [];          // zuletzt geholte Einträge (zum Umschalten ohne neu zu laden)
+let bestenlisteAnsicht = "gesamt";  // "gesamt" oder "woche"
+
+// Letzte Woche gewonnen? Einmal groß feiern.
+function feiereWochenSieg(eintraege) {
+  const sieg = neuerWochenSieg(eintraege);
+  if (!sieg) return;
+  sound.erfolg();
+  setTimeout(() => sound.stern(), 400);
+  konfetti($("spielfeld"));
+  meldung("👑 Du hast die Woche gewonnen!",
+    `Mit ${format(sieg.vorwoche_herzen)} ${herz()} warst du die Nummer 1! Jetzt hast du eine Woche lang den goldenen Rahmen in der Bestenliste.`);
+}
 
 // Eigene Punkte senden und die Liste neu holen (nur wenn die Seite offen ist)
 async function aktualisiereBestenliste() {
@@ -892,7 +905,9 @@ async function aktualisiereBestenliste() {
   setzeBestenlisteStatus("⏳ Lädt …");
   try {
     await sendePunkte();
-    zeigeBestenlisteEintraege(await holeBestenliste());
+    bestenlisteDaten = await holeBestenliste();
+    zeigeBestenlisteEintraege(bestenlisteDaten, bestenlisteAnsicht);
+    feiereWochenSieg(bestenlisteDaten);
     setzeBestenlisteStatus(`Aktualisiert um ${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`);
   } catch (fehler) {
     setzeBestenlisteStatus("⚠️ " + fehler.message);
@@ -934,6 +949,25 @@ function richteBestenlisteEin() {
   });
 
   $("blAktualisieren").addEventListener("click", () => aktualisiereBestenliste());
+
+  // Umschalten zwischen Gesamt und Woche
+  for (const btn of $("blAnsicht").children) {
+    btn.addEventListener("click", () => {
+      bestenlisteAnsicht = btn.dataset.ansicht;
+      sound.klick();
+      zeigeBestenlisteEintraege(bestenlisteDaten, bestenlisteAnsicht);
+    });
+  }
+
+  // Kurz nach dem Start einmal nachsehen, ob man letzte Woche gewonnen hat
+  if (mitglied) {
+    setTimeout(async () => {
+      try {
+        await sendePunkte();
+        feiereWochenSieg(await holeBestenliste());
+      } catch (e) { /* offline – dann beim nächsten Mal */ }
+    }, 8000);
+  }
 
   $("blAendern").addEventListener("click", async () => {
     const neu = prompt("Neuer Spitzname (höchstens 16 Zeichen):", mitglied.name);
