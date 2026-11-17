@@ -22,6 +22,7 @@ function neuerSpielstand() {
     sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)
     stickerNeu: [],    // neue, noch nicht angeschaute Sticker
     haustier: null,    // Maries Haustier (siehe haustier.js)
+    geburtstagJahr: null, // Jahr, in dem das Geburtstagsgeschenk geöffnet wurde (siehe geburtstag.js)
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

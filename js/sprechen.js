@@ -22,6 +22,7 @@ const SPRUECHE = {
   fuettern:      ["Lecker, oder, {tier}? 😋", "{tier} freut sich! 💕", "Guten Appetit, {tier}!"],
   tierHunger:    ["{tier} hat Hunger! 🥺", "Ich glaube, {tier} möchte etwas essen…"],
   finger:        ["Wow, so viele Finger! 🖐️", "Hihi, das sind ja ganz viele!"],
+  geburtstag:    ["Heute ist mein Geburtstag! 🎂", "Danke für die Glückwünsche! 🥳", "Party! 🎉🎈", "Juhu, ich habe Geburtstag! 🎁"],
 };
 
 let letzterSpruch = "";

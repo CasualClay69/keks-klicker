@@ -35,6 +35,7 @@
   <script src="js/album.js" defer></script>
   <script src="js/haustier.js" defer></script>
   <script src="js/sprechen.js" defer></script>
+  <script src="js/geburtstag.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -75,6 +76,9 @@
     <div id="herzen">0 Herzen</div>
     <div id="hps">0 pro Sekunde</div>
     <div id="bonus" aria-live="polite"></div>
+
+    <!-- Geburtstag: Konfetti-Regen (nur am 3. Februar sichtbar) -->
+    <div id="konfettiRegen" class="konfettiRegen" aria-hidden="true" hidden></div>
 
     <!-- Marie (mit Haustier daneben) -->
     <div id="marieBereich">
@@ -325,6 +329,22 @@
       <div class="knopfReihe">
         <button id="updateJetzt" type="button" class="knopf haupt">🔄 Jetzt aktualisieren</button>
         <button id="updateSpaeter" type="button" class="knopf">Später</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Geburtstags-Geschenk (am 3. Februar) -->
+  <div id="geburtstagOverlay" class="overlay" hidden>
+    <div class="geschenkKarte geburtstagKarte" role="dialog" aria-modal="true" aria-labelledby="gbTitel">
+      <div class="gbGirlande" aria-hidden="true">🎈🎉🎂🎉🎈</div>
+      <h2 id="gbTitel">Alles Gute zum Geburtstag, Marie! 🥳</h2>
+      <p class="geschenkSerie">Heute ist dein ganz besonderer Tag – und dafür gibt es ein riesiges Geschenk!</p>
+      <button id="gbBox" class="geschenkBox gbBox" type="button" aria-label="Geburtstagsgeschenk öffnen">🎁</button>
+      <p id="gbHinweis" class="geschenkHinweis">Tippe auf dein Geschenk!</p>
+      <div id="gbInhalt" class="geschenkInhalt" hidden>
+        <div id="gbBetrag" class="geschenkBetrag" style="white-space: pre-line"></div>
+        <p id="gbSkins" class="geschenkMorgen"></p>
+        <button id="gbZu" class="knopf haupt" type="button">Danke! 💖</button>
       </div>
     </div>
   </div>

@@ -102,6 +102,46 @@ const GLOECKCHEN = {
   ],
 };
 
+// "Happy Birthday" (gemeinfrei) – ¾-Takt, beginnt mit Auftakt "Hap-py"
+// Akkorde: C – G – G – C | C – F – C – C
+const HAPPY_BIRTHDAY = {
+  achtelSek: 0.22,
+  melodie: [
+    ["G5", 1], ["G5", 1],                          // Auftakt
+    ["A5", 2], ["G5", 2], ["C6", 2],               // birth-day to
+    ["B5", 4], ["G5", 1], ["G5", 1],               // you, hap-py
+    ["A5", 2], ["G5", 2], ["D6", 2],               // birth-day to
+    ["C6", 4], ["G5", 1], ["G5", 1],               // you, hap-py
+    ["G6", 2], ["E6", 2], ["C6", 2],               // birth-day, lie-be
+    ["B5", 2], ["A5", 2], ["F6", 1], ["F6", 1],    // Ma-rie, hap-py
+    ["E6", 2], ["C6", 2], ["D6", 2],               // birth-day to
+    ["C6", 4], [null, 2], [null, 4],               // you!
+  ],
+  bass: [
+    [null, 2],
+    ["C3", 2], ["G3", 2], ["G3", 2],
+    ["G2", 2], ["D3", 2], ["D3", 2],
+    ["G2", 2], ["D3", 2], ["D3", 2],
+    ["C3", 2], ["G3", 2], ["G3", 2],
+    ["C3", 2], ["G3", 2], ["G3", 2],
+    ["F2", 2], ["C3", 2], ["C3", 2],
+    ["G2", 2], ["D3", 2], ["G2", 2],
+    ["C3", 2], ["G3", 2], [null, 2], [null, 4],
+  ],
+};
+
+// Bunter Partyhut mit Punkten und Bommel (Geburtstag)
+const PARTYHUT_SVG = `<g transform="rotate(-10 100 44)">
+  <path d="M64 46 L100 10 L136 46 Z" fill="#ff7eb6" stroke="#e0458f" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M76 36 L100 10 L88 44 Z" fill="#8ec5ff"/>
+  <path d="M112 44 L100 10 L124 36 Z" fill="#ffe066"/>
+  <circle cx="89" cy="30" r="3" fill="#fff"/><circle cx="109" cy="24" r="2.6" fill="#fff"/>
+  <circle cx="118" cy="38" r="2.8" fill="#fff"/><circle cx="78" cy="41" r="2.4" fill="#fff"/>
+  <circle cx="100" cy="36" r="2.6" fill="#fff"/>
+  <ellipse cx="100" cy="46" rx="39" ry="6" fill="#ffd23f" stroke="#f0a500" stroke-width="2"/>
+  <circle cx="100" cy="10" r="9" fill="#b56bff"/><circle cx="97" cy="7" r="3" fill="#fff" opacity=".6"/>
+</g>`;
+
 // ----- Alle Skins -----
 
 const SKINS = [
@@ -130,6 +170,12 @@ const SKINS = [
   // Musik
   { id: "musik-normal", kategorie: "musik", standard: true,
     name: "Spieluhr", icon: "🎶", musik: SPIELUHR },
+
+  // ───────── Geburtstagsgeschenk (am 3. Februar, siehe geburtstag.js) ─────────
+  { id: "hut-partyhut", kategorie: "hut", geschenk: "geburtstag",
+    name: "Partyhut", icon: "🥳", svg: PARTYHUT_SVG },
+  { id: "musik-geburtstag", kategorie: "musik", geschenk: "geburtstag",
+    name: "Happy Birthday", icon: "🎂", musik: HAPPY_BIRTHDAY },
 
   // ───────── Season 1: Thanksgiving ─────────
 

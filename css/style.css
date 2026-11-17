@@ -460,6 +460,39 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   to   { transform: scale(1);    opacity: 1; }
 }
 
+/* ----- Geburtstag ----- */
+/* Konfetti-Regen über dem Spielfeld: fällt nach unten und flattert hin und her */
+.konfettiRegen {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.konfettiRegen i {
+  position: absolute;
+  top: -20px;
+  width: 9px; height: 14px;
+  border-radius: 2px;
+  opacity: 0.85;
+  animation-name: konfettiFallen, konfettiFlattern;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  animation-direction: normal, alternate;
+}
+@keyframes konfettiFallen {
+  from { top: -20px; }
+  to   { top: 105%; }
+}
+@keyframes konfettiFlattern {
+  from { transform: translateX(-12px) rotate(-30deg); }
+  to   { transform: translateX(12px) rotate(200deg); }
+}
+
+.geburtstagKarte { background: linear-gradient(180deg, #fff6fb, #fff1d6); }
+.gbGirlande { font-size: 1.8rem; letter-spacing: 6px; margin: -4px 0 4px; }
+.gbBox { font-size: 8rem; }
+
 /* ----- Haustier-Fenster ----- */
 .tierAuswahl {
   display: grid;
@@ -1678,5 +1711,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
   .stickerFeld.super, .stickerFeld.neu, #albumBtn.feiern,
   #haustier, #haustier.hopst, .tierGross, .tierGross.freut, .sprechblase, .sprechblase.weg,
+  .konfettiRegen i,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

@@ -134,7 +134,7 @@ function starteMusik() {
   if (musik.laeuft) return;
   try {
     const ctx = audio();
-    musik.plan = baueFahrplan(aktiverSkin("musik").musik);   // Stück aus dem Musik-Skin
+    musik.plan = baueFahrplan(aktuellesMusikStueck());   // Musik-Skin – am Geburtstag "Happy Birthday"
     const ACHTEL_SEK = musik.plan.achtelSek;
 
     // "Bus" = gemeinsamer Lautstärkeregler für die Musik, mit leichtem Echo

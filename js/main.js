@@ -49,7 +49,7 @@ function klickAufMarie(position) {
     langweiligGesagt = false;
     sag("zurueck", { wichtig: true });
   } else {
-    sag("klick", { chance: 1 / 35 });
+    sag(istGeburtstag() && Math.random() < 0.5 ? "geburtstag" : "klick", { chance: 1 / 35 });
   }
 
   // Das Haustier hüpft mit – und alle 25 Klicks schickt es ein Herzchen
@@ -60,6 +60,42 @@ function klickAufMarie(position) {
   }
 
   aktualisiereAnzeige();
+}
+
+// ----- Geburtstag -----
+
+let warGeburtstag = null;   // um den Wechsel um Mitternacht zu bemerken
+
+// Geschenk-Fenster am Geburtstag zeigen (falls noch nicht geöffnet und kein anderes Fenster offen)
+function pruefeGeburtstag() {
+  // Tageswechsel in den Geburtstag hinein oder hinaus: Hut, Konfetti und Musik umstellen
+  const heute = istGeburtstag();
+  if (warGeburtstag !== null && heute !== warGeburtstag) {
+    wendeSkinsAn();
+    stoppeMusik();
+    aktualisiereMusik();
+  }
+  warGeburtstag = heute;
+
+  const fensterOffen = [...document.querySelectorAll(".overlay")].some(el => !el.hidden);
+  if (geburtstagsGeschenkWartet() && !fensterOffen) zeigeGeburtstagFenster();
+}
+
+function richteGeburtstagEin() {
+  $("gbBox").addEventListener("click", () => {
+    const ergebnis = oeffneGeburtstagsGeschenk();
+    if (!ergebnis) return;
+    sound.stern();
+    setTimeout(() => sound.erfolg(), 400);
+    zeigeGeburtstagInhalt(ergebnis);
+    for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+    zeigeSkins();
+    aktualisiereAnzeige();
+  });
+  $("gbZu").addEventListener("click", () => {
+    $("geburtstagOverlay").hidden = true;
+    sound.klick();
+  });
 }
 
 // ----- Marie spricht -----
@@ -93,7 +129,7 @@ function pruefeMarieSpricht() {
   const jetzt = Date.now();
   if (begruessungOffen && marieDarfSprechen()) {
     begruessungOffen = false;
-    setTimeout(() => sag(begruessungsArt(), { wichtig: true }), 700);
+    setTimeout(() => sag(istGeburtstag() ? "geburtstag" : begruessungsArt(), { wichtig: true }), 700);
     return;
   }
   // Niemand klickt seit 45 Sekunden -> langweilig (danach höchstens jede Minute)
@@ -474,7 +510,8 @@ function tick() {
 function pruefeErfolgeUndStatistik() {
   aktualisiereHunger();   // das Haustier wird langsam hungrig
   pruefeTageswechsel();
-  pruefeGeschenk();   // auch nach Mitternacht, wenn das Spiel noch offen ist
+  pruefeGeburtstag();     // Geburtstagsgeschenk hat Vorrang vor dem täglichen Geschenk
+  pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
 
   for (const erfolg of pruefeNeueErfolge()) {
@@ -839,6 +876,7 @@ function starte() {
   richteGeschenkEin();
   richteGluecksradEin();
   richteHaustierEin();
+  richteGeburtstagEin();
   richteBestenlisteEin();
   richteAppEin();
   richteUpdateEin();
@@ -848,7 +886,8 @@ function starte() {
   zeigeSeite("seiteShop");
   pruefeTageswechsel();   // Tagesaufgaben für heute
   zeigeAlles();
-  pruefeGeschenk();       // erstes Öffnen heute? -> Geschenk zeigen
+  pruefeGeburtstag();     // Geburtstag? -> großes Geschenk zuerst
+  pruefeGeschenk();       // erstes Öffnen heute? -> Geschenk zeigen (wartet, bis das Geburtstagsfenster zu ist)
 
   for (const skin of nachgeliefert) {
     meldung(`🎁 Neuer Skin: ${skin.icon} ${skin.name}`, "Für deine schon erreichte Season-Stufe – jetzt unter Skins auswählbar");

@@ -335,7 +335,8 @@ function zeigeSkins() {
     wurzel.classList.toggle("gesperrt", !frei);
     wurzel.setAttribute("aria-pressed", String(aktiv));
     const stufe = skinStufe(skin);
-    const gesperrtText = stufe ? `🔒 Season-Stufe ${stufe}` : `🔒 ${seasonName(skin.season)}`;
+    const gesperrtText = skin.geschenk === "geburtstag" ? "🔒 Geburtstagsgeschenk 🎂"
+      : stufe ? `🔒 Season-Stufe ${stufe}` : `🔒 ${seasonName(skin.season)}`;
     setzeText(status, aktiv ? "✓ Ausgewählt" : frei ? "Auswählen" : gesperrtText);
   }
 }
@@ -356,8 +357,11 @@ function wendeSkinsAn() {
   // Hintergrund: per Attribut, das Aussehen steht in style.css
   document.body.dataset.hintergrund = aktiverSkin("hintergrund").wert;
 
-  // Hut: SVG-Code auf Maries Kopf
-  ui.hut.innerHTML = aktiverSkin("hut").svg;
+  // Hut: SVG-Code auf Maries Kopf (am Geburtstag der Partyhut)
+  ui.hut.innerHTML = aktuellerHut().svg;
+
+  // Geburtstag: Konfetti-Regen über dem Spielfeld
+  zeigeKonfettiRegen(istGeburtstag());
 
   // HUD: Farben als CSS-Variablen. Erst die alten entfernen, dann die neuen setzen.
   hudVariablen = tauscheVariablen(hudVariablen, aktiverSkin("hud").farben);
@@ -759,6 +763,54 @@ function zeigeRadErgebnis(ergebnis) {
   setzeText($("radInfo"), "Glückwunsch! Morgen kannst du wieder drehen.");
   $("radZu").disabled = false;
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
+}
+
+// ----- Geburtstag -----
+
+// Konfetti-Regen: bunte Schnipsel fallen den ganzen Tag über das Spielfeld
+function zeigeKonfettiRegen(an) {
+  const regen = $("konfettiRegen");
+  regen.hidden = !an;
+  if (!an || regen.childElementCount) return;
+  const farben = ["#ff5fa2", "#ffd23f", "#8ec5ff", "#7ee0a1", "#b56bff", "#ff9a5a"];
+  for (let i = 0; i < 28; i++) {
+    const stueck = document.createElement("i");
+    stueck.style.left = `${Math.random() * 100}%`;
+    stueck.style.background = farben[i % farben.length];
+    stueck.style.animationDuration = `${5 + Math.random() * 5}s, ${1 + Math.random()}s`;
+    stueck.style.animationDelay = `${-Math.random() * 10}s, 0s`;
+    if (i % 3 === 0) stueck.style.borderRadius = "50%";   // ein paar runde Punkte
+    regen.append(stueck);
+  }
+}
+
+function zeigeGeburtstagFenster() {
+  const box = $("gbBox");
+  box.textContent = "🎁";
+  box.classList.remove("offen");
+  box.disabled = false;
+  $("gbHinweis").hidden = false;
+  $("gbInhalt").hidden = true;
+  $("geburtstagOverlay").hidden = false;
+}
+
+function zeigeGeburtstagInhalt(ergebnis) {
+  const box = $("gbBox");
+  box.textContent = "🎂";
+  box.classList.add("offen");
+  box.disabled = true;
+  $("gbHinweis").hidden = true;
+  const pass = aktiverSeasonPass();
+  const zeilen = [`+${format(ergebnis.herzen)} ${herz()}`];
+  if (ergebnis.seasonPunkte) zeilen.push(`+${format(ergebnis.seasonPunkte)} ${pass.icon}`);
+  $("gbBetrag").textContent = zeilen.join("\n");
+  $("gbSkins").textContent = ergebnis.neueSkins.length
+    ? `Und für immer: ${ergebnis.neueSkins.map(s => `${s.icon} ${s.name}`).join(" und ")} – unter Skins auswählbar!`
+    : "";
+  $("gbInhalt").hidden = false;
+  const karte = $("geburtstagOverlay").querySelector(".geschenkKarte");
+  konfetti(karte);
+  setTimeout(() => konfetti(karte), 500);
 }
 
 // ----- Marie spricht -----
