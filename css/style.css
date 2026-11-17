@@ -787,13 +787,18 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 #untenNav, #sheetKopf { display: none; }
 
 /* =====================================================
-   HANDY & TABLET HOCHKANT
+   HANDY-ANSICHT
    Marie groß in der Mitte, Symbolleiste unten.
    Menüs fahren von unten herein ("Bottom Sheet").
-   Gilt für alle Geräte im Hochformat bis 1100px Breite (Handys, iPads, Samsung-Tablets)
-   und für sehr schmale Fenster.
+   Gilt für:
+   • alle Touch-Geräte (pointer: coarse) mit genug Höhe – Handys hochkant und
+     Tablets in BEIDEN Ausrichtungen (Handys quer haben eine eigene, kompakte Ansicht)
+   • Fenster im Hochformat bis 1100px Breite und sehr schmale Fenster
+   PCs mit Maus behalten die Ansicht mit Seitenleiste.
    ===================================================== */
-@media (orientation: portrait) and (max-width: 1100px), (max-width: 500px) {
+@media (pointer: coarse) and (min-height: 501px),
+       (orientation: portrait) and (max-width: 1100px),
+       (max-width: 500px) {
   :root {
     --bildschirm: 100vh;
     --nav-hoehe: 62px;
@@ -956,9 +961,10 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   .meldung { font-size: 0.9rem; animation-name: reinfallen; }
 }
 
-/* TABLET HOCHKANT (z.B. Samsung Galaxy Tab, iPad): wie Handy, aber
+/* TABLET (z.B. Samsung Galaxy Tab, iPad) – hochkant und quer: wie Handy, aber
    Marie und Logo größer, Menü und Symbolleiste mittig statt über die ganze Breite */
-@media (orientation: portrait) and (min-width: 600px) and (max-width: 1100px) {
+@media (pointer: coarse) and (min-width: 600px) and (min-height: 501px),
+       (orientation: portrait) and (min-width: 600px) and (max-width: 1100px) {
   :root {
     --oben: calc(max(8px, env(safe-area-inset-top)) + 140px);
     --text-platz: 160px;
@@ -995,6 +1001,14 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #untenNav button { flex: 0 1 130px; font-size: 1.9rem; }
   #untenNav button span { font-size: 0.85rem; }
   #untenNav button.aktiv::before { width: 70px; height: 40px; }
+}
+
+/* TABLET QUER: weniger Höhe -> Menü etwas niedriger, damit Marie darüber sichtbar bleibt */
+@media (pointer: coarse) and (orientation: landscape) and (min-height: 501px) {
+  :root { --sheet-hoehe: 50vh; }
+  @supports (height: 1dvh) {
+    :root { --sheet-hoehe: 50dvh; }
+  }
 }
 
 /* Handy quer: nebeneinander lassen, alles kleiner */
