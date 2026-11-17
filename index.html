@@ -32,6 +32,7 @@
   <script src="js/aufgaben.js" defer></script>
   <script src="js/geschenk.js" defer></script>
   <script src="js/gluecksrad.js" defer></script>
+  <script src="js/album.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -59,6 +60,9 @@
 
     <!-- Glücksrad: einmal am Tag. "!" = heute noch nicht gedreht -->
     <button id="radBtn" type="button" title="Glücksrad" aria-label="Glücksrad öffnen">🎡<b id="radBadge" hidden>!</b></button>
+
+    <!-- Sticker-Album. Zahl = neue, noch nicht angeschaute Sticker -->
+    <button id="albumBtn" type="button" title="Sticker-Album" aria-label="Sticker-Album öffnen">📒<b id="albumBadge" hidden></b></button>
 
     <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
     <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
@@ -194,6 +198,20 @@
         <div class="aufgabenZeit" id="aufgabenZeit"></div>
       </div>
       <div id="aufgabenListe"></div>
+    </section>
+
+    <section id="seiteAlbum" class="seite" role="tabpanel" hidden>
+      <div class="blKopf albumKopf">
+        <div class="blTitel">📒 Sticker-Album</div>
+        <div class="blUnter" id="albumGesamt"></div>
+      </div>
+      <div id="albumSeitenwahl" class="albumSeitenwahl"></div>
+      <h2 id="albumSeitenTitel"></h2>
+      <div id="albumRaster" class="albumRaster"></div>
+      <p class="seitenInfo">
+        💡 Sticker gibt es ab und zu beim Klicken auf Marie, beim Fangen von Sternschnuppen und bei jeder Season-Stufe.
+        Doppelte Sticker werden zu Herzen. Eine volle Seite bringt eine große Belohnung!
+      </p>
     </section>
 
     <section id="seiteBestenliste" class="seite" role="tabpanel" hidden>

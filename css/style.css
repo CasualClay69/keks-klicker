@@ -424,6 +424,97 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .radMitte:disabled { background: var(--rand); color: var(--text-sanft); cursor: default; font-size: 1.6rem; }
 #radGewinn { white-space: pre-line; }
 
+/* ----- Sticker-Album ----- */
+.albumKopf { background: linear-gradient(135deg, #ffe3ef, #e9e0ff); color: #5b2a4f; }
+
+.albumSeitenwahl {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.albumSeitenwahl button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 2px;
+  border: 2px solid var(--rand);
+  border-radius: 14px;
+  background: var(--karte);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  cursor: pointer;
+}
+.albumSeitenwahl button small { font-size: 0.62rem; font-weight: bold; color: var(--text-sanft); }
+.albumSeitenwahl button.aktiv { border-color: var(--akzent); background: var(--karte-hover); }
+.albumSeitenwahl button.voll small { color: #2e9d55; }
+.albumSeitenwahl button { position: relative; }
+.albumSeitenwahl .punkt {      /* neue Sticker auf dieser Seite */
+  position: absolute; top: 3px; right: 6px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--akzent);
+}
+
+.albumRaster {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.stickerFeld {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 0.85;
+  padding: 4px;
+  border: 3px solid #fff;
+  border-radius: 16px;
+  background: var(--seiten-farbe, #fff);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+.stickerFeld .emoji { font-size: 2.2rem; line-height: 1.2; }
+.stickerFeld .name  { font-size: 0.62rem; font-weight: bold; line-height: 1.15; color: var(--text); }
+.stickerFeld .anzahl {
+  position: absolute; bottom: 3px; right: 5px;
+  font-size: 0.65rem; font-weight: bold; color: var(--text-sanft);
+}
+/* Noch nicht gefunden: grauer Schatten mit Fragezeichen */
+.stickerFeld.fehlt {
+  border: 3px dashed var(--rand);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+.stickerFeld.fehlt .emoji { filter: grayscale(1) brightness(0); opacity: 0.12; }
+.stickerFeld.fehlt .name  { color: var(--text-sanft); }
+/* Seltenheit: Silber- bzw. Gold-Rahmen */
+.stickerFeld.selten:not(.fehlt) { border-color: #b8c4d6; box-shadow: 0 0 0 2px #dfe6f0, 0 3px 8px rgba(0, 0, 0, 0.15); }
+.stickerFeld.super:not(.fehlt) {
+  border-color: #f5c542;
+  box-shadow: 0 0 0 2px #ffe9a6, 0 0 14px rgba(245, 197, 66, 0.6);
+  animation: goldSchimmer 2s ease-in-out infinite alternate;
+}
+.stickerFeld .seltenheit { position: absolute; top: 2px; left: 5px; font-size: 0.75rem; }
+/* Neu gefunden */
+.stickerFeld.neu::after {
+  content: "NEU";
+  position: absolute; top: -8px; right: -6px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--akzent);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+.stickerFeld.neu { animation: aufploppen 0.5s ease-out; }
+@keyframes goldSchimmer {
+  from { box-shadow: 0 0 0 2px #ffe9a6, 0 0 8px rgba(245, 197, 66, 0.4); }
+  to   { box-shadow: 0 0 0 2px #ffe9a6, 0 0 18px rgba(245, 197, 66, 0.9); }
+}
+
 /* ----- Neue Version verfügbar ----- */
 .updateOverlay { z-index: 60; }   /* über dem Geschenk-Fenster */
 .updateIcon {
@@ -492,8 +583,8 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .blLeer { padding: 12px; text-align: center; color: var(--text-sanft); }
 /* Ausgeschaltet: blass und durchgestrichen */
 #musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
-/* Glücksrad-Knopf rechts, unter dem Season-Symbol */
-#radBtn {
+/* Glücksrad- und Album-Knopf rechts, unter dem Season-Symbol */
+#radBtn, #albumBtn {
   position: absolute;
   top: calc(max(12px, env(safe-area-inset-top)) + 66px);
   right: max(12px, env(safe-area-inset-right));
@@ -507,6 +598,22 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   cursor: pointer;
   box-shadow: var(--schatten);
 }
+#albumBtn { top: calc(max(12px, env(safe-area-inset-top)) + 128px); }
+#albumBadge {
+  position: absolute;
+  right: -4px; top: -4px;
+  min-width: 22px; height: 22px;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  border-radius: 11px;
+  background: var(--akzent);
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 18px;
+  text-align: center;
+  animation: badgeHuepfen 1.2s ease-in-out infinite;
+}
+#albumBtn.feiern { animation: feiern 0.9s ease-out; }
 #radBadge {
   position: absolute;
   right: -4px; top: -4px;
@@ -522,7 +629,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 }
 
 #installBtn {
-  top: calc(max(12px, env(safe-area-inset-top)) + 130px);   /* unter Season und Glücksrad */
+  top: calc(max(12px, env(safe-area-inset-top)) + 192px);   /* unter Season, Glücksrad und Album */
   right: 12px;
   border-color: var(--akzent);
   background: var(--akzent);
@@ -1347,6 +1454,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
   #seasonBtn    { width: 64px; height: 64px; }
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
+  #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }
   #seasonBtnIcon { font-size: 2rem; }
 
   #marie {
@@ -1416,6 +1524,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
-  .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge,
+  .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
+  .stickerFeld.super, .stickerFeld.neu, #albumBtn.feiern,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

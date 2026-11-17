@@ -98,5 +98,8 @@ const ERFOLGE = [
   { id: "aufg50",    icon: "🏅", name: "Aufgaben-Profi",    beschr: "Erledige 50 Tagesaufgaben",                bedingung: s => (s.aufgabenGesamt || 0) >= 50 },
   { id: "serie7",    icon: "📅", name: "Jeden Tag dabei",   beschr: "Hole dir 7 Tage hintereinander dein Geschenk", bedingung: s => ((s.geschenk && s.geschenk.beste) || 0) >= 7 },
   { id: "rad10",     icon: "🍀", name: "Glückskind",        beschr: "Drehe 10-mal am Glücksrad",                bedingung: s => ((s.gluecksrad && s.gluecksrad.gesamt) || 0) >= 10 },
-  { id: "zeit30", icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
+  { id: "sticker10",  icon: "📒", name: "Sticker-Fan",       beschr: "Sammle 10 verschiedene Sticker",           bedingung: () => anzahlVerschiedeneSticker() >= 10 },
+  { id: "seite1",     icon: "📗", name: "Seite voll!",       beschr: "Mache eine Album-Seite voll",              bedingung: () => STICKER_SEITEN.some(seiteVoll) },
+  { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker",                   bedingung: () => anzahlVerschiedeneSticker() >= ALLE_STICKER.length },
+  { id: "zeit30",icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

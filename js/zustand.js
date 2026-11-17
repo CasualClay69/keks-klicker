@@ -19,6 +19,8 @@ function neuerSpielstand() {
     aufgabenGesamt: 0, // insgesamt erledigte Tagesaufgaben
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)
+    sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)
+    stickerNeu: [],    // neue, noch nicht angeschaute Sticker
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

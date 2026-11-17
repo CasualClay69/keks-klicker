@@ -22,6 +22,8 @@ const ui = {
   aufgabenBadge:  $("aufgabenBadge"),
   radBtn:         $("radBtn"),
   radBadge:       $("radBadge"),
+  albumBtn:       $("albumBtn"),
+  albumBadge:     $("albumBadge"),
   installBtn:     $("installBtn"),
   seasonBtn:      $("seasonBtn"),
   seasonBtnIcon:  $("seasonBtnIcon"),
@@ -109,6 +111,7 @@ const STATISTIK_ZEILEN = [
   ["Tagesaufgaben erledigt",  () => String(spiel.aufgabenGesamt || 0)],
   ["Längste Geschenk-Serie",  () => `${(spiel.geschenk && spiel.geschenk.beste) || 0} Tage`],
   ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
+  ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker()} / ${ALLE_STICKER.length}`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -236,6 +239,10 @@ function aktualisiereAnzeige() {
   zeigeSeason();
   zeigeAufgaben();
   ui.radBadge.hidden = !gluecksradBereit();   // "!" am Glücksrad, solange heute noch gedreht werden kann
+
+  const neueSticker = (spiel.stickerNeu || []).length;   // Zahl am Album: neue, ungesehene Sticker
+  ui.albumBadge.hidden = neueSticker === 0;
+  setzeText(ui.albumBadge, String(neueSticker));
 }
 
 // Wird 1× pro Sekunde aufgerufen
@@ -745,6 +752,67 @@ function zeigeRadErgebnis(ergebnis) {
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
 }
 
+// ----- Sticker-Album -----
+
+let albumSeite = STICKER_SEITEN[0];   // gerade aufgeschlagene Seite
+
+// Album zeichnen: Seitenwahl oben, 12 Sticker-Felder der aktuellen Seite
+function zeigeAlbum() {
+  setzeText($("albumGesamt"), `${anzahlVerschiedeneSticker()} von ${ALLE_STICKER.length} Stickern gesammelt`);
+
+  // Seitenwahl: Symbol, Fortschritt, Punkt bei neuen Stickern
+  const wahl = $("albumSeitenwahl");
+  wahl.textContent = "";
+  for (const seite of STICKER_SEITEN) {
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.classList.toggle("aktiv", seite === albumSeite);
+    knopf.classList.toggle("voll", seiteVoll(seite));
+    knopf.append(seite.icon, Object.assign(document.createElement("small"), {
+      textContent: seiteVoll(seite) ? "✓ voll" : `${seiteFortschritt(seite)}/${seite.sticker.length}`,
+    }));
+    if ((spiel.stickerNeu || []).some(id => id.startsWith(seite.id + "-")) && seite !== albumSeite) {
+      knopf.append(span("punkt"));
+    }
+    knopf.addEventListener("click", () => {
+      albumSeite = seite;
+      sound.klick();
+      zeigeAlbum();
+    });
+    wahl.append(knopf);
+  }
+
+  // Die aufgeschlagene Seite
+  const seite = albumSeite;
+  setzeText($("albumSeitenTitel"), `${seite.icon} ${seite.name}  ·  ${seiteFortschritt(seite)}/${seite.sticker.length}`);
+  const neuGesehen = markiereStickerGesehen(seite);   // ab jetzt nicht mehr "neu" – aber diesmal noch markieren
+  const raster = $("albumRaster");
+  raster.style.setProperty("--seiten-farbe", seite.farbe);
+  raster.textContent = "";
+  for (const sticker of ALLE_STICKER.filter(s => s.seite === seite)) {
+    const anzahl = stickerAnzahl(sticker);
+    const feld = document.createElement("div");
+    feld.className = `stickerFeld ${sticker.seltenheit}`;
+    feld.style.setProperty("--seiten-farbe", seite.farbe);
+    if (!anzahl) feld.classList.add("fehlt");
+    if (neuGesehen.includes(sticker.id)) feld.classList.add("neu");
+    feld.title = anzahl ? `${sticker.name}${seltenheit(sticker).name ? " – " + seltenheit(sticker).name : ""}` : "Noch nicht gefunden";
+    feld.append(
+      span("emoji", sticker.emoji),
+      span("name", anzahl ? sticker.name : "?"),
+    );
+    if (anzahl && sticker.seltenheit !== "normal") feld.append(span("seltenheit", sticker.seltenheit === "super" ? "🌟" : "✨"));
+    if (anzahl > 1) feld.append(span("anzahl", `×${anzahl}`));
+    raster.append(feld);
+  }
+}
+
+function albumSymbolFeiern() {
+  ui.albumBtn.classList.remove("feiern");
+  void ui.albumBtn.offsetWidth;
+  ui.albumBtn.classList.add("feiern");
+}
+
 // ----- Bestenliste -----
 
 // Welcher Teil der Seite ist sichtbar: Mitmachen-Formular oder die Liste
@@ -822,6 +890,7 @@ function zeigeSeite(seiteId) {
   }
   if (seiteId === "seiteAufgaben") titel = "📋 Tagesaufgaben";
   if (seiteId === "seiteBestenliste") titel = "🏅 Bestenliste";
+  if (seiteId === "seiteAlbum") titel = "📒 Sticker-Album";
   setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();
 }

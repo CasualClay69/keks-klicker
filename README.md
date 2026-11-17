@@ -9,7 +9,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
-- 24 Erfolge (je +1 % Herzen)
+- 27 Erfolge (je +1 % Herzen)
+- Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten
 - Glücksrad 🎡: einmal am Tag drehen – Herzen, Boni, Sternschnuppe, Season-Punkte oder Jackpot
 - Tägliches Geschenk 🎁: wächst mit jedem Tag hintereinander (Tag 1–7, ab Tag 7 jeden Tag das große Geschenk)
 - Tagesaufgaben 📋: jeden Tag 3 neue Aufgaben mit Herzen und Season-Pass-Fortschritt als Belohnung
@@ -99,6 +100,7 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/aufgaben.js` | Tagesaufgaben: Vorrat (`AUFGABEN_VORLAGEN`), Fortschritt, Belohnungen |
 | `js/geschenk.js` | Tägliches Geschenk mit Serie (`GESCHENK_FAKTOREN`, `GESCHENK_SEASON_PUNKTE`) |
 | `js/gluecksrad.js` | Glücksrad: Felder, Gewinnchancen (`GLUECKSRAD_FELDER`) |
+| `js/album.js` | Sticker-Album: Seiten und Sticker (`STICKER_SEITEN`), Seltenheiten, Chancen (`STICKER_CHANCE`) |
 | `js/bestenliste.js` | Online-Bestenliste (Supabase-Verbindung) |
 | `supabase/bestenliste.sql` | Datenbank-Tabelle und -Funktionen für die Bestenliste |
 | `js/sound.js` | Klänge und Musik-Abspieler (Web Audio API) |

@@ -39,8 +39,33 @@ function klickAufMarie(position) {
   // Season-Pass: jeder Klick zählt
   for (const neueStufe of seasonKlick(1)) meldeSeasonStufe(neueStufe);
   meldeAufgaben(aufgabenEreignis("klick"));
+  meldeSticker(versucheSticker("klick"), position);   // ab und zu fällt ein Sticker heraus
 
   aktualisiereAnzeige();
+}
+
+// ----- Sticker-Album -----
+
+// Ein Sticker ist herausgefallen -> anzeigen (position = wo er aufploppt, optional)
+function meldeSticker(ergebnis, position = null) {
+  if (!ergebnis) return;
+  const { sticker, neu, herzen, seiteFertig, seitenHerzen } = ergebnis;
+  const art = seltenheit(sticker).name;
+
+  if (position) zeigeSchwebeText(position, `${sticker.emoji} Sticker!`, true);
+  albumSymbolFeiern();
+  if (neu) {
+    sound.stern();
+    meldung(`📒 Neuer Sticker! ${sticker.emoji}`, `${sticker.name}${art ? ` – ${art === "Super-selten" ? "🌟" : "✨"} ${art}!` : ""}`);
+  } else {
+    sound.kauf();
+    meldung(`📒 Doppelt: ${sticker.emoji} ${sticker.name}`, `Dafür bekommst du +${format(herzen)} ${herz()}`);
+  }
+  if (seiteFertig) {
+    setTimeout(() => sound.erfolg(), 400);
+    meldung(`🎉 Seite „${seiteFertig.name}“ voll! ${seiteFertig.icon}`, `Belohnung: +${format(seitenHerzen)} ${herz()}`);
+  }
+  if (!$("seiteAlbum").hidden) zeigeAlbum();
 }
 
 // ----- Tagesaufgaben -----
@@ -91,6 +116,7 @@ function meldeSeasonStufe({ pass, stufe, belohnung }) {
     meldung(`${pass.icon} Stufe ${stufe}: Neuer Skin! ${s.icon}`, `„${s.name}“ – jetzt unter Skins auswählbar`);
     zeigeSkins();
   }
+  meldeSticker(versucheSticker("season"));   // jede Season-Stufe bringt einen Sticker
 }
 
 // ----- Skin auswählen -----
@@ -144,6 +170,7 @@ function beimStern(ereignis) {
   zeigeSchwebeText(position, text, true);
   marieFreutSich();
   meldeAufgaben(aufgabenEreignis("stern"));
+  meldeSticker(versucheSticker("stern"));
   aktualisiereAnzeige();
   planeStern();
 }
@@ -248,6 +275,21 @@ function verbindeEreignisse() {
     setzeMenue(true);
     zeigeSeason();
     scrolleZuAktuellerStufe();
+  });
+
+  // Sticker-Album über das 📒-Symbol öffnen (nochmal tippen = schließen)
+  ui.albumBtn.addEventListener("click", () => {
+    if (menueOffen && aktuelleSeite === "seiteAlbum") {
+      setzeMenue(false);
+      return;
+    }
+    // Seite mit neuen Stickern zuerst aufschlagen
+    const neueSeite = STICKER_SEITEN.find(s => (spiel.stickerNeu || []).some(id => id.startsWith(s.id + "-")));
+    if (neueSeite) albumSeite = neueSeite;
+    zeigeSeite("seiteAlbum");
+    setzeMenue(true);
+    zeigeAlbum();
+    $("seitenleiste").scrollTop = 0;
   });
 
   // Tagesaufgaben über das 📋-Symbol öffnen (nochmal tippen = schließen)

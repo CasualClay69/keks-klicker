@@ -30,6 +30,7 @@ const DATEIEN = [
   "js/aufgaben.js",
   "js/geschenk.js",
   "js/gluecksrad.js",
+  "js/album.js",
   "js/bestenliste.js",
   "js/sound.js",
   "js/anzeige.js",
