@@ -33,10 +33,11 @@ function spieleMelodie(frequenzen, abstandMs, dauer, typ, lautstaerke) {
     setTimeout(() => spieleTon(f, dauer, typ, lautstaerke), i * abstandMs));
 }
 
+// Helle, verspielte Klänge: Sinus-Töne, die nach oben gleiten ("Plopp!")
 const sound = {
-  klick:  () => spieleTon(500 + Math.random() * 200, 0.08, "triangle", 0.15, 250),
-  kauf:   () => spieleMelodie([523, 784], 70, 0.12, "square", 0.05),
-  fehler: () => spieleTon(140, 0.15, "sawtooth", 0.05),
-  gold:   () => spieleMelodie([880, 1109, 1319, 1760], 70, 0.25, "sine", 0.12),
-  erfolg: () => spieleMelodie([523, 659, 784, 1047], 110, 0.3, "triangle", 0.12),
+  klick:  () => spieleTon(700 + Math.random() * 250, 0.12, "sine", 0.15, 1400),
+  kauf:   () => spieleMelodie([1047, 1319, 1568], 60, 0.15, "sine", 0.1),
+  fehler: () => spieleTon(330, 0.18, "triangle", 0.08, 220),
+  stern:  () => spieleMelodie([1568, 1760, 2093, 2349, 2637, 3136], 55, 0.3, "sine", 0.08),
+  erfolg: () => spieleMelodie([784, 988, 1175, 1568], 120, 0.35, "triangle", 0.12),
 };

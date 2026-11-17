@@ -1,14 +1,14 @@
-# 🍪 Keks-Klicker
+# 💖 Marie Clicker
 
-Ein kleines Klickspiel im Browser – reines HTML, CSS und JavaScript, ohne Frameworks.
+Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS und JavaScript, ohne Frameworks.
 
 ## Funktionen
 
-- Keks anklicken, Kekse sammeln
-- 7 Gebäude, die automatisch backen, mit je 4 Upgrade-Stufen
+- Marie anklicken, Herzen sammeln (sie blinzelt und freut sich über jeden Klick)
+- 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
-- Goldener Keks mit zufälligen Boni
-- 19 Erfolge (je +1 % Produktion)
+- Sternschnuppen mit zufälligen Boni
+- 19 Erfolge (je +1 % Herzen)
 - Statistik, Soundeffekte, automatisches Speichern
 - Responsive für Handy, Tablet und Desktop
 - Als App installierbar (PWA) und offline spielbar
@@ -28,14 +28,15 @@ Oder lokal `index.html` im Browser öffnen (dann ohne App-Installation/Offline-M
 
 | Datei | Inhalt |
 |---|---|
-| `js/daten.js` | Gebäude, Upgrades, Erfolge und alle Balancing-Werte |
+| `index.html` | Seitenstruktur, Marie als SVG-Zeichnung |
+| `js/daten.js` | Herzschenker, Upgrades, Erfolge und alle Balancing-Werte |
 | `js/hilfen.js` | Zahlen formatieren, Zufall |
 | `js/zustand.js` | Spielstand, Speichern und Laden |
 | `js/logik.js` | Berechnungen und Käufe |
 | `js/sound.js` | Töne (Web Audio API) |
 | `js/anzeige.js` | HTML erzeugen und aktualisieren |
 | `js/main.js` | Verbindet alles und startet das Spiel |
-| `css/style.css` | Aussehen |
+| `css/style.css` | Aussehen (Farben ganz oben als Variablen) |
 | `manifest.webmanifest` | App-Name, Symbole, Farben (PWA) |
 | `sw.js` | Service Worker: Offline-Cache. Bei neuen Dateien `DATEIEN` und `VERSION` anpassen |
 | `icons/` | App-Symbole |

@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#2b1d14">
-  <meta name="description" content="Klick dich zum Keks-Imperium!">
-  <title>Keks-Klicker</title>
+  <meta name="theme-color" content="#ffe6f2">
+  <meta name="description" content="Klick auf Marie und sammle Herzen!">
+  <title>Marie Clicker</title>
 
   <!-- PWA: macht die Seite als App installierbar -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <!-- iPhone/iPad: ohne Browserleiste starten, Statusleiste transparent -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Keks-Klicker">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Marie Clicker">
 
   <link rel="stylesheet" href="css/style.css">
 
@@ -31,40 +30,123 @@
 </head>
 <body>
 
-  <!-- Linke Seite: Zähler und Keks -->
+  <!-- Linke Seite: Zähler und Marie -->
   <main id="spielfeld">
     <button id="tonBtn" type="button" title="Ton an/aus" aria-label="Ton an/aus">🔊</button>
-    <button id="installBtn" type="button" title="Als App installieren" hidden>📲 Installieren</button>
-    <div id="kekse">0 Kekse</div>
-    <div id="kps">0 pro Sekunde</div>
+    <h1 id="titel">Marie Clicker</h1>
+    <button id="installBtn" type="button" title="Als App installieren" hidden>📲<span class="lang"> Installieren</span></button>
+
+    <div id="herzen">0 Herzen</div>
+    <div id="hps">0 pro Sekunde</div>
     <div id="bonus" aria-live="polite"></div>
-    <button id="keks" type="button" aria-label="Keks anklicken"></button>
-    <button id="goldKeks" type="button" aria-label="Goldener Keks" hidden></button>
+
+    <!-- Marie – als SVG gezeichnet, damit sie blinzeln und lächeln kann -->
+    <button id="marie" type="button" aria-label="Marie anklicken">
+      <svg viewBox="-10 0 220 220" aria-hidden="true">
+        <defs>
+          <radialGradient id="haut" cx="45%" cy="40%" r="65%">
+            <stop offset="0" stop-color="#fff2ea"/>
+            <stop offset="1" stop-color="#ffd8c4"/>
+          </radialGradient>
+          <!-- Hellbraune Haare -->
+          <linearGradient id="haar" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#d4a373"/>
+            <stop offset="1" stop-color="#b07d4f"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Lange Haare hinten (fallen bis unten) -->
+        <path d="M100 26 C38 26 26 74 28 118 Q26 170 22 220 L178 220 Q174 170 172 118 C174 74 162 26 100 26 Z" fill="url(#haar)"/>
+
+        <!-- Hals, Kleid, Kragen -->
+        <rect x="89" y="142" width="22" height="32" rx="10" fill="#ffd8c4"/>
+        <path d="M40 220 Q44 174 100 168 Q156 174 160 220 Z" fill="#ff7eb6"/>
+        <path d="M81 170 Q100 192 119 170 Q100 179 81 170 Z" fill="#fff"/>
+        <circle cx="76" cy="204" r="4" fill="#fff" opacity=".8"/>
+        <circle cx="124" cy="204" r="4" fill="#fff" opacity=".8"/>
+        <circle cx="100" cy="210" r="4" fill="#fff" opacity=".8"/>
+
+        <!-- Haarsträhnen vorne über den Schultern -->
+        <path d="M48 104 Q34 160 42 220 L68 220 Q58 168 64 122 Z" fill="url(#haar)"/>
+        <path d="M152 104 Q166 160 158 220 L132 220 Q142 168 136 122 Z" fill="url(#haar)"/>
+
+        <!-- Gesicht (rund, kindlich) -->
+        <ellipse cx="100" cy="106" rx="54" ry="54" fill="url(#haut)"/>
+
+        <!-- Pony -->
+        <path d="M44 106 Q40 36 100 32 Q160 36 156 106 Q150 78 134 72 Q124 86 106 78 Q92 88 76 76 Q56 80 44 106 Z" fill="url(#haar)"/>
+        <!-- Glanz im Haar -->
+        <path d="M62 52 Q80 38 102 38" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="5" stroke-linecap="round"/>
+
+        <!-- Bäckchen -->
+        <ellipse cx="68" cy="126" rx="11" ry="7" fill="#ff8fbd" opacity=".55"/>
+        <ellipse cx="132" cy="126" rx="11" ry="7" fill="#ff8fbd" opacity=".55"/>
+
+        <!-- Augen offen (blinzeln per CSS) -->
+        <g class="augen-offen">
+          <g class="auge">
+            <ellipse cx="78" cy="109" rx="10" ry="13" fill="#3b2240"/>
+            <circle cx="81.5" cy="103.5" r="4" fill="#fff"/>
+            <circle cx="74.5" cy="114" r="1.8" fill="#fff"/>
+          </g>
+          <g class="auge">
+            <ellipse cx="122" cy="109" rx="10" ry="13" fill="#3b2240"/>
+            <circle cx="125.5" cy="103.5" r="4" fill="#fff"/>
+            <circle cx="118.5" cy="114" r="1.8" fill="#fff"/>
+          </g>
+          <path d="M70 100 L63 96 M72 97 L67 91 M130 100 L137 96 M128 97 L133 91"
+                stroke="#3b2240" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Augen zu (fröhlich ^^) – sichtbar, wenn man Marie anklickt -->
+        <g class="augen-zu" fill="none" stroke="#3b2240" stroke-width="3.5" stroke-linecap="round">
+          <path d="M69 111 Q78 99 87 111"/>
+          <path d="M113 111 Q122 99 131 111"/>
+        </g>
+
+        <!-- Näschen -->
+        <path d="M97 121 Q100 124 103 121" fill="none" stroke="#e5a083" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Mund: Lächeln / offen vor Freude -->
+        <path class="mund" d="M89 133 Q100 143 111 133" fill="none" stroke="#d63384" stroke-width="3" stroke-linecap="round"/>
+        <path class="mund-offen" d="M88 131 Q100 152 112 131 Q100 137 88 131 Z" fill="#e0457b"/>
+
+        <!-- Große Schleife -->
+        <g transform="translate(140 46) rotate(20)">
+          <path d="M0 0 L-24 -14 Q-29 0 -24 14 Z" fill="#ff4f9a"/>
+          <path d="M0 0 L24 -14 Q29 0 24 14 Z" fill="#ff4f9a"/>
+          <path d="M-20 -8 Q-23 0 -20 8 M20 -8 Q23 0 20 8" stroke="#ff9cc9" stroke-width="2" fill="none"/>
+          <circle r="7" fill="#ff7eb6"/>
+        </g>
+      </svg>
+    </button>
+
+    <button id="stern" type="button" aria-label="Sternschnuppe fangen" hidden>🌟</button>
   </main>
 
   <!-- Rechte Seite: Shop, Erfolge, Statistik -->
   <aside id="seitenleiste">
     <nav id="tabs" role="tablist">
-      <button type="button" role="tab" data-seite="seiteShop" aria-selected="true">🛒 Shop</button>
+      <button type="button" role="tab" data-seite="seiteShop" aria-selected="true">🛍️ Shop</button>
       <button type="button" role="tab" data-seite="seiteErfolge" aria-selected="false">🏆 Erfolge</button>
       <button type="button" role="tab" data-seite="seiteStatistik" aria-selected="false">📊 Statistik</button>
     </nav>
 
     <section id="seiteShop" class="seite" role="tabpanel">
       <div id="upgradeBereich" hidden>
-        <h2>⭐ Gebäude-Upgrades</h2>
+        <h2>✨ Upgrades</h2>
         <div id="upgradeListe"></div>
       </div>
 
-      <h2>Verbesserungen</h2>
+      <h2>💅 Verbesserungen</h2>
       <div id="klickListe"></div>
 
-      <h2>Produktion</h2>
+      <h2>💖 Herzschenker</h2>
       <div id="kaufModus">
         <button type="button" data-modus="1">x1</button>
         <button type="button" data-modus="10">x10</button>
         <button type="button" data-modus="100">x100</button>
-        <button type="button" data-modus="next" title="Kauft genau so viele, bis das nächste Upgrade freigeschaltet wird">⭐ Nächstes</button>
+        <button type="button" data-modus="next" title="Kauft genau so viele, bis das nächste Upgrade freigeschaltet wird">✨ Nächstes</button>
       </div>
       <div id="gebaeudeListe"></div>
     </section>

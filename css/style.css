@@ -1,20 +1,26 @@
 /* =====================================================
-   FARBEN – an einer Stelle, damit man sie leicht ändern kann
+   FARBEN & SCHRIFT – an einer Stelle, damit man sie leicht ändern kann
    ===================================================== */
 :root {
-  --hintergrund:   #2b1d14;
-  --spielfeld:     #5a3a22;
-  --panel:         #3d2a1c;
-  --karte:         #5a3d28;
-  --karte-hover:   #6e4b32;
-  --karte-upgrade: #64432a;
-  --rand:          #6b4a30;
-  --akzent:        #c98a45;
-  --text:          #fff3e0;
-  --preis:         #ffd27a;
-  --gold:          #ffd700;
-  --schoko:        #3b2412;
-  --gefahr:        #8b2e2e;
+  --hintergrund:   #ffe6f2;   /* zartrosa */
+  --hintergrund-2: #f1e4ff;   /* lavendel */
+  --panel:         #fff5fa;
+  --karte:         #ffffff;
+  --karte-hover:   #ffeef6;
+  --karte-upgrade: #fff8e8;
+  --rand:          #f9c2db;
+  --akzent:        #ff5fa2;   /* pink */
+  --akzent-dunkel: #d63384;
+  --lila:          #a77bff;
+  --text:          #5b2a4f;   /* dunkles Pflaume – gut lesbar auf Rosa */
+  --text-sanft:    #9a6b8c;
+  --gold:          #f5b942;
+  --gefahr:        #e05570;
+  --schatten:      0 4px 14px rgba(214, 51, 132, 0.15);
+
+  /* Runde, verspielte Schrift – nimmt die erste, die auf dem Gerät vorhanden ist.
+     (Bewusst keine Google Fonts: funktioniert offline und ohne Datenübertragung an Dritte.) */
+  --schrift: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Nunito", "Varela Round", "Segoe UI", sans-serif;
 }
 
 /* =====================================================
@@ -22,13 +28,11 @@
    ===================================================== */
 * { box-sizing: border-box; }
 
-/* Die Seite füllt genau den Bildschirm.
-   100dvh = "dynamische" Höhe, berücksichtigt auf dem Handy die Adressleiste */
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: var(--hintergrund);
+  font-family: var(--schrift);
+  background: linear-gradient(135deg, var(--hintergrund), var(--hintergrund-2));
   color: var(--text);
   display: flex;
   height: 100vh;
@@ -41,7 +45,7 @@ button {
   font: inherit;
   color: inherit;
   touch-action: manipulation;               /* kein Zoomen bei schnellem Tippen */
-  -webkit-tap-highlight-color: transparent; /* kein blauer Kasten beim Antippen */
+  -webkit-tap-highlight-color: transparent; /* kein Kasten beim Antippen */
 }
 
 [hidden] { display: none !important; }
@@ -56,110 +60,143 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 20px;
+  padding: 64px 20px 20px;
   padding-left:  max(20px, env(safe-area-inset-left));
   padding-right: max(20px, env(safe-area-inset-right));
-  background: radial-gradient(circle, var(--spielfeld) 0%, var(--hintergrund) 70%);
   position: relative;
   overflow: hidden;
-  container-type: size;   /* Kinder können ihre Größe an diesem Bereich ausrichten (cqw/cqh) */
+  container-type: size;   /* Kinder können ihre Größe hieran ausrichten (cqw/cqh) */
+
+  /* Weißer Schimmer hinter Marie + Herzchen-Muster */
+  background:
+    radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath transform='translate(4 4)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23ffc9e0'/%3E%3Cpath transform='translate(36 34) scale(.8)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23e3d0ff'/%3E%3C/svg%3E");
 }
 
-/* Vertikal zentrieren mit "auto"-Rändern statt justify-content: center.
-   Vorteil: Wird es zu eng, rutscht der Inhalt NICHT nach oben aus dem Bild
-   (unter Kamera/Statusleiste), sondern beginnt einfach oben. */
-#kekse { margin-top: auto; }
-#keks  { margin-bottom: auto; }
+/* Vertikal zentrieren mit "auto"-Rändern: Wird es zu eng, rutscht der Inhalt
+   nicht nach oben aus dem Bild, sondern beginnt einfach oben. */
+#herzen { margin-top: auto; }
+#marie  { margin-bottom: auto; }
 
-/* clamp(min, bevorzugt, max): Größe wächst mit dem Bildschirm mit.
-   tabular-nums: alle Ziffern gleich breit -> der Zähler zittert beim Hochzählen nicht */
-#kekse {
+/* ----- Obere Zeile: Ton – Titel – Installieren ----- */
+#tonBtn, #installBtn {
+  position: absolute; top: max(12px, env(safe-area-inset-top));
+  z-index: 7;
+  padding: 6px 12px;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+#tonBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+#installBtn {
+  right: 12px;
+  border-color: var(--akzent);
+  background: var(--akzent);
+  color: #fff;
+  font-weight: bold;
+}
+
+#titel {
+  position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  white-space: nowrap;
+  pointer-events: none;
+  /* Farbverlauf in der Schrift */
+  background: linear-gradient(90deg, var(--akzent), var(--lila));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 #fff);
+}
+
+/* ----- Zähler ----- */
+#herzen {
   font-size: clamp(1.6rem, 4.5vw, 2.8rem);
   font-weight: bold;
   text-align: center;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  color: var(--akzent-dunkel);
+  font-variant-numeric: tabular-nums;   /* Ziffern gleich breit -> kein Zittern */
+  text-shadow: 0 2px 0 #fff, 0 0 12px #fff;
 }
-#kps { font-size: clamp(0.85rem, 2vw, 1.1rem); opacity: 0.8; text-align: center; font-variant-numeric: tabular-nums; }
+#hps {
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  text-align: center;
+  color: var(--text-sanft);
+  font-variant-numeric: tabular-nums;
+}
 #bonus {
   min-height: 1.6em;
   margin: 8px 0 clamp(8px, 3vh, 22px);
   font-size: clamp(0.85rem, 2vw, 1rem);
   font-weight: bold;
   text-align: center;
-  color: var(--gold);
-  text-shadow: 0 0 8px #ff9800;
+  color: var(--lila);
+  text-shadow: 0 0 8px #fff;
 }
 
-#tonBtn, #installBtn {
-  position: absolute; top: max(12px, env(safe-area-inset-top));
-  z-index: 7;
-  background: rgba(0, 0, 0, 0.3);
-  border: none; border-radius: 8px;
-  padding: 4px 10px;
-  cursor: pointer;
-}
-#tonBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.5rem; }
-#installBtn {
-  right: 12px;
-  padding: 8px 12px;
-  background: var(--akzent);
-  color: var(--hintergrund);
-  font-weight: bold;
-}
-
-/* ----- Der Keks (komplett mit CSS gezeichnet) ----- */
-#keks {
-  width: clamp(140px, 38vmin, 320px);   /* vmin = % der kleineren Bildschirmseite */
+/* ----- Marie ----- */
+#marie {
+  width: clamp(140px, 38vmin, 320px);   /* Fallback für ältere Browser */
   aspect-ratio: 1;
   flex-shrink: 0;
-  border: none;
+  padding: 0;
+  border: 6px solid #fff;
   border-radius: 50%;
+  overflow: hidden;
   cursor: pointer;
-  background:
-    radial-gradient(circle at 30% 30%, var(--schoko) 7%, transparent 8%),
-    radial-gradient(circle at 65% 25%, var(--schoko) 6%, transparent 7%),
-    radial-gradient(circle at 50% 55%, var(--schoko) 8%, transparent 9%),
-    radial-gradient(circle at 25% 65%, var(--schoko) 6%, transparent 7%),
-    radial-gradient(circle at 72% 68%, var(--schoko) 7%, transparent 8%),
-    radial-gradient(circle at 45% 82%, var(--schoko) 5%, transparent 6%),
-    radial-gradient(circle at 40% 35%, #e9b872, var(--akzent) 70%, #a86b2e);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: radial-gradient(circle at 50% 40%, #fff 0%, #ffd1e6 60%, #e6ccff 100%);
+  box-shadow: 0 10px 30px rgba(214, 51, 132, 0.3), 0 0 0 10px rgba(255, 95, 162, 0.15);
   transition: transform 0.08s;
 }
-/* Der Keks bekommt nur so viel Platz, wie nach den Texten (~140px) übrig ist.
-   cqh/cqw = % der Höhe/Breite des Spielfelds. Ältere Browser nutzen den Wert oben. */
+/* Marie bekommt nur so viel Platz, wie nach den Texten übrig ist (cqh = % der Spielfeld-Höhe) */
 @supports (width: 1cqh) {
-  #keks { width: clamp(90px, min(60cqw, 100cqh - 140px), 320px); }
+  #marie { width: clamp(90px, min(60cqw, 100cqh - 140px), 320px); }
 }
-#keks:active { transform: scale(0.95); }
+#marie svg { display: block; width: 100%; height: 100%; animation: schweben 3s ease-in-out infinite; }
+#marie:active { transform: scale(0.94); }
 
-/* ----- Goldener Keks ----- */
-#goldKeks {
+/* Blinzeln: Augen kurz flach drücken */
+#marie .auge {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blinzeln 4s infinite;
+}
+
+/* Beim Anklicken freut sich Marie: Augen ^^ und Mund offen */
+#marie .augen-zu, #marie .mund-offen { display: none; }
+#marie.freut-sich .augen-zu, #marie.freut-sich .mund-offen { display: inline; }
+#marie.freut-sich .augen-offen, #marie.freut-sich .mund { display: none; }
+
+/* ----- Sternschnuppe ----- */
+#stern {
   position: absolute;
   z-index: 5;
-  width: clamp(50px, 9vmin, 75px);
-  aspect-ratio: 1;
+  padding: 0;
   border: none;
-  border-radius: 50%;
+  background: none;
+  font-size: clamp(42px, 9vmin, 68px);
+  line-height: 1;
   cursor: pointer;
-  background: radial-gradient(circle at 35% 35%, #fff8c4, var(--gold) 45%, #c99700 80%);
-  box-shadow: 0 0 25px 8px rgba(255, 215, 0, 0.7);
-  animation: goldPuls 1s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 10px var(--gold)) drop-shadow(0 0 4px #fff);
+  animation: sternPuls 0.9s ease-in-out infinite alternate;
 }
 
-/* ----- Schwebende "+1"-Texte ----- */
+/* ----- Schwebende "+1 💖"-Texte ----- */
 .schwebeText {
   position: absolute;
   z-index: 6;
   font-size: 1.4rem;
   font-weight: bold;
+  color: var(--akzent-dunkel);
   white-space: nowrap;
   pointer-events: none;
-  text-shadow: 0 2px 4px #000;
+  text-shadow: 0 2px 0 #fff, 0 0 6px #fff;
   animation: hochschweben 1s ease-out forwards;
 }
-.schwebeText.gross { font-size: 1.8rem; color: var(--gold); animation-duration: 2s; }
+.schwebeText.gross { font-size: 1.7rem; color: var(--lila); animation-duration: 2s; }
 
 /* =====================================================
    SEITENLEISTE (rechts)
@@ -167,15 +204,17 @@ button {
 #seitenleiste {
   width: clamp(300px, 32vw, 440px);
   flex-shrink: 0;
-  background: var(--panel);
   padding: 0 16px 16px;
   overflow-y: auto;
+  background: var(--panel);
+  border-left: 3px solid var(--rand);
 }
 #seitenleiste h2 {
-  margin: 8px 0 12px;
+  margin: 10px 0 12px;
   padding-bottom: 6px;
-  border-bottom: 2px solid var(--rand);
-  font-size: 1.2rem;
+  border-bottom: 2px dashed var(--rand);
+  font-size: 1.15rem;
+  color: var(--akzent-dunkel);
 }
 
 /* ----- Tabs (bleiben beim Scrollen oben) ----- */
@@ -188,13 +227,19 @@ button {
 #tabs button {
   flex: 1;
   padding: 10px 6px;
-  border: none; border-radius: 6px;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
   background: var(--karte);
   cursor: pointer;
   font-size: clamp(0.8rem, 1.2vw, 0.95rem);
   white-space: nowrap;
 }
-#tabs button[aria-selected="true"] { background: var(--akzent); color: var(--hintergrund); font-weight: bold; }
+#tabs button[aria-selected="true"] {
+  border-color: var(--akzent);
+  background: var(--akzent);
+  color: #fff;
+  font-weight: bold;
+}
 
 /* ----- Shop-Einträge ----- */
 .item {
@@ -203,59 +248,64 @@ button {
   gap: 12px;
   width: 100%;
   margin-bottom: 8px;
-  padding: 10px;
-  border: none; border-radius: 8px;
+  padding: 10px 12px;
+  border: 2px solid var(--rand);
+  border-radius: 16px;
   background: var(--karte);
+  box-shadow: var(--schatten);
   text-align: left;
   cursor: pointer;
   user-select: none;
   transition: background 0.15s, transform 0.08s;
 }
 .item:active { transform: scale(0.98); }
-.item.zuteuer { opacity: 0.45; cursor: not-allowed; }
+.item.zuteuer { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 .item span { display: block; }
 .item .icon   { position: relative; font-size: 2rem; }
 .item .info   { flex: 1; min-width: 0; }
 .item .name   { font-weight: bold; }
-.item .preis  { font-size: 0.9rem; color: var(--preis); }
-.item .menge  { display: inline; margin-left: 4px; font-size: 0.8rem; color: var(--text); opacity: 0.7; }
-.item .beschr { font-size: 0.75rem; opacity: 0.75; }
-.item .anzahl { font-size: 1.8rem; font-weight: bold; opacity: 0.6; }
+.item .preis  { font-size: 0.9rem; font-weight: bold; color: var(--akzent-dunkel); }
+.item .menge  { display: inline; margin-left: 4px; font-size: 0.8rem; font-weight: normal; color: var(--text-sanft); }
+.item .beschr { font-size: 0.75rem; color: var(--text-sanft); }
+.item .anzahl { font-size: 1.8rem; font-weight: bold; color: var(--lila); }
 
-.item.upgrade { border-left: 4px solid var(--gold); background: var(--karte-upgrade); }
+.item.upgrade { background: var(--karte-upgrade); border-color: var(--gold); border-left-width: 6px; }
 .item.upgrade.neu { animation: aufleuchten 0.8s ease-out 3; }
 .medaille { position: absolute; right: -8px; bottom: -4px; font-size: 0.55em; }
 
 /* Hover nur für Geräte mit Maus (auf Touch "kleben" Hover-Effekte sonst) */
 @media (hover: hover) {
-  #keks:hover { transform: scale(1.05); }
-  .item:hover { background: var(--karte-hover); }
+  #marie:hover { transform: scale(1.04); }
+  .item:hover  { background: var(--karte-hover); }
+  .item.upgrade:hover { background: #fff1d1; }
 }
 
 /* ----- Kauf-Modus ----- */
 #kaufModus { display: flex; gap: 6px; margin: -4px 0 10px; }
 #kaufModus button {
   flex: 1;
-  padding: 8px 4px;
-  border: 2px solid var(--rand); border-radius: 6px;
-  background: transparent;
+  padding: 7px 4px;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: var(--karte);
   cursor: pointer;
   font-size: 0.85rem; font-weight: bold;
   white-space: nowrap;
 }
 #kaufModus button[data-modus="next"] { flex: 1.8; }
-#kaufModus button.aktiv { background: var(--rand); border-color: var(--akzent); color: var(--preis); }
+#kaufModus button.aktiv { border-color: var(--lila); background: var(--lila); color: #fff; }
 
 /* ----- Erfolge ----- */
-#erfolgInfo { margin: 0 0 10px; font-size: 0.9rem; opacity: 0.8; }
+#erfolgInfo { margin: 0 0 10px; font-size: 0.9rem; color: var(--text-sanft); }
 #erfolgRaster {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
   gap: 8px;
 }
 .erfolg {
   padding: 8px 4px;
-  border-radius: 8px;
+  border: 2px solid var(--rand);
+  border-radius: 14px;
   background: var(--karte);
   text-align: center;
   font-size: 2rem;
@@ -266,15 +316,16 @@ button {
 
 /* ----- Statistik ----- */
 #statistik { width: 100%; border-collapse: collapse; }
-#statistik td { padding: 8px 4px; border-bottom: 1px solid var(--karte); }
-#statistik td:last-child { text-align: right; font-weight: bold; color: var(--preis); }
+#statistik td { padding: 8px 4px; border-bottom: 1px dashed var(--rand); }
+#statistik td:last-child { text-align: right; font-weight: bold; color: var(--akzent-dunkel); }
 
 #reset {
   width: 100%;
   margin-top: 16px;
-  padding: 8px;
-  border: none; border-radius: 6px;
+  padding: 10px;
+  border: none; border-radius: 999px;
   background: var(--gefahr);
+  color: #fff;
   cursor: pointer;
 }
 
@@ -286,28 +337,37 @@ button {
 }
 .meldung {
   padding: 10px 14px;
-  border-left: 6px solid var(--gold); border-radius: 8px;
-  background: var(--text);
-  color: var(--hintergrund);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--rand);
+  border-left: 6px solid var(--akzent);
+  border-radius: 14px;
+  background: var(--karte);
+  box-shadow: 0 6px 18px rgba(214, 51, 132, 0.25);
   animation: reinfliegen 0.3s ease-out;
 }
-.meldung b { display: block; }
+.meldung b { display: block; color: var(--akzent-dunkel); }
 
 /* =====================================================
    ANIMATIONEN
    ===================================================== */
-@keyframes goldPuls {
-  from { transform: scale(0.9) rotate(-10deg); }
-  to   { transform: scale(1.1) rotate(10deg); }
+@keyframes schweben {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes blinzeln {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+@keyframes sternPuls {
+  from { transform: scale(0.9) rotate(-12deg); }
+  to   { transform: scale(1.1) rotate(12deg); }
 }
 @keyframes hochschweben {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-80px); }
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-80px) scale(1.15); }
 }
 @keyframes aufleuchten {
-  from { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.8); }
-  to   { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+  from { box-shadow: 0 0 0 0 rgba(245, 185, 66, 0.8); }
+  to   { box-shadow: 0 0 0 10px rgba(245, 185, 66, 0); }
 }
 @keyframes reinfliegen {
   from { transform: translateX(-120%); }
@@ -325,33 +385,39 @@ button {
 /* Tablet: Seitenleiste kompakter */
 @media (max-width: 900px) {
   #seitenleiste { width: 300px; padding: 0 12px 12px; }
-  .item { padding: 8px; gap: 10px; }
+  .item { padding: 8px 10px; gap: 10px; }
   .item .icon { font-size: 1.6rem; }
   .item .anzahl { font-size: 1.4rem; }
 }
 
-/* Handy hochkant: Keks oben, Shop darunter */
+/* Schmale Bildschirme: Installieren-Knopf nur als Symbol, damit der Titel Platz hat */
+@media (max-width: 480px) {
+  #installBtn .lang { display: none; }
+}
+
+/* Handy hochkant: Marie oben, Shop darunter */
 @media (max-width: 700px) and (orientation: portrait), (max-width: 500px) {
   body { flex-direction: column; }
   #spielfeld {
     flex: 0 0 auto;
     height: 48%;
     padding: 12px;
-    /* Oben: Platz für Kamera/Statusleiste + die Zeile mit Ton- und Installieren-Knopf */
+    /* Oben: Platz für Kamera/Statusleiste + die Zeile mit Ton, Titel, Installieren */
     padding-top: calc(max(12px, env(safe-area-inset-top)) + 48px);
   }
-  #keks { width: clamp(100px, 26vh, 240px); }
+  #marie { width: clamp(100px, 26vh, 240px); }
   @supports (width: 1cqh) {
-    #keks { width: clamp(90px, min(70cqw, 100cqh - 120px), 240px); }
+    #marie { width: clamp(90px, min(70cqw, 100cqh - 120px), 240px); }
   }
   #seitenleiste {
     flex: 1;
     width: 100%;
+    border-left: none;
     border-top: 3px solid var(--rand);
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
   #tabs { padding: 10px 0 8px; }
-  #tabs button { font-size: 0.85rem; padding: 10px 4px; }
+  #tabs button { font-size: 0.85rem; padding: 9px 4px; }
 
   /* Meldungen oben mittig (unten ist jetzt der Shop) */
   #meldungen {
@@ -364,21 +430,18 @@ button {
 
 /* Handy quer: nebeneinander lassen, alles kleiner */
 @media (max-height: 500px) and (orientation: landscape) {
-  /* Quer liegt die Kamera links oder rechts -> seitlich Abstand halten */
   #spielfeld {
-    padding: 8px;
+    padding: 52px 8px 8px;   /* oben: unter der Knopf-Zeile */
     padding-left: max(8px, env(safe-area-inset-left));
-    padding-top: 52px;   /* unter der Knopf-Zeile */
   }
-  #keks { width: clamp(90px, 45vh, 220px); }
+  #marie { width: clamp(90px, 45vh, 220px); }
   @supports (width: 1cqh) {
-    #keks { width: clamp(80px, 100cqh - 110px, 220px); }
+    #marie { width: clamp(80px, 100cqh - 110px, 220px); }
   }
-  #seitenleiste { padding-right: max(12px, env(safe-area-inset-right)); }
-  #kekse { font-size: 1.5rem; }
-  #kps, #bonus { font-size: 0.8rem; }
+  #herzen { font-size: 1.5rem; }
+  #hps, #bonus { font-size: 0.8rem; }
   #bonus { margin: 4px 0 8px; }
-  #seitenleiste { width: 280px; }
+  #seitenleiste { width: 280px; padding-right: max(12px, env(safe-area-inset-right)); }
   #tabs { padding: 8px 0 6px; }
 }
 
@@ -391,10 +454,10 @@ button {
 /* Große Bildschirme */
 @media (min-width: 1400px) {
   #erfolgRaster { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
-  .item { padding: 12px; }
+  .item { padding: 12px 14px; }
 }
 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
-  #goldKeks, .meldung, .item.upgrade.neu { animation: none; }
+  #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu { animation: none; }
 }

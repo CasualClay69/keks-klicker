@@ -11,8 +11,8 @@
 //  und VERSION erhöhen, damit der alte Cache gelöscht wird.
 // =====================================================
 
-const VERSION = "v2";
-const CACHE = "keks-klicker-" + VERSION;
+const VERSION = "v3";
+const CACHE = "marie-clicker-" + VERSION;
 
 const DATEIEN = [
   "./",

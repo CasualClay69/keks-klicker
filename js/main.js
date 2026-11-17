@@ -15,57 +15,59 @@ function beimKaufen(item) {
 function beimUpgradeKaufen(upgrade) {
   if (kaufeUpgrade(upgrade)) {
     sound.kauf();
-    meldung("⭐ " + upgrade.name, upgrade.beschr + "!");
+    meldung(`${upgrade.medaille} ${upgrade.name}`, upgrade.beschr + "!");
   } else {
     sound.fehler();
   }
   aktualisiereAnzeige();
 }
 
-// ----- Goldener Keks: erscheinen, verschwinden, neu planen -----
+// ----- Sternschnuppe: erscheinen, verschwinden, neu planen -----
 
-let goldTimer = null;
+let sternTimer = null;
 
-function planeGoldKeks() {
-  clearTimeout(goldTimer);
-  const { minWartenSek, maxWartenSek } = KONFIG.gold;
-  goldTimer = setTimeout(goldKeksErscheint, zufallZwischen(minWartenSek, maxWartenSek) * 1000);
+function planeStern() {
+  clearTimeout(sternTimer);
+  const { minWartenSek, maxWartenSek } = KONFIG.stern;
+  sternTimer = setTimeout(sternErscheint, zufallZwischen(minWartenSek, maxWartenSek) * 1000);
 }
 
-function goldKeksErscheint() {
-  zeigeGoldKeks();
-  goldTimer = setTimeout(() => {
-    versteckeGoldKeks();
-    planeGoldKeks();
-  }, KONFIG.gold.sichtbarSek * 1000);
+function sternErscheint() {
+  zeigeStern();
+  sternTimer = setTimeout(() => {
+    versteckeStern();
+    planeStern();
+  }, KONFIG.stern.sichtbarSek * 1000);
 }
 
-function beimGoldKeks(ereignis) {
-  const position = klickPosition(ereignis, ui.goldKeks);
-  versteckeGoldKeks();
-  sound.gold();
+function beimStern(ereignis) {
+  const position = klickPosition(ereignis, ui.stern);
+  versteckeStern();
+  sound.stern();
 
-  const { effekt, gewinn } = fangeGoldKeks();
+  const { effekt, gewinn } = fangeStern();
   const text = effekt.typ === "sofort"
-    ? `Glückstreffer! +${format(gewinn)}`
+    ? `💖 Herzregen! +${format(gewinn)}`
     : `${effekt.name}! ${effekt.text}`;
 
   zeigeSchwebeText(position, text, true);
+  marieFreutSich();
   aktualisiereAnzeige();
-  planeGoldKeks();
+  planeStern();
 }
 
 // ----- Eingaben verbinden -----
 
 function verbindeEreignisse() {
-  ui.keks.addEventListener("click", ereignis => {
-    const plus = klickeKeks();
+  ui.marie.addEventListener("click", ereignis => {
+    const plus = klickeMarie();
     sound.klick();
-    zeigeSchwebeText(klickPosition(ereignis, ui.keks), "+" + format(plus));
+    marieFreutSich();
+    zeigeSchwebeText(klickPosition(ereignis, ui.marie), `+${format(plus)} 💖`);
     aktualisiereAnzeige();
   });
 
-  ui.goldKeks.addEventListener("click", beimGoldKeks);
+  ui.stern.addEventListener("click", beimStern);
 
   ui.tonBtn.addEventListener("click", () => {
     spiel.tonAn = !spiel.tonAn;
@@ -88,8 +90,8 @@ function verbindeEreignisse() {
   $("reset").addEventListener("click", () => {
     if (!confirm("Wirklich alles löschen?")) return;
     zuruecksetzen();
-    versteckeGoldKeks();
-    planeGoldKeks();
+    versteckeStern();
+    planeStern();
     zeigeAlles();
   });
 
@@ -113,7 +115,7 @@ function tick() {
 function pruefeErfolgeUndStatistik() {
   for (const erfolg of pruefeNeueErfolge()) {
     const prozent = Math.round(KONFIG.erfolgBonus * 100);
-    meldung("🏆 Erfolg freigeschaltet: " + erfolg.name, `${erfolg.beschr} (+${prozent} % Produktion)`);
+    meldung(`🏆 ${erfolg.icon} ${erfolg.name}`, `${erfolg.beschr} (+${prozent} % Herzen)`);
     sound.erfolg();
   }
   zeigeErfolge();
@@ -149,7 +151,7 @@ function richteAppEin() {
 
   window.addEventListener("appinstalled", () => {
     ui.installBtn.hidden = true;
-    meldung("📲 Installiert!", "Du findest den Keks-Klicker jetzt bei deinen Apps.");
+    meldung("📲 Installiert!", "Du findest den Marie Clicker jetzt bei deinen Apps.");
   });
 }
 
@@ -165,7 +167,7 @@ function starte() {
   setInterval(tick, KONFIG.tickMs);
   setInterval(pruefeErfolgeUndStatistik, KONFIG.erfolgPruefenMs);
   setInterval(speichern, KONFIG.speichernMs);
-  planeGoldKeks();
+  planeStern();
 }
 
 starte();

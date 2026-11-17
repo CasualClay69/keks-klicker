@@ -9,11 +9,11 @@ const $ = id => document.getElementById(id);
 // Häufig benutzte Elemente einmal suchen statt bei jedem Update
 const ui = {
   spielfeld:      $("spielfeld"),
-  kekse:          $("kekse"),
-  kps:            $("kps"),
+  herzen:         $("herzen"),
+  hps:            $("hps"),
   bonus:          $("bonus"),
-  keks:           $("keks"),
-  goldKeks:       $("goldKeks"),
+  marie:          $("marie"),
+  stern:          $("stern"),
   tonBtn:         $("tonBtn"),
   installBtn:     $("installBtn"),
   upgradeBereich: $("upgradeBereich"),
@@ -22,7 +22,9 @@ const ui = {
   kaufModusBtns:  document.querySelectorAll("#kaufModus button"),
 };
 
-// Zu jedem Datenobjekt (Gebäude, Upgrade, Erfolg …) merken wir uns seine HTML-Teile
+const HERZ = "💖";
+
+// Zu jedem Datenobjekt (Herzschenker, Upgrade, Erfolg …) merken wir uns seine HTML-Teile
 const elemente = new Map();
 
 // Text nur ändern, wenn er anders ist (spart dem Browser Arbeit)
@@ -77,17 +79,17 @@ function erstelleErfolg(container, erfolg) {
 
 // Statistik-Tabelle: Zeilen einmal anlegen, später nur Werte aktualisieren
 const STATISTIK_ZEILEN = [
-  ["Kekse aktuell",          () => format(spiel.kekse)],
-  ["Insgesamt gebacken",     () => format(spiel.gesamt)],
-  ["Durch Klicks gebacken",  () => format(spiel.klickKekse)],
-  ["Klicks",                 () => spiel.klicks.toLocaleString("de-DE")],
-  ["Kekse pro Klick",        () => format(keksProKlick())],
-  ["Kekse pro Sekunde",      () => formatKomma(keksProSekunde())],
-  ["Gebäude",                () => String(anzahlGebaeude())],
-  ["Gebäude-Upgrades",       () => `${spiel.upgrades.length} / ${UPGRADES.length}`],
-  ["Goldene Kekse gefangen", () => String(spiel.goldKlicks)],
-  ["Erfolge",                () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
-  ["Spielzeit",              () => formatZeit(spiel.spielzeit)],
+  ["Herzen aktuell",          () => format(spiel.herzen)],
+  ["Insgesamt gesammelt",     () => format(spiel.gesamt)],
+  ["Durch Klicks gesammelt",  () => format(spiel.klickHerzen)],
+  ["Klicks auf Marie",        () => spiel.klicks.toLocaleString("de-DE")],
+  ["Herzen pro Klick",        () => format(herzenProKlick())],
+  ["Herzen pro Sekunde",      () => formatKomma(herzenProSekunde())],
+  ["Herzschenker",            () => String(anzahlGebaeude())],
+  ["Upgrades",                () => `${spiel.upgrades.length} / ${UPGRADES.length}`],
+  ["Sternschnuppen gefangen", () => String(spiel.sternKlicks)],
+  ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
+  ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
 const statistikZellen = [];
 
@@ -103,14 +105,14 @@ function erstelleStatistik() {
 // aktionen = { kaufeItem, kaufeUpgrade } – was beim Klick passieren soll
 function baueOberflaeche(aktionen) {
   for (const k of KLICK_ITEMS) {
-    erstelleItem($("klickListe"), k, aktionen.kaufeItem, { beschr: `+${format(k.proKlick)} pro Klick` });
+    erstelleItem($("klickListe"), k, aktionen.kaufeItem, { beschr: `+${format(k.proKlick)} ${HERZ} pro Klick` });
   }
   for (const g of GEBAEUDE) {
     erstelleItem($("gebaeudeListe"), g, aktionen.kaufeItem);
   }
   for (const u of UPGRADES) {
     erstelleItem($("upgradeListe"), u, aktionen.kaufeUpgrade, { klasse: "upgrade", medaille: u.medaille });
-    elemente.get(u).betrag.textContent = "🍪 " + format(u.preis);
+    elemente.get(u).betrag.textContent = `${HERZ} ${format(u.preis)}`;
     elemente.get(u).wurzel.hidden = true;
   }
   for (const e of ERFOLGE) {
@@ -122,9 +124,9 @@ function baueOberflaeche(aktionen) {
 // ----- Aktualisieren -----
 
 function zeigeKopf() {
-  setzeText(ui.kekse, format(spiel.kekse) + " Kekse");
-  setzeText(ui.kps, `${formatKomma(keksProSekunde())} pro Sekunde · ${format(keksProKlick())} pro Klick`);
-  document.title = format(spiel.kekse) + " Kekse – Keks-Klicker";
+  setzeText(ui.herzen, `${format(spiel.herzen)} ${HERZ}`);
+  setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
+  document.title = `${format(spiel.herzen)} Herzen – Marie Clicker`;
 
   const rest = bonusRestSekunden();
   const b = aktuellerBonus();
@@ -135,9 +137,9 @@ function zeigeKlickItems() {
   for (const k of KLICK_ITEMS) {
     const teile = elemente.get(k);
     const kosten = preis(k);
-    setzeText(teile.betrag, "🍪 " + format(kosten));
+    setzeText(teile.betrag, `${HERZ} ${format(kosten)}`);
     setzeText(teile.anzahl, String(anzahl(k) || ""));
-    teile.wurzel.classList.toggle("zuteuer", spiel.kekse < kosten);
+    teile.wurzel.classList.toggle("zuteuer", spiel.herzen < kosten);
   }
 }
 
@@ -155,9 +157,9 @@ function zeigeGebaeude() {
 
     setzeText(teile.anzahl, String(n || ""));
 
-    // Produktion pro Stück und insgesamt
-    let beschr = `+${formatKomma(kpsProStueck(g))} Kekse/Sek. je Stück`;
-    if (n > 0) beschr += ` · gesamt ${formatKomma(n * kpsProStueck(g))}`;
+    // Herzen pro Stück und insgesamt
+    let beschr = `+${formatKomma(hpsProStueck(g))} ${HERZ}/Sek. je Stück`;
+    if (n > 0) beschr += ` · gesamt ${formatKomma(n * hpsProStueck(g))}`;
     setzeText(teile.beschr, beschr);
 
     // Preis für die gewählte Menge
@@ -171,9 +173,9 @@ function zeigeGebaeude() {
     let mengeText = menge > 1 ? `für ${menge} Stück` : "";
     if (spiel.kaufModus === "next") mengeText = `${menge}× bis ${naechsteStufe(g).medaille}`;
 
-    setzeText(teile.betrag, "🍪 " + format(kosten));
+    setzeText(teile.betrag, `${HERZ} ${format(kosten)}`);
     setzeText(teile.menge, mengeText);
-    teile.wurzel.classList.toggle("zuteuer", spiel.kekse < kosten);
+    teile.wurzel.classList.toggle("zuteuer", spiel.herzen < kosten);
   }
 }
 
@@ -190,7 +192,7 @@ function zeigeUpgrades() {
       el.classList.add("neu");
     }
     el.hidden = !zeigen;
-    el.classList.toggle("zuteuer", spiel.kekse < u.preis);
+    el.classList.toggle("zuteuer", spiel.herzen < u.preis);
     if (zeigen) sichtbar++;
   }
   ui.upgradeBereich.hidden = sichtbar === 0;
@@ -212,7 +214,7 @@ function zeigeErfolge() {
   }
   const n = spiel.erfolge.length;
   setzeText(ui.erfolgInfo,
-    `${n} von ${ERFOLGE.length} freigeschaltet · Bonus: +${Math.round(n * KONFIG.erfolgBonus * 100)} % Produktion`);
+    `${n} von ${ERFOLGE.length} freigeschaltet · Bonus: +${Math.round(n * KONFIG.erfolgBonus * 100)} % Herzen`);
 }
 
 function zeigeStatistik() {
@@ -242,6 +244,14 @@ function wechsleTab(aktiverBtn) {
 
 // ----- Effekte -----
 
+// Marie freut sich kurz (Augen ^^, Mund offen)
+let freudeTimer = null;
+function marieFreutSich() {
+  ui.marie.classList.add("freut-sich");
+  clearTimeout(freudeTimer);
+  freudeTimer = setTimeout(() => ui.marie.classList.remove("freut-sich"), 350);
+}
+
 // Mausposition eines Klicks – bei Tastatur (Enter/Leertaste) die Mitte des Elements
 function klickPosition(ereignis, element) {
   if (ereignis.detail > 0) return { x: ereignis.clientX, y: ereignis.clientY };
@@ -249,7 +259,7 @@ function klickPosition(ereignis, element) {
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
 }
 
-// Schwebender Text, z.B. "+5" beim Klicken
+// Schwebender Text, z.B. "+1 💖" beim Klicken
 function zeigeSchwebeText({ x, y }, text, gross = false) {
   const el = document.createElement("div");
   el.className = "schwebeText" + (gross ? " gross" : "");
@@ -270,15 +280,15 @@ function meldung(titel, text) {
   setTimeout(() => el.remove(), 4000);
 }
 
-function zeigeGoldKeks() {
-  const groesse = ui.goldKeks.offsetWidth || 75;
+function zeigeStern() {
+  const groesse = 70;
   const maxX = ui.spielfeld.clientWidth - groesse - 10;
   const maxY = ui.spielfeld.clientHeight - groesse - 10;
-  ui.goldKeks.style.left = zufallZwischen(10, maxX) + "px";
-  ui.goldKeks.style.top  = zufallZwischen(10, maxY) + "px";
-  ui.goldKeks.hidden = false;
+  ui.stern.style.left = zufallZwischen(10, maxX) + "px";
+  ui.stern.style.top  = zufallZwischen(50, maxY) + "px";   // nicht in die obere Knopf-Zeile
+  ui.stern.hidden = false;
 }
 
-function versteckeGoldKeks() {
-  ui.goldKeks.hidden = true;
+function versteckeStern() {
+  ui.stern.hidden = true;
 }
