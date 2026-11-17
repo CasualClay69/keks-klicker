@@ -55,16 +55,32 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 20px;
+  padding-left:  max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   background: radial-gradient(circle, var(--spielfeld) 0%, var(--hintergrund) 70%);
   position: relative;
   overflow: hidden;
+  container-type: size;   /* Kinder können ihre Größe an diesem Bereich ausrichten (cqw/cqh) */
 }
 
-/* clamp(min, bevorzugt, max): Größe wächst mit dem Bildschirm mit */
-#kekse { font-size: clamp(1.6rem, 4.5vw, 2.8rem); font-weight: bold; text-align: center; }
-#kps   { font-size: clamp(0.85rem, 2vw, 1.1rem); opacity: 0.8; text-align: center; }
+/* Vertikal zentrieren mit "auto"-Rändern statt justify-content: center.
+   Vorteil: Wird es zu eng, rutscht der Inhalt NICHT nach oben aus dem Bild
+   (unter Kamera/Statusleiste), sondern beginnt einfach oben. */
+#kekse { margin-top: auto; }
+#keks  { margin-bottom: auto; }
+
+/* clamp(min, bevorzugt, max): Größe wächst mit dem Bildschirm mit.
+   tabular-nums: alle Ziffern gleich breit -> der Zähler zittert beim Hochzählen nicht */
+#kekse {
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+  font-weight: bold;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+#kps { font-size: clamp(0.85rem, 2vw, 1.1rem); opacity: 0.8; text-align: center; font-variant-numeric: tabular-nums; }
 #bonus {
   min-height: 1.6em;
   margin: 8px 0 clamp(8px, 3vh, 22px);
@@ -83,7 +99,7 @@ button {
   padding: 4px 10px;
   cursor: pointer;
 }
-#tonBtn { left: 12px; font-size: 1.5rem; }
+#tonBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.5rem; }
 #installBtn {
   right: 12px;
   padding: 8px 12px;
@@ -110,6 +126,11 @@ button {
     radial-gradient(circle at 40% 35%, #e9b872, var(--akzent) 70%, #a86b2e);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   transition: transform 0.08s;
+}
+/* Der Keks bekommt nur so viel Platz, wie nach den Texten (~140px) übrig ist.
+   cqh/cqw = % der Höhe/Breite des Spielfelds. Ältere Browser nutzen den Wert oben. */
+@supports (width: 1cqh) {
+  #keks { width: clamp(90px, min(60cqw, 100cqh - 140px), 320px); }
 }
 #keks:active { transform: scale(0.95); }
 
@@ -314,11 +335,15 @@ button {
   body { flex-direction: column; }
   #spielfeld {
     flex: 0 0 auto;
-    height: 45%;
+    height: 48%;
     padding: 12px;
-    padding-top: max(12px, env(safe-area-inset-top));   /* Platz für die Kamera-Notch */
+    /* Oben: Platz für Kamera/Statusleiste + die Zeile mit Ton- und Installieren-Knopf */
+    padding-top: calc(max(12px, env(safe-area-inset-top)) + 48px);
   }
-  #keks { width: clamp(120px, 28vh, 240px); }
+  #keks { width: clamp(100px, 26vh, 240px); }
+  @supports (width: 1cqh) {
+    #keks { width: clamp(90px, min(70cqw, 100cqh - 120px), 240px); }
+  }
   #seitenleiste {
     flex: 1;
     width: 100%;
@@ -339,8 +364,17 @@ button {
 
 /* Handy quer: nebeneinander lassen, alles kleiner */
 @media (max-height: 500px) and (orientation: landscape) {
-  #spielfeld { padding: 8px; }
-  #keks { width: clamp(110px, 50vh, 220px); }
+  /* Quer liegt die Kamera links oder rechts -> seitlich Abstand halten */
+  #spielfeld {
+    padding: 8px;
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-top: 52px;   /* unter der Knopf-Zeile */
+  }
+  #keks { width: clamp(90px, 45vh, 220px); }
+  @supports (width: 1cqh) {
+    #keks { width: clamp(80px, 100cqh - 110px, 220px); }
+  }
+  #seitenleiste { padding-right: max(12px, env(safe-area-inset-right)); }
   #kekse { font-size: 1.5rem; }
   #kps, #bonus { font-size: 0.8rem; }
   #bonus { margin: 4px 0 8px; }

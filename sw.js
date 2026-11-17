@@ -11,7 +11,7 @@
 //  und VERSION erhöhen, damit der alte Cache gelöscht wird.
 // =====================================================
 
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "keks-klicker-" + VERSION;
 
 const DATEIEN = [
@@ -36,7 +36,9 @@ const DATEIEN = [
 self.addEventListener("install", ereignis => {
   ereignis.waitUntil(
     caches.open(CACHE)
-      .then(cache => cache.addAll(DATEIEN))
+      // cache: "reload" = am Browser-Zwischenspeicher vorbei direkt vom Server holen,
+      // sonst landet evtl. eine alte Datei im neuen Cache
+      .then(cache => cache.addAll(DATEIEN.map(datei => new Request(datei, { cache: "reload" }))))
       .then(() => self.skipWaiting())       // neue Version sofort aktiv werden lassen
   );
 });
