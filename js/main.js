@@ -491,6 +491,69 @@ function richteBestenlisteEin() {
   });
 }
 
+// ----- Neue Version verfügbar? -----
+
+let updateSpaeter = false;   // "Später" gedrückt -> bis zum nächsten Start nicht mehr fragen
+
+// "1.26" < "1.30" < "2.0" – Teil für Teil als Zahl vergleichen
+function istNeuereVersion(server, lokal) {
+  const a = server.split(".").map(Number), b = lokal.split(".").map(Number);
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    if ((a[i] || 0) !== (b[i] || 0)) return (a[i] || 0) > (b[i] || 0);
+  }
+  return false;
+}
+
+// Fragt den Server nach der aktuellen Version (am Speicher der App vorbei, siehe sw.js "frisch")
+async function pruefeAufUpdate() {
+  if (updateSpaeter || !location.protocol.startsWith("http") || !$("updateOverlay").hidden) return;
+  try {
+    const antwort = await fetch(`js/version.js?frisch=${Date.now()}`, { cache: "no-store" });
+    if (!antwort.ok) return;
+    const text = await antwort.text();
+    const version = (text.match(/APP_VERSION\s*=\s*"([^"]+)"/) || [])[1];
+    const neu = (text.match(/APP_NEU\s*=\s*"([^"]*)"/) || [])[1] || "";
+    if (version && istNeuereVersion(version, APP_VERSION)) zeigeUpdateFenster(version, neu);
+  } catch (e) { /* offline -> später nochmal */ }
+}
+
+function zeigeUpdateFenster(version, neu) {
+  setzeText($("updateVersionen"), `Du spielst Version ${APP_VERSION} – neu ist Version ${version}.`);
+  setzeText($("updateNeu"), neu ? `🆕 ${neu}` : "");
+  $("updateOverlay").hidden = false;
+}
+
+// Aktualisieren: gespeicherte App-Dateien löschen und neu laden.
+// Der Spielstand liegt im localStorage und ist davon nicht betroffen.
+async function aktualisiereApp() {
+  $("updateJetzt").disabled = true;
+  setzeText($("updateJetzt"), "⏳ Einen Moment …");
+  speichern();
+  try {
+    const registrierung = await navigator.serviceWorker?.getRegistration();
+    await registrierung?.update();
+  } catch (e) { /* egal – der Speicher wird unten ohnehin geleert */ }
+  try {
+    const namen = await caches.keys();
+    await Promise.all(namen.map(name => caches.delete(name)));
+  } catch (e) { /* kein Cache-Zugriff */ }
+  location.reload();
+}
+
+function richteUpdateEin() {
+  $("updateJetzt").addEventListener("click", aktualisiereApp);
+  $("updateSpaeter").addEventListener("click", () => {
+    updateSpaeter = true;
+    $("updateOverlay").hidden = true;
+  });
+
+  setTimeout(pruefeAufUpdate, 1500);                                  // kurz nach dem Start
+  document.addEventListener("visibilitychange", () => {               // App wieder geöffnet
+    if (!document.hidden) pruefeAufUpdate();
+  });
+  setInterval(pruefeAufUpdate, 30 * 60 * 1000);                        // und alle 30 Minuten
+}
+
 // ----- App (PWA) -----
 
 function richteAppEin() {
@@ -541,6 +604,7 @@ function starte() {
   richteGeschenkEin();
   richteBestenlisteEin();
   richteAppEin();
+  richteUpdateEin();
 
   // Den Browser bitten, unsere Daten nicht automatisch zu löschen (z.B. bei Speicherplatzmangel)
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});

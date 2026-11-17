@@ -368,6 +368,23 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   to   { transform: scale(1);    opacity: 1; }
 }
 
+/* ----- Neue Version verfügbar ----- */
+.updateOverlay { z-index: 60; }   /* über dem Geschenk-Fenster */
+.updateIcon {
+  font-size: 4rem;
+  line-height: 1.1;
+  animation: geschenkWackeln 1.6s ease-in-out infinite;
+}
+.updateVersionen { margin: 4px 0 8px; font-weight: bold; color: var(--text-sanft); }
+.updateNeu {
+  margin: 0 0 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--karte-hover);
+  font-size: 0.9rem;
+}
+.updateNeu:empty { display: none; }
+
 /* ----- Bestenliste ----- */
 .blKopf {
   margin-bottom: 12px;
@@ -1313,6 +1330,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
-  .geschenkBox, .geschenkKarte, .geschenkInhalt,
+  .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

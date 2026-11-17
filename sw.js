@@ -63,7 +63,11 @@ self.addEventListener("activate", ereignis => {
 // Jede Anfrage: erst Cache, im Hintergrund aktualisieren
 self.addEventListener("fetch", ereignis => {
   const anfrage = ereignis.request;
-  if (anfrage.method !== "GET" || new URL(anfrage.url).origin !== self.location.origin) return;
+  const adresse = new URL(anfrage.url);
+  if (anfrage.method !== "GET" || adresse.origin !== self.location.origin) return;
+
+  // Versions-Check des Spiels (…?frisch=…): immer direkt vom Server, nie aus dem Speicher
+  if (adresse.searchParams.has("frisch")) return;
 
   const ausDemNetz = fetch(anfrage).then(antwort => {
     if (antwort.ok) {

@@ -104,6 +104,6 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/main.js` | Verbindet alles und startet das Spiel |
 | `css/style.css` | Aussehen (Farben ganz oben als Variablen) |
 | `manifest.webmanifest` | App-Name, Symbole, Farben (PWA) |
-| `js/version.js` | Versionsnummer (wird unter dem Logo angezeigt) – bei jeder Änderung hochzählen |
+| `js/version.js` | Versionsnummer (`APP_VERSION`) und Kurzbeschreibung (`APP_NEU`) – bei jeder Änderung hochzählen. Spieler mit älterer Version sehen dann ein „Neue Version verfügbar“-Fenster |
 | `sw.js` | Service Worker: Offline-Cache, liest die Version aus `js/version.js`. Bei neuen Dateien `DATEIEN` ergänzen |
 | `icons/` | App-Symbole |

@@ -277,6 +277,21 @@
     <button type="button" data-seite="seiteStatistik"><i class="navIcon" data-symbol="statistik">📊</i><span>Statistik</span></button>
   </nav>
 
+  <!-- Neue Version verfügbar (erscheint, wenn auf dem Server eine neuere Version liegt) -->
+  <div id="updateOverlay" class="overlay updateOverlay" hidden>
+    <div class="geschenkKarte" role="dialog" aria-modal="true" aria-labelledby="updateTitel">
+      <div class="updateIcon">✨</div>
+      <h2 id="updateTitel">Neue Version verfügbar!</h2>
+      <p id="updateVersionen" class="updateVersionen"></p>
+      <p id="updateNeu" class="updateNeu"></p>
+      <p class="geschenkMorgen">Keine Sorge: Deine Herzen und alles andere bleiben erhalten. 💖</p>
+      <div class="knopfReihe">
+        <button id="updateJetzt" type="button" class="knopf haupt">🔄 Jetzt aktualisieren</button>
+        <button id="updateSpaeter" type="button" class="knopf">Später</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Tägliches Geschenk (erscheint beim ersten Öffnen am Tag) -->
   <div id="geschenkOverlay" class="overlay" hidden>
     <div class="geschenkKarte" role="dialog" aria-modal="true" aria-labelledby="geschenkTitel">
