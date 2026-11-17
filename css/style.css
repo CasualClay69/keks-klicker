@@ -2,7 +2,7 @@
    FARBEN & SCHRIFT – an einer Stelle, damit man sie leicht ändern kann
    ===================================================== */
 :root {
-  color-scheme: light only;   /* kein automatisches Umfärben im Dunkelmodus (Samsung Internet, Chrome) */
+  color-scheme: only light;   /* kein automatisches Umfärben im Dunkelmodus (Chrome; Schreibweise wie in Googles Doku) */
   --hintergrund:   #ffe6f2;   /* zartrosa */
   --hintergrund-2: #f1e4ff;   /* lavendel */
   --panel:         #fff5fa;
