@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.40";
-const APP_NEU = "Neu: Der Kleiderschrank! Kleider, Frisuren und Haarfarben für Marie und Hannah – in jedem Season-Pass auf Stufe 25 und 35. 👗";
+const APP_VERSION = "1.41";
+const APP_NEU = "Neu: Im Season-Pass scrollt das Logo jetzt mit – so siehst du viel mehr Belohnungen auf einmal! 🎁";

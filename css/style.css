@@ -948,9 +948,10 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 
 /* ----- Season-Seite ----- */
 .seasonKopf {
-  /* bleibt beim Scrollen der Stufen-Liste oben stehen – direkt unter Tabs bzw. Menü-Kopf */
+  /* Beim Scrollen der Stufen-Liste scrollen Logo und Zeit mit weg, "Stufe x / 50" und der
+     Balken bleiben direkt unter Tabs bzw. Menü-Kopf stehen (--kopf-weg setzt anzeige.js) */
   position: sticky;
-  top: var(--sticky-oben, 0px);
+  top: calc(var(--sticky-oben, 0px) - var(--kopf-weg, 0px));
   z-index: 1;
   margin-bottom: 12px;
   padding: 14px;
