@@ -15,6 +15,12 @@ const KONFIG = {
   skinSchluessel: "marieClicker-skins",   // eigener Speicher: bleibt beim Spielstand-Löschen erhalten
   kaufModi: ["1", "10", "100", "next"],
 
+  offline: {
+    maxStunden: 8,       // so lange sammeln die Herzschenker, während die App zu ist
+    anteil: 1,           // 1 = volle Produktion
+    abSekunden: 120,     // erst ab 2 Minuten Abwesenheit gibt es das Willkommen-Fenster
+  },
+
   stern: {
     minWartenSek: 30,        // Sternschnuppe erscheint nach 30–90 Sekunden
     maxWartenSek: 90,
@@ -112,5 +118,6 @@ const ERFOLGE = [
   { id: "regen40",    icon: "🧺", name: "Fang-Profi",        beschr: "Fange 40 Punkte in einem Herzregen",        bedingung: s => (s.regenBest || 0) >= 40 },
   { id: "neustart1",  icon: "🌟", name: "Neuanfang",         beschr: "Mache einen Neustart mit Bonus",            bedingung: s => (s.neustarts || 0) >= 1 },
   { id: "sterne25",   icon: "💫", name: "Sternenhimmel",     beschr: "Sammle 25 Glitzersterne",                   bedingung: s => (s.sterne || 0) >= 25 },
+  { id: "offline8",   icon: "😴", name: "Über Nacht",        beschr: "Komm nach mindestens 8 Stunden zurück",     bedingung: s => (s.offlineMax || 0) >= 8 * 3600 },
   { id: "zeit30",    icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

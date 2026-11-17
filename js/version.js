@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.36";
-const APP_NEU = "Neu: 6 neue Seasons für das ganze Jahr 2027 – los geht es am 1. Januar mit dem Winterwunderland ⛸️!";
+const APP_VERSION = "1.37";
+const APP_NEU = "Neu: Deine Herzschenker sammeln jetzt auch weiter, während die App zu ist – bis zu 8 Stunden! 🌙";

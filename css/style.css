@@ -541,6 +541,11 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   to { transform: scale(1.9); opacity: 0; }
 }
 
+/* ----- Offline-Fortschritt ----- */
+.offlineKarte { background: linear-gradient(180deg, #f1ecff, #fff6fb); }
+.offlineMond { font-size: 4rem; line-height: 1.1; animation: tierWippen 2.4s ease-in-out infinite; }
+#offlineEinsammeln { width: 100%; font-size: 1.1rem; }
+
 /* ----- Geburtstag ----- */
 /* Konfetti-Regen über dem Spielfeld: fällt nach unten und flattert hin und her */
 .konfettiRegen {

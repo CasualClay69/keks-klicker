@@ -592,15 +592,63 @@ function verbindeEreignisse() {
 // ----- Spielschleife -----
 
 // Wir messen die echte vergangene Zeit, statt fest 0,1 s pro Tick anzunehmen.
-// Grund: In Hintergrund-Tabs bremst der Browser setInterval auf ~1× pro Sekunde –
-// sonst würde dort viel zu wenig produziert.
-let letzterTick = performance.now();
+// Grund: In Hintergrund-Tabs bremst der Browser setInterval auf ~1× pro Sekunde.
+// War das Spiel länger als eine Minute eingefroren (Handy gesperrt, App im Hintergrund),
+// zählt die Zeit als Offline-Zeit – begrenzt auf 8 Stunden, mit Willkommen-Fenster.
+// (Date.now statt performance.now: performance.now bleibt auf manchen Handys im Schlaf stehen)
+let letzterTick = Date.now();
 
 function tick() {
-  const jetzt = performance.now();
-  produziere((jetzt - letzterTick) / 1000);
+  const jetzt = Date.now();
+  const sekunden = (jetzt - letzterTick) / 1000;
   letzterTick = jetzt;
+  if (sekunden > 60) meldeOffline(sekunden);
+  else if (sekunden > 0) produziere(sekunden);
+  spiel.zuletztAktiv = jetzt;
   aktualisiereAnzeige();
+}
+
+// ----- Offline-Fortschritt -----
+
+let offlineAnzeige = null;   // was das Willkommen-Fenster gerade zeigt (mehrere Pausen werden addiert)
+
+function meldeOffline(sekunden) {
+  if (!(sekunden > 0)) return;
+  spiel.offlineMax = Math.max(spiel.offlineMax || 0, sekunden);
+  const ergebnis = berechneOffline(sekunden);
+  if (ergebnis.herzen <= 0) return;
+  herzenDazu(ergebnis.herzen);   // sofort gutschreiben – geht so auch beim Schließen nicht verloren
+  if (sekunden < KONFIG.offline.abSekunden) return;   // kurze Pausen still nachrechnen
+
+  if (offlineAnzeige && !$("offlineOverlay").hidden) {
+    offlineAnzeige.sekunden += ergebnis.sekunden;
+    offlineAnzeige.herzen += ergebnis.herzen;
+    offlineAnzeige.gekappt = offlineAnzeige.gekappt || ergebnis.gekappt;
+  } else {
+    offlineAnzeige = { ...ergebnis };
+  }
+  zeigeOfflineFenster(offlineAnzeige);
+}
+
+function richteOfflineEin() {
+  $("offlineEinsammeln").addEventListener("click", () => {
+    const knopf = $("offlineEinsammeln").getBoundingClientRect();
+    $("offlineOverlay").hidden = true;
+    sound.stern();
+    setTimeout(() => sound.kauf(), 300);
+    zeigeSchwebeText({ x: knopf.left + knopf.width / 2 - 40, y: knopf.top }, `+${format(offlineAnzeige.herzen)} ${herz()}`, true);
+    marieFreutSich();
+    offlineAnzeige = null;
+    aktualisiereAnzeige();
+  });
+
+  // Beim Wegschalten sofort speichern – auf Handys läuft beim Schließen oft nichts mehr
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      spiel.zuletztAktiv = Date.now();
+      speichern();
+    }
+  });
 }
 
 function pruefeErfolgeUndStatistik() {
@@ -974,6 +1022,7 @@ function starte() {
   richteHaustierEin();
   richteGeburtstagEin();
   richteNeustartEin();
+  richteOfflineEin();
   richteBestenlisteEin();
   richteAppEin();
   richteUpdateEin();
@@ -982,6 +1031,11 @@ function starte() {
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
   zeigeSeite("seiteShop");
   pruefeTageswechsel();   // Tagesaufgaben für heute
+
+  // Offline-Fortschritt seit dem letzten Spielen (zuerst – die anderen Fenster warten, bis es zu ist)
+  if (spiel.zuletztAktiv > 0) meldeOffline((Date.now() - spiel.zuletztAktiv) / 1000);
+  spiel.zuletztAktiv = Date.now();
+
   zeigeAlles();
   pruefeGeburtstag();     // Geburtstag? -> großes Geschenk zuerst
   pruefeGeschenk();       // erstes Öffnen heute? -> Geschenk zeigen (wartet, bis das Geburtstagsfenster zu ist)

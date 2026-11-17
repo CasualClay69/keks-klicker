@@ -71,6 +71,7 @@ function leseSicherungsCode(code) {
 function stelleSicherungWiederHer(daten) {
   spiel = Object.assign(neuerSpielstand(), daten.spiel);
   if (!KONFIG.kaufModi.includes(spiel.kaufModus)) spiel.kaufModus = "1";
+  spiel.zuletztAktiv = Date.now();   // die Zeit seit der Sicherung zählt nicht als Offline-Zeit
 
   const s = daten.skins || {};
   const freigeschaltet = new Set([

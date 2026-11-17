@@ -806,6 +806,25 @@ function zeigeRadErgebnis(ergebnis) {
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
 }
 
+// ----- Offline-Fortschritt -----
+
+// "3 Std. 12 Min." – ohne Sekunden, ab 1 Stunde
+function formatDauer(sekunden) {
+  const h = Math.floor(sekunden / 3600), m = Math.floor((sekunden % 3600) / 60);
+  if (h >= 24) return `${Math.floor(h / 24)} Tage und ${h % 24} Std.`;
+  if (h > 0) return `${h} Std. ${m} Min.`;
+  return `${Math.max(1, m)} Min.`;
+}
+
+function zeigeOfflineFenster(ergebnis) {
+  setzeText($("offlineZeit"), `Du warst ${formatDauer(ergebnis.sekunden)} weg. In der Zeit haben deine Herzschenker fleißig gesammelt:`);
+  setzeText($("offlineBetrag"), `+${format(ergebnis.herzen)} ${herz()}`);
+  setzeText($("offlineHinweis"), ergebnis.gekappt
+    ? `💡 Dein Herzkorb fasst höchstens ${KONFIG.offline.maxStunden} Stunden – komm öfter vorbei, dann geht nichts verloren!`
+    : "Schön, dass du wieder da bist! 💕");
+  $("offlineOverlay").hidden = false;
+}
+
 // ----- Neustart mit Bonus -----
 
 function zeigeNeustart() {

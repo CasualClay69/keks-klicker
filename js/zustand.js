@@ -28,6 +28,8 @@ function neuerSpielstand() {
     sterne: 0,         // Glitzersterne aus "Neustart mit Bonus" (siehe neustart.js)
     gesamtFrueher: 0,  // Herzen aus früheren Durchgängen
     neustarts: 0,
+    zuletztAktiv: 0,   // Zeitpunkt (ms), zu dem das Spiel zuletzt lief – für den Offline-Fortschritt
+    offlineMax: 0,     // längste Abwesenheit in Sekunden (für den Erfolg "Über Nacht")
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

@@ -107,6 +107,20 @@ function produziere(sekunden) {
   spiel.spielzeit += sekunden;
 }
 
+// Offline-Fortschritt: Was haben die Herzschenker in "sekunden" Abwesenheit gesammelt?
+// Höchstens KONFIG.offline.maxStunden. Ohne Sternschnuppen-Bonus, zählt nicht als Spielzeit.
+// Rückgabe: { sekunden (gesamt weg), gezaehlt (angerechnet), herzen, gekappt }
+function berechneOffline(sekunden) {
+  const max = KONFIG.offline.maxStunden * 3600;
+  const gezaehlt = Math.min(Math.max(0, sekunden), max);
+  return {
+    sekunden,
+    gezaehlt,
+    herzen: basisHps() * gezaehlt * KONFIG.offline.anteil,
+    gekappt: sekunden > max,
+  };
+}
+
 // Gibt zurück, wie viele Herzen der Klick gebracht hat
 function klickeMarie() {
   const plus = herzenProKlick();
