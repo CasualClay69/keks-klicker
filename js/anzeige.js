@@ -13,6 +13,8 @@ const ui = {
   hps:            $("hps"),
   bonus:          $("bonus"),
   marie:          $("marie"),
+  hut:            $("hut"),
+  skinBereich:    $("skinBereich"),
   stern:          $("stern"),
   tonBtn:         $("tonBtn"),
   musikBtn:       $("musikBtn"),
@@ -243,6 +245,70 @@ function zeigeAlles() {
   aktualisiereAnzeige();
   zeigeErfolge();
   zeigeStatistik();
+}
+
+// ----- Skins -----
+
+// Baut die Skin-Seite: pro Kategorie eine Überschrift und ein Raster mit Karten
+function baueSkinSeite(beimWaehlen) {
+  for (const kategorie of SKIN_KATEGORIEN) {
+    const ueberschrift = document.createElement("h2");
+    ueberschrift.textContent = `${kategorie.icon} ${kategorie.name}`;
+    const raster = document.createElement("div");
+    raster.className = "skinRaster";
+
+    for (const skin of skinsDerKategorie(kategorie.id)) {
+      const karte = document.createElement("button");
+      karte.type = "button";
+      karte.className = "skinKarte";
+      const status = span("skinStatus");
+      karte.append(span("skinIcon", skin.icon), span("skinName", skin.name), status);
+      karte.addEventListener("click", () => beimWaehlen(skin));
+      raster.append(karte);
+      elemente.set(skin, { wurzel: karte, status });
+    }
+
+    // Solange es nur den normalen Skin gibt: Vorschau auf kommende Season-Pässe
+    if (skinsDerKategorie(kategorie.id).every(s => s.standard)) {
+      const teaser = document.createElement("div");
+      teaser.className = "skinKarte teaser";
+      teaser.append(span("skinIcon", "🔒"), span("skinName", "Bald mehr!"), span("skinStatus", "mit dem Season-Pass"));
+      raster.append(teaser);
+    }
+
+    ui.skinBereich.append(ueberschrift, raster);
+  }
+}
+
+// Markiert aktive und gesperrte Skins
+function zeigeSkins() {
+  for (const skin of SKINS) {
+    const { wurzel, status } = elemente.get(skin);
+    const aktiv = aktiverSkin(skin.kategorie) === skin;
+    const frei = skinFreigeschaltet(skin);
+    wurzel.classList.toggle("aktiv", aktiv);
+    wurzel.classList.toggle("gesperrt", !frei);
+    wurzel.setAttribute("aria-pressed", String(aktiv));
+    setzeText(status, aktiv ? "✓ Ausgewählt" : frei ? "Auswählen" : `🔒 ${seasonName(skin.season)}`);
+  }
+}
+
+// Setzt die gewählten Skins im Spiel um (Musik startet main.js neu)
+let hudVariablen = [];   // welche Farben der aktuelle HUD-Skin gesetzt hat
+
+function wendeSkinsAn() {
+  // Hintergrund: per Attribut, das Aussehen steht in style.css
+  document.body.dataset.hintergrund = aktiverSkin("hintergrund").wert;
+
+  // Hut: SVG-Code auf Maries Kopf
+  ui.hut.innerHTML = aktiverSkin("hut").svg;
+
+  // HUD: Farben als CSS-Variablen. Erst die alten entfernen, dann die neuen setzen.
+  const wurzel = document.documentElement.style;
+  for (const name of hudVariablen) wurzel.removeProperty(name);
+  const farben = aktiverSkin("hud").farben;
+  for (const [name, wert] of Object.entries(farben)) wurzel.setProperty(name, wert);
+  hudVariablen = Object.keys(farben);
 }
 
 // ----- Seiten (Shop / Erfolge / Statistik) und Handy-Menü -----

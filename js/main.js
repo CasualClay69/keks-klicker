@@ -32,6 +32,26 @@ function klickAufMarie(position) {
   aktualisiereAnzeige();
 }
 
+// ----- Skin auswählen -----
+
+function beimSkinWaehlen(skin) {
+  if (!waehleSkin(skin)) {
+    sound.fehler();
+    meldung("🔒 Noch gesperrt", `„${skin.name}“ gibt es mit ${seasonName(skin.season)}.`);
+    return;
+  }
+  speichereSkins();
+  wendeSkinsAn();
+  zeigeSkins();
+  sound.kauf();
+
+  // Neues Musikstück: Musik neu starten (falls sie gerade läuft)
+  if (skin.kategorie === "musik") {
+    stoppeMusik();
+    aktualisiereMusik();
+  }
+}
+
 // ----- Sternschnuppe: erscheinen, verschwinden, neu planen -----
 
 let sternTimer = null;
@@ -229,7 +249,11 @@ function richteAppEin() {
 
 function starte() {
   laden();
+  ladeSkins();
+  wendeSkinsAn();
   baueOberflaeche({ kaufeItem: beimKaufen, kaufeUpgrade: beimUpgradeKaufen });
+  baueSkinSeite(beimSkinWaehlen);
+  zeigeSkins();
   verbindeEreignisse();
   richteAppEin();
   zeigeSeite("seiteShop");

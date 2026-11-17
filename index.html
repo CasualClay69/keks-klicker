@@ -21,6 +21,7 @@
   <!-- Reihenfolge ist wichtig: spätere Dateien benutzen Dinge aus früheren.
        "defer" = erst ausführen, wenn das HTML fertig geladen ist. -->
   <script src="js/daten.js"   defer></script>
+  <script src="js/skins.js"   defer></script>
   <script src="js/hilfen.js"  defer></script>
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
@@ -119,13 +120,8 @@
         <path class="mund" d="M89 133 Q100 143 111 133" fill="none" stroke="#d63384" stroke-width="3" stroke-linecap="round"/>
         <path class="mund-offen" d="M88 131 Q100 152 112 131 Q100 137 88 131 Z" fill="#e0457b"/>
 
-        <!-- Große Schleife -->
-        <g transform="translate(140 46) rotate(20)">
-          <path d="M0 0 L-24 -14 Q-29 0 -24 14 Z" fill="#ff4f9a"/>
-          <path d="M0 0 L24 -14 Q29 0 24 14 Z" fill="#ff4f9a"/>
-          <path d="M-20 -8 Q-23 0 -20 8 M20 -8 Q23 0 20 8" stroke="#ff9cc9" stroke-width="2" fill="none"/>
-          <circle r="7" fill="#ff7eb6"/>
-        </g>
+        <!-- Hut: wird aus dem gewählten Hut-Skin eingesetzt (skins.js) -->
+        <g id="hut"></g>
       </svg>
     </button>
 
@@ -142,6 +138,7 @@
 
     <nav id="tabs" role="tablist">
       <button type="button" role="tab" data-seite="seiteShop" aria-selected="true">🛍️ Shop</button>
+      <button type="button" role="tab" data-seite="seiteSkins" aria-selected="false">🎨 Skins</button>
       <button type="button" role="tab" data-seite="seiteErfolge" aria-selected="false">🏆 Erfolge</button>
       <button type="button" role="tab" data-seite="seiteStatistik" aria-selected="false">📊 Statistik</button>
     </nav>
@@ -165,6 +162,11 @@
       <div id="gebaeudeListe"></div>
     </section>
 
+    <section id="seiteSkins" class="seite" role="tabpanel" hidden>
+      <p class="seitenInfo">Wähle aus, wie Marie und dein Spiel aussehen und klingen. Neue Skins kommen mit den Season-Pässen!</p>
+      <div id="skinBereich"></div>
+    </section>
+
     <section id="seiteErfolge" class="seite" role="tabpanel" hidden>
       <p id="erfolgInfo"></p>
       <div id="erfolgRaster"></div>
@@ -180,6 +182,7 @@
   <nav id="untenNav" aria-label="Menü">
     <button type="button" data-seite="" class="aktiv">💖<span>Marie</span></button>
     <button type="button" data-seite="seiteShop">🛍️<span>Shop</span><b id="shopBadge" class="badge" hidden></b></button>
+    <button type="button" data-seite="seiteSkins">🎨<span>Skins</span></button>
     <button type="button" data-seite="seiteErfolge">🏆<span>Erfolge</span></button>
     <button type="button" data-seite="seiteStatistik">📊<span>Statistik</span></button>
   </nav>

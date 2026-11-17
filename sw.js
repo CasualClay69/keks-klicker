@@ -11,7 +11,7 @@
 //  und VERSION erhöhen, damit der alte Cache gelöscht wird.
 // =====================================================
 
-const VERSION = "v9";
+const VERSION = "v10";
 const CACHE = "marie-clicker-" + VERSION;
 
 const DATEIEN = [
@@ -20,6 +20,7 @@ const DATEIEN = [
   "manifest.webmanifest",
   "css/style.css",
   "js/daten.js",
+  "js/skins.js",
   "js/hilfen.js",
   "js/zustand.js",
   "js/logik.js",

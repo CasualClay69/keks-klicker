@@ -46,8 +46,33 @@ function laden() {
   if (!KONFIG.kaufModi.includes(spiel.kaufModus)) spiel.kaufModus = "1";
 }
 
+// "Spielstand löschen" setzt nur das Spiel zurück – Skins (z.B. aus Season-Pässen) bleiben
 function zuruecksetzen() {
   spiel = neuerSpielstand();
   bonus = KEIN_BONUS;
   speichern();
+}
+
+// =====================================================
+//  SKINS – eigener Speicher, unabhängig vom Spielstand
+// =====================================================
+
+let skinStand = { freigeschaltet: [], aktiv: {} };
+
+function speichereSkins() {
+  try {
+    localStorage.setItem(KONFIG.skinSchluessel, JSON.stringify(skinStand));
+  } catch (e) { /* Speichern nicht möglich */ }
+}
+
+function ladeSkins() {
+  try {
+    const daten = JSON.parse(localStorage.getItem(KONFIG.skinSchluessel));
+    if (daten) {
+      skinStand = {
+        freigeschaltet: Array.isArray(daten.freigeschaltet) ? daten.freigeschaltet : [],
+        aktiv: daten.aktiv && typeof daten.aktiv === "object" ? daten.aktiv : {},
+      };
+    }
+  } catch (e) { /* kaputte Daten -> Standard behalten */ }
 }

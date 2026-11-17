@@ -62,40 +62,14 @@ const sound = {
 };
 
 // =====================================================
-//  HINTERGRUND-MUSIK: eine kleine Spieluhr-Melodie
-//
-//  Noten als [Name, Länge in Achteln]. null = Pause. Jeder Takt = 8 Achtel.
-//  Akkorde: C – Am – F – G | C – Am – F/G – C
+//  HINTERGRUND-MUSIK
+//  Welches Stück läuft, bestimmt der Musik-Skin (Noten stehen in skins.js).
 // =====================================================
 
-const MELODIE = [
-  ["E5", 1], ["G5", 1], ["C6", 2], ["G5", 1], ["E5", 1], ["G5", 2],   // C
-  ["A5", 1], ["C6", 1], ["E5", 2], ["A5", 2], ["G5", 2],              // Am
-  ["F5", 1], ["A5", 1], ["C6", 2], ["A5", 1], ["F5", 1], ["A5", 2],   // F
-  ["G5", 2], ["B5", 1], ["D6", 1], ["B5", 2], ["G5", 2],              // G
-  ["E5", 1], ["G5", 1], ["C6", 2], ["D6", 1], ["C6", 1], ["B5", 1], ["A5", 1],   // C
-  ["A5", 2], ["E5", 2], ["C6", 2], ["A5", 2],                         // Am
-  ["F5", 1], ["A5", 1], ["C6", 1], ["A5", 1], ["G5", 1], ["B5", 1], ["D6", 1], ["B5", 1],   // F – G
-  ["C6", 4], ["G5", 2], [null, 2],                                    // C
-];
-
-// Bass: Grundton und Quinte, je eine Viertelnote (2 Achtel) mit Pause dazwischen
-const BASS = [
-  ["C3", 4], ["G3", 4],
-  ["A2", 4], ["E3", 4],
-  ["F2", 4], ["C3", 4],
-  ["G2", 4], ["D3", 4],
-  ["C3", 4], ["G3", 4],
-  ["A2", 4], ["E3", 4],
-  ["F2", 4], ["G2", 4],
-  ["C3", 4], ["C3", 4],
-];
-
-const ACHTEL_SEK = 0.27;      // Tempo: Länge einer Achtelnote
 const MUSIK_LAUTSTAERKE = 0.07;
 
-// Wandelt die Notenlisten in einen Fahrplan um: Achtel-Nummer -> zu spielende Noten
-function baueFahrplan() {
+// Wandelt die Notenlisten eines Stücks in einen Fahrplan um: Achtel-Nummer -> zu spielende Noten
+function baueFahrplan(stueck) {
   const fahrplan = [];
   function eintragen(liste, stimme) {
     let schritt = 0;
@@ -105,13 +79,11 @@ function baueFahrplan() {
     }
     return schritt;
   }
-  const laenge = eintragen(MELODIE, "spieluhr");
-  eintragen(BASS, "bass");
-  return { fahrplan, laenge };
+  const laenge = Math.max(eintragen(stueck.melodie, "spieluhr"), eintragen(stueck.bass || [], "bass"));
+  return { fahrplan, laenge, achtelSek: stueck.achtelSek };
 }
-const { fahrplan: MUSIK_FAHRPLAN, laenge: MUSIK_SCHRITTE } = baueFahrplan();
 
-const musik = { laeuft: false, timer: null, bus: null, naechsteZeit: 0, schritt: 0 };
+const musik = { laeuft: false, timer: null, bus: null, naechsteZeit: 0, schritt: 0, plan: null };
 
 // Spieluhr-Glöckchen: Grundton + leiser, hoher Oberton, klingt lange aus
 function spieluhrNote(ctx, ziel, freq, zeit) {
@@ -147,13 +119,14 @@ function bassNote(ctx, ziel, freq, zeit, dauer) {
 // so bleibt der Takt exakt, auch wenn der Browser mal kurz hängt)
 function planeMusikNoten() {
   const ctx = audio();
+  const plan = musik.plan;
   while (musik.naechsteZeit < ctx.currentTime + 0.25) {
-    for (const n of MUSIK_FAHRPLAN[musik.schritt] || []) {
+    for (const n of plan.fahrplan[musik.schritt] || []) {
       if (n.stimme === "spieluhr") spieluhrNote(ctx, musik.bus, n.freq, musik.naechsteZeit);
-      else bassNote(ctx, musik.bus, n.freq, musik.naechsteZeit, n.laenge * ACHTEL_SEK * 0.9);
+      else bassNote(ctx, musik.bus, n.freq, musik.naechsteZeit, n.laenge * plan.achtelSek * 0.9);
     }
-    musik.schritt = (musik.schritt + 1) % MUSIK_SCHRITTE;
-    musik.naechsteZeit += ACHTEL_SEK;
+    musik.schritt = (musik.schritt + 1) % plan.laenge;
+    musik.naechsteZeit += plan.achtelSek;
   }
 }
 
@@ -161,6 +134,8 @@ function starteMusik() {
   if (musik.laeuft) return;
   try {
     const ctx = audio();
+    musik.plan = baueFahrplan(aktiverSkin("musik").musik);   // Stück aus dem Musik-Skin
+    const ACHTEL_SEK = musik.plan.achtelSek;
 
     // "Bus" = gemeinsamer Lautstärkeregler für die Musik, mit leichtem Echo
     musik.bus = ctx.createGain();

@@ -12,6 +12,7 @@ const KONFIG = {
   erfolgPruefenMs: 1000,
   speichernMs: 5000,
   speicherSchluessel: "marieClicker",
+  skinSchluessel: "marieClicker-skins",   // eigener Speicher: bleibt beim Spielstand-Löschen erhalten
   kaufModi: ["1", "10", "100", "next"],
 
   stern: {
