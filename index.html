@@ -30,6 +30,7 @@
   <script src="js/logik.js"   defer></script>
   <script src="js/sicherung.js" defer></script>
   <script src="js/aufgaben.js" defer></script>
+  <script src="js/geschenk.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -275,6 +276,22 @@
     <button type="button" data-seite="seiteErfolge"><i class="navIcon" data-symbol="erfolge">🏆</i><span>Erfolge</span></button>
     <button type="button" data-seite="seiteStatistik"><i class="navIcon" data-symbol="statistik">📊</i><span>Statistik</span></button>
   </nav>
+
+  <!-- Tägliches Geschenk (erscheint beim ersten Öffnen am Tag) -->
+  <div id="geschenkOverlay" class="overlay" hidden>
+    <div class="geschenkKarte" role="dialog" aria-modal="true" aria-labelledby="geschenkTitel">
+      <h2 id="geschenkTitel">🎁 Dein Geschenk für heute!</h2>
+      <p id="geschenkSerie" class="geschenkSerie"></p>
+      <ol id="geschenkTage" class="geschenkTage"></ol>
+      <button id="geschenkBox" class="geschenkBox" type="button" aria-label="Geschenk öffnen">🎁</button>
+      <p id="geschenkHinweis" class="geschenkHinweis">Tippe auf das Geschenk!</p>
+      <div id="geschenkInhalt" class="geschenkInhalt" hidden>
+        <div id="geschenkBetrag" class="geschenkBetrag"></div>
+        <p id="geschenkMorgen" class="geschenkMorgen"></p>
+        <button id="geschenkZu" class="knopf haupt" type="button">Juhu! 💖</button>
+      </div>
+    </div>
+  </div>
 
   <div id="meldungen" aria-live="polite"></div>
 

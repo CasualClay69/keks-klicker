@@ -96,5 +96,6 @@ const ERFOLGE = [
   { id: "upgAlle",   icon: "👑", name: "Prinzessin",        beschr: "Kaufe alle Upgrades",                      bedingung: s => s.upgrades.length >= UPGRADES.length },
   { id: "aufg10",    icon: "🐝", name: "Fleißige Biene",    beschr: "Erledige 10 Tagesaufgaben",                bedingung: s => (s.aufgabenGesamt || 0) >= 10 },
   { id: "aufg50",    icon: "🏅", name: "Aufgaben-Profi",    beschr: "Erledige 50 Tagesaufgaben",                bedingung: s => (s.aufgabenGesamt || 0) >= 50 },
-  { id: "zeit30",   icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
+  { id: "serie7",    icon: "📅", name: "Jeden Tag dabei",   beschr: "Hole dir 7 Tage hintereinander dein Geschenk", bedingung: s => ((s.geschenk && s.geschenk.beste) || 0) >= 7 },
+  { id: "zeit30",  icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

@@ -267,6 +267,107 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .aufgabe.abgeholt { opacity: 0.6; box-shadow: none; }
 .aufgabe.bonus { border-style: dashed; border-color: #f0b75a; background: linear-gradient(90deg, #fff6df, #ffffff); }
 
+/* ----- Tägliches Geschenk (Fenster über allem) ----- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(60, 20, 50, 0.45);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.geschenkKarte {
+  position: relative;
+  width: min(100%, 380px);
+  padding: 20px 18px 18px;
+  border: 3px solid var(--rand);
+  border-radius: 26px;
+  background: linear-gradient(180deg, #ffffff, var(--panel));
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: hidden;
+  animation: aufploppen 0.35s ease-out;
+}
+.geschenkKarte h2 { margin: 0 0 4px; font-size: 1.35rem; color: var(--akzent-dunkel); }
+.geschenkSerie { margin: 0 0 10px; font-weight: bold; color: var(--text-sanft); }
+
+/* Die 7 Tage der Serie */
+.geschenkTage {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+.geschenkTage li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 0 4px;
+  border: 2px solid var(--rand);
+  border-radius: 10px;
+  background: var(--karte);
+  font-size: 1.1rem;
+}
+.geschenkTage li small { font-size: 0.6rem; font-weight: bold; color: var(--text-sanft); }
+.geschenkTage li.erledigt { background: #e9fbef; border-color: #9ad8b0; }
+.geschenkTage li.heute {
+  border-color: var(--akzent);
+  background: var(--karte-hover);
+  transform: scale(1.12);
+  box-shadow: 0 3px 8px rgba(214, 51, 132, 0.3);
+}
+.geschenkTage li.gross { font-size: 1.35rem; }
+
+.geschenkBox {
+  margin: 8px auto 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 6.5rem;
+  line-height: 1.1;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 10px rgba(214, 51, 132, 0.35));
+  animation: geschenkWackeln 1.4s ease-in-out infinite;
+  touch-action: manipulation;
+}
+.geschenkBox.offen { animation: geschenkAuf 0.5s ease-out forwards; cursor: default; }
+.geschenkHinweis { margin: 0; font-weight: bold; color: var(--akzent-dunkel); }
+
+.geschenkInhalt { animation: aufploppen 0.4s ease-out; }
+.geschenkBetrag { font-size: 1.6rem; font-weight: 900; color: var(--akzent-dunkel); }
+.geschenkMorgen { margin: 6px 0 12px; font-size: 0.85rem; color: var(--text-sanft); }
+
+/* Konfetti beim Öffnen */
+.konfetti {
+  position: absolute;
+  left: 50%; top: 55%;
+  font-size: 1.4rem;
+  pointer-events: none;
+  transition: transform 1.1s cubic-bezier(0.15, 0.7, 0.3, 1), opacity 1.1s ease-in;
+}
+
+@keyframes geschenkWackeln {
+  0%, 60%, 100% { transform: rotate(0) scale(1); }
+  70% { transform: rotate(-12deg) scale(1.05); }
+  80% { transform: rotate(10deg) scale(1.05); }
+  90% { transform: rotate(-6deg) scale(1.02); }
+}
+@keyframes geschenkAuf {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35) rotate(-8deg); }
+  100% { transform: scale(1.1); }
+}
+@keyframes aufploppen {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
 /* ----- Bestenliste ----- */
 .blKopf {
   margin-bottom: 12px;
@@ -1212,5 +1313,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
+  .geschenkBox, .geschenkKarte, .geschenkInhalt,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

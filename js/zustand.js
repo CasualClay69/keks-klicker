@@ -17,6 +17,7 @@ function neuerSpielstand() {
     upgrades: [],      // IDs gekaufter Upgrades
     aufgaben: null,    // Tagesaufgaben (siehe aufgaben.js)
     aufgabenGesamt: 0, // insgesamt erledigte Tagesaufgaben
+    geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

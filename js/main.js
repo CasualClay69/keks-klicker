@@ -292,6 +292,7 @@ function tick() {
 
 function pruefeErfolgeUndStatistik() {
   pruefeTageswechsel();
+  pruefeGeschenk();   // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
 
   for (const erfolg of pruefeNeueErfolge()) {
@@ -373,6 +374,29 @@ function richteSicherungEin() {
     const datei = dateiAuswahl.files[0];
     dateiAuswahl.value = "";   // gleiche Datei nochmal wählbar
     if (datei) ladeSicherung(await datei.text());
+  });
+}
+
+// ----- Tägliches Geschenk -----
+
+// Wartet heute ein Geschenk und ist das Fenster noch nicht offen? -> zeigen
+function pruefeGeschenk() {
+  if (geschenkWartet() && $("geschenkOverlay").hidden) zeigeGeschenkFenster();
+}
+
+function richteGeschenkEin() {
+  $("geschenkBox").addEventListener("click", () => {
+    const ergebnis = oeffneGeschenk();
+    if (!ergebnis) return;
+    sound.stern();
+    setTimeout(() => sound.erfolg(), 350);
+    zeigeGeschenkInhalt(ergebnis);
+    for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+    aktualisiereAnzeige();
+  });
+  $("geschenkZu").addEventListener("click", () => {
+    versteckeGeschenkFenster();
+    sound.klick();
   });
 }
 
@@ -514,6 +538,7 @@ function starte() {
   zeigeSkins();
   verbindeEreignisse();
   richteSicherungEin();
+  richteGeschenkEin();
   richteBestenlisteEin();
   richteAppEin();
 
@@ -522,6 +547,7 @@ function starte() {
   zeigeSeite("seiteShop");
   pruefeTageswechsel();   // Tagesaufgaben für heute
   zeigeAlles();
+  pruefeGeschenk();       // erstes Öffnen heute? -> Geschenk zeigen
 
   for (const skin of nachgeliefert) {
     meldung(`🎁 Neuer Skin: ${skin.icon} ${skin.name}`, "Für deine schon erreichte Season-Stufe – jetzt unter Skins auswählbar");

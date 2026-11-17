@@ -105,6 +105,7 @@ const STATISTIK_ZEILEN = [
   ["Upgrades",                () => `${spiel.upgrades.length} / ${UPGRADES.length}`],
   ["Sternschnuppen gefangen", () => String(spiel.sternKlicks)],
   ["Tagesaufgaben erledigt",  () => String(spiel.aufgabenGesamt || 0)],
+  ["Längste Geschenk-Serie",  () => `${(spiel.geschenk && spiel.geschenk.beste) || 0} Tage`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -583,6 +584,81 @@ function aufgabenSymbolFeiern() {
   ui.aufgabenBtn.classList.remove("feiern");
   void ui.aufgabenBtn.offsetWidth;
   ui.aufgabenBtn.classList.add("feiern");
+}
+
+// ----- Tägliches Geschenk -----
+
+// Fenster vorbereiten und zeigen (noch verpackt)
+function zeigeGeschenkFenster() {
+  const serie = geschenkSerieHeute();
+  const tag = geschenkTag(serie);
+
+  let serienText = "Komm jeden Tag – dann wird dein Geschenk immer größer!";
+  if (serie > 1) serienText = `🔥 ${serie} Tage hintereinander!`;
+  else if (geschenkSerieUnterbrochen()) serienText = "Willkommen zurück! Deine Serie startet neu.";
+  setzeText($("geschenkSerie"), serienText);
+
+  // 7 Tage: erledigte ✓, heute hervorgehoben, Tag 7 = großes Geschenk
+  const tage = $("geschenkTage");
+  tage.textContent = "";
+  for (let t = 1; t <= GESCHENK_TAGE; t++) {
+    const li = document.createElement("li");
+    if (t < tag) li.classList.add("erledigt");
+    if (t === tag) li.classList.add("heute");
+    if (t === GESCHENK_TAGE) li.classList.add("gross");
+    li.append(t < tag ? "✅" : t === GESCHENK_TAGE ? "💝" : "🎁",
+      Object.assign(document.createElement("small"), { textContent: `Tag ${t}` }));
+    tage.append(li);
+  }
+
+  const box = $("geschenkBox");
+  box.textContent = tag === GESCHENK_TAGE ? "💝" : "🎁";
+  box.classList.remove("offen");
+  box.disabled = false;
+  $("geschenkHinweis").hidden = false;
+  $("geschenkInhalt").hidden = true;
+  $("geschenkOverlay").hidden = false;
+}
+
+// Nach dem Öffnen: Belohnung zeigen + Konfetti
+function zeigeGeschenkInhalt(ergebnis) {
+  const box = $("geschenkBox");
+  box.textContent = "🎉";
+  box.classList.add("offen");
+  box.disabled = true;
+  $("geschenkHinweis").hidden = true;
+
+  const pass = aktiverSeasonPass();
+  let betrag = `+${format(ergebnis.herzen)} ${herz()}`;
+  if (ergebnis.seasonPunkte) betrag += `\n+${ergebnis.seasonPunkte} ${pass.icon}`;
+  $("geschenkBetrag").textContent = betrag;
+  $("geschenkBetrag").style.whiteSpace = "pre-line";
+
+  setzeText($("geschenkMorgen"), ergebnis.tag < GESCHENK_TAGE
+    ? `Komm morgen wieder – dann ist dein Geschenk noch größer! 🎁`
+    : `Du bekommst jeden Tag das große Geschenk, solange du jeden Tag kommst! 💝`);
+  $("geschenkInhalt").hidden = false;
+  konfetti($("geschenkOverlay").querySelector(".geschenkKarte"));
+}
+
+// Konfetti fliegt aus der Mitte in alle Richtungen
+function konfetti(behaelter) {
+  const teile = ["💖", "✨", "⭐", "🎀", "💗", "🌟"];
+  for (let i = 0; i < 18; i++) {
+    const el = span("konfetti", teile[i % teile.length]);
+    behaelter.append(el);
+    const winkel = Math.random() * Math.PI * 2;
+    const weite = 90 + Math.random() * 110;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      el.style.transform = `translate(${Math.cos(winkel) * weite}px, ${Math.sin(winkel) * weite - 40}px) rotate(${Math.random() * 360}deg)`;
+      el.style.opacity = "0";
+    }));
+    setTimeout(() => el.remove(), 1300);
+  }
+}
+
+function versteckeGeschenkFenster() {
+  $("geschenkOverlay").hidden = true;
 }
 
 // ----- Bestenliste -----
