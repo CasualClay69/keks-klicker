@@ -83,9 +83,26 @@ function verbindeEreignisse() {
     });
   }
 
-  for (const btn of document.querySelectorAll("#tabs button")) {
-    btn.addEventListener("click", () => wechsleTab(btn));
+  // Desktop: Tabs oben in der Seitenleiste
+  for (const btn of ui.tabBtns) {
+    btn.addEventListener("click", () => zeigeSeite(btn.dataset.seite));
   }
+
+  // Handy: Symbolleiste unten
+  for (const btn of ui.untenBtns) {
+    btn.addEventListener("click", () => {
+      const seite = btn.dataset.seite;
+      // "Marie" oder nochmal auf das offene Symbol tippen -> Menü schließen
+      if (!seite || (menueOffen && seite === aktuelleSeite)) {
+        setzeMenue(false);
+      } else {
+        zeigeSeite(seite);
+        setzeMenue(true);
+      }
+    });
+  }
+  $("sheetZu").addEventListener("click", () => setzeMenue(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") setzeMenue(false); });
 
   $("reset").addEventListener("click", () => {
     if (!confirm("Wirklich alles löschen?")) return;
@@ -162,6 +179,7 @@ function starte() {
   baueOberflaeche({ kaufeItem: beimKaufen, kaufeUpgrade: beimUpgradeKaufen });
   verbindeEreignisse();
   richteAppEin();
+  zeigeSeite("seiteShop");
   zeigeAlles();
 
   setInterval(tick, KONFIG.tickMs);

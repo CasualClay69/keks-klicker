@@ -17,6 +17,10 @@ const ui = {
   tonBtn:         $("tonBtn"),
   installBtn:     $("installBtn"),
   upgradeBereich: $("upgradeBereich"),
+  shopBadge:      $("shopBadge"),
+  sheetTitel:     $("sheetTitel"),
+  tabBtns:        document.querySelectorAll("#tabs button"),
+  untenBtns:      document.querySelectorAll("#untenNav button"),
   erfolgInfo:     $("erfolgInfo"),
   meldungen:      $("meldungen"),
   kaufModusBtns:  document.querySelectorAll("#kaufModus button"),
@@ -181,6 +185,7 @@ function zeigeGebaeude() {
 
 function zeigeUpgrades() {
   let sichtbar = 0;
+  let leistbar = 0;
   for (const u of UPGRADES) {
     const el = elemente.get(u).wurzel;
     const zeigen = upgradeVerfuegbar(u);
@@ -194,8 +199,13 @@ function zeigeUpgrades() {
     el.hidden = !zeigen;
     el.classList.toggle("zuteuer", spiel.herzen < u.preis);
     if (zeigen) sichtbar++;
+    if (zeigen && spiel.herzen >= u.preis) leistbar++;
   }
   ui.upgradeBereich.hidden = sichtbar === 0;
+
+  // Handy: Zahl am Shop-Symbol
+  ui.shopBadge.hidden = leistbar === 0;
+  setzeText(ui.shopBadge, String(leistbar));
 }
 
 // Wird 10× pro Sekunde aufgerufen
@@ -232,13 +242,35 @@ function zeigeAlles() {
   zeigeStatistik();
 }
 
-// ----- Tabs -----
+// ----- Seiten (Shop / Erfolge / Statistik) und Handy-Menü -----
 
-function wechsleTab(aktiverBtn) {
-  for (const btn of document.querySelectorAll("#tabs button")) {
-    const aktiv = btn === aktiverBtn;
+let aktuelleSeite = "seiteShop";
+let menueOffen = false;
+
+// Zeigt eine Seite an – am Desktop über die Tabs, am Handy im Menü von unten
+function zeigeSeite(seiteId) {
+  aktuelleSeite = seiteId;
+  for (const btn of ui.tabBtns) {
+    const aktiv = btn.dataset.seite === seiteId;
     btn.setAttribute("aria-selected", String(aktiv));
     $(btn.dataset.seite).hidden = !aktiv;
+    if (aktiv) setzeText(ui.sheetTitel, btn.textContent);
+  }
+  zeigeUntenNav();
+}
+
+// Handy: Menü von unten öffnen oder schließen
+function setzeMenue(offen) {
+  menueOffen = offen;
+  document.body.classList.toggle("menue-offen", offen);
+  zeigeUntenNav();
+}
+
+// Welches Symbol unten ist aktiv? Menü zu = "Marie", sonst die offene Seite
+function zeigeUntenNav() {
+  const aktiveSeite = menueOffen ? aktuelleSeite : "";
+  for (const btn of ui.untenBtns) {
+    btn.classList.toggle("aktiv", btn.dataset.seite === aktiveSeite);
   }
 }
 
@@ -282,8 +314,9 @@ function meldung(titel, text) {
 
 function zeigeStern() {
   const groesse = 70;
+  const untenFrei = parseFloat(getComputedStyle(ui.spielfeld).paddingBottom) || 0;   // nicht unter dem Handy-Menü
   const maxX = ui.spielfeld.clientWidth - groesse - 10;
-  const maxY = ui.spielfeld.clientHeight - groesse - 10;
+  const maxY = ui.spielfeld.clientHeight - untenFrei - groesse;
   ui.stern.style.left = zufallZwischen(10, maxX) + "px";
   ui.stern.style.top  = zufallZwischen(50, maxY) + "px";   // nicht in die obere Knopf-Zeile
   ui.stern.hidden = false;

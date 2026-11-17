@@ -126,6 +126,12 @@
 
   <!-- Rechte Seite: Shop, Erfolge, Statistik -->
   <aside id="seitenleiste">
+    <!-- Nur auf dem Handy: Kopfzeile des Menüs, das von unten hereinfährt -->
+    <div id="sheetKopf">
+      <span id="sheetTitel">🛍️ Shop</span>
+      <button id="sheetZu" type="button" aria-label="Menü schließen">✕</button>
+    </div>
+
     <nav id="tabs" role="tablist">
       <button type="button" role="tab" data-seite="seiteShop" aria-selected="true">🛍️ Shop</button>
       <button type="button" role="tab" data-seite="seiteErfolge" aria-selected="false">🏆 Erfolge</button>
@@ -161,6 +167,14 @@
       <button id="reset" type="button">Spielstand löschen</button>
     </section>
   </aside>
+
+  <!-- Nur auf dem Handy: Symbolleiste unten -->
+  <nav id="untenNav" aria-label="Menü">
+    <button type="button" data-seite="" class="aktiv">💖<span>Marie</span></button>
+    <button type="button" data-seite="seiteShop">🛍️<span>Shop</span><b id="shopBadge" class="badge" hidden></b></button>
+    <button type="button" data-seite="seiteErfolge">🏆<span>Erfolge</span></button>
+    <button type="button" data-seite="seiteStatistik">📊<span>Statistik</span></button>
+  </nav>
 
   <div id="meldungen" aria-live="polite"></div>
 

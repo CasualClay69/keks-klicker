@@ -1,17 +1,17 @@
-"use strict";
+﻿"use strict";
 // =====================================================
-//  SERVICE WORKER – macht das Spiel offline spielbar
+//  SERVICE WORKER â€“ macht das Spiel offline spielbar
 //
 //  Strategie "stale-while-revalidate":
-//  1. Datei sofort aus dem Speicher (Cache) liefern → startet blitzschnell, auch offline
+//  1. Datei sofort aus dem Speicher (Cache) liefern â†’ startet blitzschnell, auch offline
 //  2. Gleichzeitig im Hintergrund die neueste Version laden und den Cache aktualisieren
-//  → Änderungen, die du hochlädst, sind beim ÜBERNÄCHSTEN Öffnen da.
+//  â†’ Ã„nderungen, die du hochlÃ¤dst, sind beim ÃœBERNÃ„CHSTEN Ã–ffnen da.
 //
-//  Wenn du Dateien hinzufügst oder umbenennst: in DATEIEN eintragen
-//  und VERSION erhöhen, damit der alte Cache gelöscht wird.
+//  Wenn du Dateien hinzufÃ¼gst oder umbenennst: in DATEIEN eintragen
+//  und VERSION erhÃ¶hen, damit der alte Cache gelÃ¶scht wird.
 // =====================================================
 
-const VERSION = "v3";
+const VERSION = "v4";
 const CACHE = "marie-clicker-" + VERSION;
 
 const DATEIEN = [
@@ -43,7 +43,7 @@ self.addEventListener("install", ereignis => {
   );
 });
 
-// Aktivierung: Caches älterer Versionen löschen
+// Aktivierung: Caches Ã¤lterer Versionen lÃ¶schen
 self.addEventListener("activate", ereignis => {
   ereignis.waitUntil(
     caches.keys()
