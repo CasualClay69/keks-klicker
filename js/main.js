@@ -62,6 +62,80 @@ function klickAufMarie(position) {
   aktualisiereAnzeige();
 }
 
+// ----- Herzregen-Minispiel -----
+
+let regenTimer = null;
+let regenLaeuft = false;
+
+// Nächsten Regen in [min, max] Minuten planen
+function planeRegen([minMin, maxMin]) {
+  clearTimeout(regenTimer);
+  regenTimer = setTimeout(versucheRegen, zufallZwischen(minMin, maxMin) * 60000);
+}
+
+// Nur starten, wenn gerade nichts im Weg ist – sonst in 30 Sek. nochmal versuchen
+function versucheRegen() {
+  if (regenLaeuft || !marieDarfSprechen()) {
+    regenTimer = setTimeout(versucheRegen, 30000);
+    return;
+  }
+  starteRegen();
+}
+
+function starteRegen() {
+  regenLaeuft = true;
+  const thema = regenThema();
+  const ende = Date.now() + REGEN.dauerSek * 1000;
+  let punkte = 0, treffer = 0;
+
+  starteRegenAnzeige();
+  aktualisiereRegenAnzeige(thema, 0, REGEN.dauerSek);
+  sound.stern();
+  const feld = ui.spielfeld.getBoundingClientRect();
+  zeigeSchwebeText({ x: feld.left + feld.width / 2 - 60, y: feld.top + feld.height * 0.45 }, `${thema.icon} ${thema.name}!`, true);
+  sag("regenStart", { wichtig: true });
+
+  const beimFangen = (wert, position) => {
+    punkte += wert;
+    treffer++;
+    // "Plopp" – wird mit jedem Treffer ein bisschen höher
+    spieleTon(620 + Math.min(treffer, 40) * 22, 0.09, "sine", 0.12, 1500 + Math.min(treffer, 40) * 22);
+    zeigeSchwebeText(position, wert > 1 ? `+${wert} ✨` : "+1");
+    aktualisiereRegenAnzeige(thema, punkte, Math.max(0, Math.ceil((ende - Date.now()) / 1000)));
+  };
+
+  const fallen = setInterval(() => {
+    if (!document.hidden) lasseRegenTeilFallen(thema, beimFangen);
+  }, 1000 / REGEN.proSekunde);
+
+  const uhr = setInterval(() => {
+    const rest = Math.max(0, Math.ceil((ende - Date.now()) / 1000));
+    aktualisiereRegenAnzeige(thema, punkte, rest);
+    if (rest > 0) return;
+    clearInterval(fallen);
+    clearInterval(uhr);
+    setTimeout(() => beendeRegenMitBonus(thema, punkte), 700);   // die letzten Teile noch fangen lassen
+  }, 200);
+}
+
+function beendeRegenMitBonus(thema, punkte) {
+  beendeRegenAnzeige();
+  const ergebnis = beendeRegen(punkte);
+  regenLaeuft = false;
+
+  sound.erfolg();
+  const pass = aktiverSeasonPass();
+  let text = punkte ? `${punkte} Punkte → +${format(ergebnis.herzen)} ${herz()}` : "Diesmal nichts gefangen – beim nächsten Mal!";
+  if (ergebnis.seasonPunkte) text += ` · +${ergebnis.seasonPunkte} ${pass.icon}`;
+  meldung(`${thema.icon} ${thema.name} vorbei!`, text);
+  if (ergebnis.rekord && punkte > 0) meldung("🏆 Neuer Rekord!", `So viel hast du noch nie gefangen: ${punkte} Punkte!`);
+  for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+  sag(punkte >= 30 ? "regenGut" : "regenOk", { wichtig: true });
+
+  aktualisiereAnzeige();
+  planeRegen(REGEN.pauseMinuten);
+}
+
 // ----- Geburtstag -----
 
 let warGeburtstag = null;   // um den Wechsel um Mitternacht zu bemerken
@@ -897,6 +971,7 @@ function starte() {
   setInterval(pruefeErfolgeUndStatistik, KONFIG.erfolgPruefenMs);
   setInterval(speichern, KONFIG.speichernMs);
   planeStern();
+  planeRegen(REGEN.ersteMinuten);
 }
 
 starte();

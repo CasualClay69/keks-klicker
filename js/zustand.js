@@ -23,6 +23,8 @@ function neuerSpielstand() {
     stickerNeu: [],    // neue, noch nicht angeschaute Sticker
     haustier: null,    // Maries Haustier (siehe haustier.js)
     geburtstagJahr: null, // Jahr, in dem das Geburtstagsgeschenk geöffnet wurde (siehe geburtstag.js)
+    regenBest: 0,      // bester Herzregen (Punkte)
+    regenAnzahl: 0,    // so viele Herzregen gab es schon
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

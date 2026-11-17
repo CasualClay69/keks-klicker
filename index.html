@@ -36,6 +36,7 @@
   <script src="js/haustier.js" defer></script>
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
+  <script src="js/herzregen.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -76,6 +77,10 @@
     <div id="herzen">0 Herzen</div>
     <div id="hps">0 pro Sekunde</div>
     <div id="bonus" aria-live="polite"></div>
+
+    <!-- Herzregen-Minispiel: hier fallen die Teile, unten die Anzeige -->
+    <div id="regenFeld" class="regenFeld" hidden></div>
+    <div id="regenAnzeige" class="regenAnzeige" aria-live="polite" hidden></div>
 
     <!-- Geburtstag: Konfetti-Regen (nur am 3. Februar sichtbar) -->
     <div id="konfettiRegen" class="konfettiRegen" aria-hidden="true" hidden></div>

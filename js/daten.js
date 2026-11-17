@@ -104,5 +104,6 @@ const ERFOLGE = [
   { id: "seasonSeite", icon: "🎟️", name: "Season-Sammelprofi", beschr: "Mache eine Season-Sticker-Seite voll",   bedingung: () => STICKER_SEITEN.some(s => s.season && seiteVoll(s)) },
   { id: "tier1",      icon: "🐾", name: "Tierfreund",        beschr: "Adoptiere ein Haustier für Marie",         bedingung: s => Boolean(s.haustier) },
   { id: "tierGross",  icon: "🎉", name: "Groß geworden",     beschr: "Dein Haustier ist ausgewachsen (Level 10)", bedingung: s => Boolean(s.haustier) && s.haustier.level >= 10 },
+  { id: "regen40",    icon: "🧺", name: "Fang-Profi",        beschr: "Fange 40 Punkte in einem Herzregen",        bedingung: s => (s.regenBest || 0) >= 40 },
   { id: "zeit30",    icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

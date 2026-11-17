@@ -10,6 +10,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
 - 30 Erfolge (je +1 % Herzen)
+- Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;
+  in den Seasons passend zum Thema (🍂 Blätterregen, ❄️ Schneegestöber – siehe `regen` in `SEASON_PAESSE`)
 - Geburtstag 🎂 (jedes Jahr am 3. Februar): Konfetti-Regen, Partyhut, „Happy Birthday“ als Musik und ein großes
   Geschenk mit Partyhut und Melodie als dauerhaften Skins (Datum in `GEBURTSTAG` in `js/geburtstag.js`)
 - Marie spricht 💬: Sprechblasen beim Klicken, bei Sternschnuppen, Erfolgen, Begrüßung nach Tageszeit

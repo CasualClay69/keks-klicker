@@ -460,6 +460,64 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   to   { transform: scale(1);    opacity: 1; }
 }
 
+/* ----- Herzregen-Minispiel ----- */
+.regenFeld {
+  position: absolute;
+  inset: 0;
+  z-index: 6;               /* über Marie – aber nur die fallenden Teile fangen Berührungen ab */
+  overflow: hidden;
+  pointer-events: none;
+}
+.regenTeil {
+  position: absolute;
+  top: -12%;
+  padding: 8px;             /* größere Tippfläche für Kinderfinger */
+  font-size: clamp(2.3rem, 8vmin, 3.4rem);
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.2));
+  animation:
+    regenFallen var(--dauer, 3.5s) linear forwards,
+    regenTaumeln 1.2s ease-in-out infinite alternate;
+}
+.regenTeil.gold { font-size: clamp(2.8rem, 10vmin, 4rem); filter: drop-shadow(0 0 10px #ffd700) drop-shadow(0 0 4px #fff); }
+.regenTeil.gefangen { animation: regenPlopp 0.3s ease-out forwards; pointer-events: none; }
+
+.regenAnzeige {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 7;
+  padding: 8px 16px;
+  border: 3px solid var(--akzent);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--akzent-dunkel);
+  font-weight: 900;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  box-shadow: var(--schatten);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+@keyframes regenFallen {
+  from { top: -12%; }
+  to   { top: 108%; }
+}
+@keyframes regenTaumeln {
+  from { transform: rotate(-14deg) translateX(-6px); }
+  to   { transform: rotate(14deg) translateX(6px); }
+}
+@keyframes regenPlopp {
+  to { transform: scale(1.9); opacity: 0; }
+}
+
 /* ----- Geburtstag ----- */
 /* Konfetti-Regen über dem Spielfeld: fällt nach unten und flattert hin und her */
 .konfettiRegen {

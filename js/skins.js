@@ -356,6 +356,8 @@ const SEASON_PAESSE = [
     klicksProStufe: 30,
     // Auf diesen Stufen gibt es Skins, auf allen anderen Herzen
     skinBelohnungen: { 10: "hut-pilgerhut", 20: "musik-erntedank", 30: "hud-herbstlaub", 40: "logo-erntedank", 50: "hintergrund-herbst" },
+    // Herzregen-Minispiel während dieser Season (siehe herzregen.js)
+    regen: { name: "Blätterregen", icon: "🍂", teile: ["🍂", "🍁", "🌰", "🎃"], gold: "🦃" },
     // Farben der Season-Seite (Kopf, Fortschrittsbalken)
     design: {
       "--season-kopf-1": "#fff3e0", "--season-kopf-2": "#ffe0c4", "--season-text": "#5a3317",
@@ -374,6 +376,7 @@ const SEASON_PAESSE = [
     klicksBasis: 670,
     klicksProStufe: 30,
     skinBelohnungen: { 10: "hut-weihnachtsmuetze", 20: "musik-gloeckchen", 30: "hud-winterzauber", 40: "logo-weihnachten", 50: "hintergrund-schnee" },
+    regen: { name: "Schneegestöber", icon: "❄️", teile: ["❄️", "🎁", "⭐", "🔔"], gold: "🎅" },
     design: {
       "--season-kopf-1": "#eef6ff", "--season-kopf-2": "#dbe9ff", "--season-text": "#23324d",
       "--season-akzent": "#c62f3e", "--season-balken-1": "#ff8a8a", "--season-balken-2": "#d63a4a",

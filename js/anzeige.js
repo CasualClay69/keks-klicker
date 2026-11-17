@@ -115,6 +115,7 @@ const STATISTIK_ZEILEN = [
   ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
   ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker(sichtbareSticker())} / ${sichtbareSticker().length}`],
   ["Haustier",                () => haustier() ? `${haustier().name} (Level ${haustier().level})` : "noch keins"],
+  ["Bester Herzregen",        () => `${spiel.regenBest || 0} Punkte`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -763,6 +764,49 @@ function zeigeRadErgebnis(ergebnis) {
   setzeText($("radInfo"), "Glückwunsch! Morgen kannst du wieder drehen.");
   $("radZu").disabled = false;
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
+}
+
+// ----- Herzregen-Minispiel -----
+
+function starteRegenAnzeige() {
+  $("regenFeld").textContent = "";
+  $("regenFeld").hidden = false;
+  $("regenAnzeige").hidden = false;
+}
+
+function aktualisiereRegenAnzeige(thema, punkte, restSek) {
+  setzeText($("regenAnzeige"), `${thema.icon} ${punkte} Punkte · ⏳ ${restSek} s`);
+}
+
+// Ein Teil fallen lassen. beimFangen(wert, position) wird beim Antippen aufgerufen.
+function lasseRegenTeilFallen(thema, beimFangen) {
+  const istGold = Math.random() < REGEN.goldChance;
+  const teil = document.createElement("span");
+  teil.className = "regenTeil" + (istGold ? " gold" : "");
+  teil.textContent = istGold ? thema.gold : zufallAus(thema.teile);
+  teil.style.left = `${zufallZwischen(2, 86)}%`;
+  teil.style.setProperty("--dauer", `${zufallZwischen(REGEN.fallSekMin, REGEN.fallSekMax).toFixed(2)}s`);
+
+  teil.addEventListener("pointerdown", ereignis => {
+    ereignis.preventDefault();
+    ereignis.stopPropagation();
+    if (teil.classList.contains("gefangen")) return;
+    // Aktuelle Höhe festhalten, sonst springt das Teil beim Wechsel der Animation nach oben
+    teil.style.top = getComputedStyle(teil).top;
+    teil.classList.add("gefangen");
+    beimFangen(istGold ? REGEN.goldPunkte : 1, { x: ereignis.clientX, y: ereignis.clientY });
+    setTimeout(() => teil.remove(), 320);
+  });
+  // Unten rausgefallen -> wegräumen
+  teil.addEventListener("animationend", e => { if (e.animationName === "regenFallen") teil.remove(); });
+  $("regenFeld").append(teil);
+}
+
+function beendeRegenAnzeige() {
+  $("regenAnzeige").hidden = true;
+  const feld = $("regenFeld");
+  for (const teil of feld.children) teil.style.opacity = "0";
+  setTimeout(() => { feld.textContent = ""; feld.hidden = true; }, 400);
 }
 
 // ----- Geburtstag -----
