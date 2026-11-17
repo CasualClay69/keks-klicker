@@ -411,10 +411,16 @@ function zeigeFigur() {
   ui.marie.setAttribute("aria-label", `${name} anklicken`);
   document.body.dataset.figur = figur.id;
 
+  // Kleiderschrank: Kleid, Frisur und Haarfarbe (Standard = so, wie die Figur gezeichnet ist)
   const a = figur.aussehen;
-  $("haarHell").setAttribute("stop-color", a.haar[0]);
-  $("haarDunkel").setAttribute("stop-color", a.haar[1]);
-  $("kleid").setAttribute("fill", a.kleid);
+  const haar = aktiverSkin("haarfarbe").haar || a.haar;
+  $("haarHell").setAttribute("stop-color", haar[0]);
+  $("haarDunkel").setAttribute("stop-color", haar[1]);
+  $("kleid").innerHTML = aktiverSkin("kleid").svg.replaceAll("{farbe}", a.kleid);
+  const frisur = aktiverSkin("frisur");
+  $("haarHinten").innerHTML = frisur.hinten;
+  $("haarVorne").innerHTML = frisur.vorne || "";
+  $("haarOben").innerHTML = frisur.oben || "";
   for (const pupille of document.querySelectorAll("#marie .pupille")) pupille.setAttribute("fill", a.augen);
 }
 

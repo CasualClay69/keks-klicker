@@ -14,6 +14,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Sternschnuppen mit zufälligen Boni
 - Zwei Figuren 👧: unter Skins → „Wer wird geklickt?“ zwischen Marie (7, hellbraune Haare) und
   Hannah (5, blonde Haare) wechseln. Logo und Texte passen sich an (`figur` in `js/skins.js`)
+- Kleiderschrank 👗: Kleider, Frisuren und Haarfarben als Skins (`js/kleiderschrank.js`). Jeder Season-Pass
+  bringt auf Stufe 25 ein Kleid und auf Stufe 35 eine Frisur oder Haarfarbe (z. B. Weihnachtskleid, Zwei Zöpfe)
 - 35 Erfolge (je +1 % Herzen)
 - Offline-Fortschritt 🌙: Die Herzschenker sammeln weiter, während die App zu ist (bis zu 8 Stunden,
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute

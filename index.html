@@ -25,6 +25,7 @@
   <script src="js/version.js" defer></script>
   <script src="js/daten.js"   defer></script>
   <script src="js/skins.js"   defer></script>
+  <script src="js/kleiderschrank.js" defer></script>
   <script src="js/hilfen.js"  defer></script>
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
@@ -104,20 +105,27 @@
           </linearGradient>
         </defs>
 
-        <!-- Lange Haare hinten (fallen bis unten) -->
-        <path d="M100 26 C38 26 26 74 28 118 Q26 170 22 220 L178 220 Q174 170 172 118 C174 74 162 26 100 26 Z" fill="url(#haar)"/>
+        <!-- Haare hinten: kommen aus dem Frisur-Skin (kleiderschrank.js) -->
+        <g id="haarHinten">
+          <path d="M100 26 C38 26 26 74 28 118 Q26 170 22 220 L178 220 Q174 170 172 118 C174 74 162 26 100 26 Z" fill="url(#haar)"/>
+        </g>
 
         <!-- Hals, Kleid, Kragen -->
         <rect x="89" y="142" width="22" height="32" rx="10" fill="#ffd8c4"/>
-        <path id="kleid" d="M40 220 Q44 174 100 168 Q156 174 160 220 Z" fill="#ff7eb6"/>
+        <!-- Kleid: kommt aus dem Kleid-Skin (kleiderschrank.js) -->
+        <g id="kleid">
+        <path d="M40 220 Q44 174 100 168 Q156 174 160 220 Z" fill="#ff7eb6"/>
         <path d="M81 170 Q100 192 119 170 Q100 179 81 170 Z" fill="#fff"/>
         <circle cx="76" cy="204" r="4" fill="#fff" opacity=".8"/>
         <circle cx="124" cy="204" r="4" fill="#fff" opacity=".8"/>
         <circle cx="100" cy="210" r="4" fill="#fff" opacity=".8"/>
+        </g>
 
         <!-- Haarsträhnen vorne über den Schultern -->
-        <path d="M48 104 Q34 160 42 220 L68 220 Q58 168 64 122 Z" fill="url(#haar)"/>
-        <path d="M152 104 Q166 160 158 220 L132 220 Q142 168 136 122 Z" fill="url(#haar)"/>
+        <g id="haarVorne">
+          <path d="M48 104 Q34 160 42 220 L68 220 Q58 168 64 122 Z" fill="url(#haar)"/>
+          <path d="M152 104 Q166 160 158 220 L132 220 Q142 168 136 122 Z" fill="url(#haar)"/>
+        </g>
 
         <!-- Gesicht (rund, kindlich) -->
         <ellipse cx="100" cy="106" rx="54" ry="54" fill="url(#haut)"/>
@@ -159,6 +167,9 @@
         <!-- Mund: Lächeln / offen vor Freude -->
         <path class="mund" d="M89 133 Q100 143 111 133" fill="none" stroke="#d63384" stroke-width="3" stroke-linecap="round"/>
         <path class="mund-offen" d="M88 131 Q100 152 112 131 Q100 137 88 131 Z" fill="#e0457b"/>
+
+        <!-- Haarschmuck der Frisur (über dem Pony) -->
+        <g id="haarOben"></g>
 
         <!-- Hut: wird aus dem gewählten Hut-Skin eingesetzt (skins.js) -->
         <g id="hut"></g>

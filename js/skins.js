@@ -2,7 +2,8 @@
 // =====================================================
 //  SKINS & SEASON-PÄSSE
 //
-//  Kategorien: Figur (Marie oder Hannah), Hintergrund, Hut, HUD, Logo, Musik.
+//  Kategorien: Figur (Marie oder Hannah), Kleiderschrank (Kleid, Frisur, Haarfarbe –
+//  siehe kleiderschrank.js), Hintergrund, Hut, HUD, Logo, Musik.
 //  Am Anfang ist nur der "normale" Skin jeder Kategorie freigeschaltet
 //  (standard: true). Weitere Skins kommen später über Season-Pässe.
 //
@@ -22,8 +23,11 @@
 
 const SKIN_KATEGORIEN = [
   { id: "figur",       name: "Wer wird geklickt?", icon: "👧", ohneTeaser: true },
-  { id: "hintergrund", name: "Hintergrund",   icon: "🖼️" },
+  { id: "kleid",       name: "Kleider",       icon: "👗" },
+  { id: "frisur",      name: "Frisuren",      icon: "💇‍♀️" },
+  { id: "haarfarbe",   name: "Haarfarben",    icon: "🌈" },
   { id: "hut",         name: "Hut",           icon: "👒" },
+  { id: "hintergrund", name: "Hintergrund",   icon: "🖼️" },
   { id: "hud",         name: "HUD-Farben",    icon: "🎨" },
   { id: "logo",        name: "Logo",          icon: "✨" },
   { id: "musik",       name: "Musik",         icon: "🎵" },

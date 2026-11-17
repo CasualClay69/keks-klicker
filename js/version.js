@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.39";
-const APP_NEU = "Neu: Hannah hat jetzt auch ihren eigenen Geburtstag am 8. Februar – mit Konfetti, Partyhut und Geschenk! 🎂";
+const APP_VERSION = "1.40";
+const APP_NEU = "Neu: Der Kleiderschrank! Kleider, Frisuren und Haarfarben für Marie und Hannah – in jedem Season-Pass auf Stufe 25 und 35. 👗";

@@ -23,6 +23,7 @@ const DATEIEN = [
   "js/version.js",
   "js/daten.js",
   "js/skins.js",
+  "js/kleiderschrank.js",
   "js/hilfen.js",
   "js/zustand.js",
   "js/logik.js",
