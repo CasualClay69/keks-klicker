@@ -10,8 +10,9 @@
 // =====================================================
 
 const BESTENLISTE = {
-  url: "",          // Supabase-Projekt-Adresse, z.B. "https://abcdefghijkl.supabase.co"
-  schluessel: "",   // öffentlicher Schlüssel ("Publishable key" bzw. "anon public")
+  // Beides ist öffentlich und darf im Code stehen. Den geheimen "Secret key" NIE hier eintragen!
+  url: "https://tpbsqfivdkgkqpktqnlv.supabase.co",            // Supabase-Projekt-Adresse
+  schluessel: "sb_publishable_Penidm4iDwsdKhpk74WUvg_kpA5A7S-", // öffentlicher Schlüssel ("Publishable key")
   sendenAlleSek: 60,
 };
 const BESTENLISTE_SPEICHER = "marieClicker-bestenliste";
