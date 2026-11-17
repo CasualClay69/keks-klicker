@@ -181,7 +181,7 @@ const SKINS = [
   { id: "musik-normal", kategorie: "musik", standard: true,
     name: "Spieluhr", icon: "🎶", musik: SPIELUHR },
 
-  // ───────── Geburtstagsgeschenk (am 3. Februar, siehe geburtstag.js) ─────────
+  // ───────── Geburtstagsgeschenk (Marie 3. Februar, Hannah 8. Februar – siehe geburtstag.js) ─────────
   { id: "hut-partyhut", kategorie: "hut", geschenk: "geburtstag",
     name: "Partyhut", icon: "🥳", svg: PARTYHUT_SVG },
   { id: "musik-geburtstag", kategorie: "musik", geschenk: "geburtstag",

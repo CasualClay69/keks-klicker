@@ -22,7 +22,8 @@ function neuerSpielstand() {
     sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)
     stickerNeu: [],    // neue, noch nicht angeschaute Sticker
     haustier: null,    // Maries Haustier (siehe haustier.js)
-    geburtstagJahr: null, // Jahr, in dem das Geburtstagsgeschenk geöffnet wurde (siehe geburtstag.js)
+    geburtstagJahr: null, // alt: Jahr, in dem Marie ihr Geburtstagsgeschenk geöffnet hat
+    geburtstagJahre: {},  // pro Figur: Jahr, in dem das Geburtstagsgeschenk geöffnet wurde (siehe geburtstag.js)
     regenBest: 0,      // bester Herzregen (Punkte)
     regenAnzahl: 0,    // so viele Herzregen gab es schon
     sterne: 0,         // Glitzersterne aus "Neustart mit Bonus" (siehe neustart.js)

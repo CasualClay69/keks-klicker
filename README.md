@@ -19,8 +19,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute
 - Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;
   in den Seasons passend zum Thema (🍂 Blätterregen, ❄️ Schneegestöber – siehe `regen` in `SEASON_PAESSE`)
-- Geburtstag 🎂 (jedes Jahr am 3. Februar): Konfetti-Regen, Partyhut, „Happy Birthday“ als Musik und ein großes
-  Geschenk mit Partyhut und Melodie als dauerhaften Skins (Datum in `GEBURTSTAG` in `js/geburtstag.js`)
+- Geburtstag 🎂 (Marie am 3. Februar, Hannah am 8. Februar – gefeiert wird die gewählte Figur): Konfetti-Regen, Partyhut, „Happy Birthday“ als Musik und ein großes
+  Geschenk mit Partyhut und Melodie als dauerhaften Skins (Daten in `GEBURTSTAG.termine` in `js/geburtstag.js`)
 - Marie spricht 💬: Sprechblasen beim Klicken, bei Sternschnuppen, Erfolgen, Begrüßung nach Tageszeit
   und „Mir ist langweilig…“, wenn 45 Sekunden niemand klickt (Sprüche in `js/sprechen.js`)
 - Haustier 🐾: Kätzchen (grau-weiß, selbst gezeichnet), Häschen, Hündchen oder Einhorn-Baby – füttern, streicheln,

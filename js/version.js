@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.38";
-const APP_NEU = "Neu: Unter Skins kannst du jetzt zwischen Marie und Hannah wählen! 👱‍♀️";
+const APP_VERSION = "1.39";
+const APP_NEU = "Neu: Hannah hat jetzt auch ihren eigenen Geburtstag am 8. Februar – mit Konfetti, Partyhut und Geschenk! 🎂";

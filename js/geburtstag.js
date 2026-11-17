@@ -1,24 +1,36 @@
 "use strict";
 // =====================================================
 //  GEBURTSTAGS-EVENT
-//  Jedes Jahr an Maries Geburtstag: Konfetti-Regen, Partyhut, "Happy Birthday"
+//  Jede Figur hat ihren eigenen Geburtstag (Marie 03.02, Hannah 08.02). Gefeiert wird
+//  der Geburtstag der gewählten Figur: Konfetti-Regen, Partyhut, "Happy Birthday"
 //  als Hintergrundmusik und ein großes Geschenk (inkl. Partyhut und Melodie als
 //  dauerhafte Skins).
-//  Gespeichert: spiel.geburtstagJahr = Jahr, in dem das Geschenk geöffnet wurde
+//  Gespeichert: spiel.geburtstagJahre = { figurId: Jahr, in dem das Geschenk geöffnet wurde }
+//  (ältere Spielstände: spiel.geburtstagJahr gilt für Marie)
 //  Diese Datei fasst das HTML nicht an.
 // =====================================================
 
 const GEBURTSTAG = {
-  tag: 3,
-  monat: 2,          // Februar
-  name: "Marie",
+  // Tag und Monat pro Figur (Figur-IDs aus skins.js)
+  termine: {
+    "figur-marie":  { tag: 3, monat: 2 },   // 3. Februar
+    "figur-hannah": { tag: 8, monat: 2 },   // 8. Februar
+  },
   seasonPunkte: 2000,
   skins: ["hut-partyhut", "musik-geburtstag"],
 };
 
-// Ist heute Geburtstag? (Ortszeit des Geräts)
-function istGeburtstag(datum = new Date(Date.now())) {
-  return datum.getDate() === GEBURTSTAG.tag && datum.getMonth() + 1 === GEBURTSTAG.monat;
+// Hat die gewählte Figur heute Geburtstag? (Ortszeit des Geräts)
+function istGeburtstag(datum = new Date(Date.now()), figurId = aktiverSkin("figur").id) {
+  const termin = GEBURTSTAG.termine[figurId];
+  return Boolean(termin) && datum.getDate() === termin.tag && datum.getMonth() + 1 === termin.monat;
+}
+
+// In welchem Jahr hat die Figur ihr Geschenk zuletzt geöffnet?
+function geburtstagGeoeffnetJahr(figurId) {
+  const jahre = spiel.geburtstagJahre || {};
+  if (jahre[figurId] !== undefined) return jahre[figurId];
+  return figurId === "figur-marie" ? spiel.geburtstagJahr : null;   // alter Spielstand
 }
 
 // Hut und Musik: am Geburtstag immer Partyhut und "Happy Birthday"
@@ -32,7 +44,7 @@ function aktuellesMusikStueck() {
 
 // Wartet heute das Geburtstagsgeschenk?
 function geburtstagsGeschenkWartet() {
-  return istGeburtstag() && spiel.geburtstagJahr !== new Date(Date.now()).getFullYear();
+  return istGeburtstag() && geburtstagGeoeffnetJahr(aktiverSkin("figur").id) !== new Date(Date.now()).getFullYear();
 }
 
 // Herzen: ~3 Std. Produktion + 3.000 Klicks, mindestens 50.000
@@ -44,7 +56,7 @@ function geburtstagsHerzen() {
 // Geschenk öffnen. Rückgabe: { herzen, seasonPunkte, stufen, neueSkins } oder null
 function oeffneGeburtstagsGeschenk() {
   if (!geburtstagsGeschenkWartet()) return null;
-  spiel.geburtstagJahr = new Date(Date.now()).getFullYear();
+  spiel.geburtstagJahre = { ...(spiel.geburtstagJahre || {}), [aktiverSkin("figur").id]: new Date(Date.now()).getFullYear() };
 
   const herzen = geburtstagsHerzen();
   herzenDazu(herzen);
