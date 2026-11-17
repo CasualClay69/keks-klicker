@@ -387,7 +387,7 @@ function zeigeSeason() {
 
   // Season-Seite
   setzeText($("seasonName"), `${pass.icon} ${pass.name}`);
-  setzeText($("seasonZeit"), `⏳ ${formatRestzeit(seasonRestMs(pass))} · bis 30. November`);
+  setzeText($("seasonZeit"), `⏳ ${formatRestzeit(seasonRestMs(pass))} · bis ${seasonLetzterTag(pass)}`);
   setzeText($("seasonStufe"), String(stand.stufe));
   setzeText($("seasonMax"), String(pass.stufen));
   $("seasonBalkenFuellung").style.width = (anteil * 100).toFixed(1) + "%";
@@ -395,6 +395,10 @@ function zeigeSeason() {
     ? "🎉 Alle Stufen geschafft – du bist großartig!"
     : `Noch ${format(noetig - stand.xp)} Klicks bis Stufe ${stand.stufe + 1}`);
 
+  if (seasonListe.passId !== pass.id) {
+    // Neue Season: ihre Farben für die Season-Seite setzen
+    for (const [name, wert] of Object.entries(pass.design || {})) $("seiteSeason").style.setProperty(name, wert);
+  }
   if (seasonListe.passId !== pass.id || seasonListe.stufe !== stand.stufe || seasonListe.herz !== herz()) {
     baueSeasonListe(pass, stand);
   }

@@ -137,6 +137,32 @@ body[data-hintergrund="herbst"] #spielfeld::after {
   to   { transform: translate(-140px, 140px); }
 }
 
+/* ----- Hintergrund-Skin "Schneefall" (Season 2) -----
+   Winterhimmel mit Schneeflocken, die nach unten rieseln:
+   hinten kleine, weiche Flocken (langsam), vorne große Sternflocken (schneller). */
+body[data-hintergrund="schnee"] {
+  background: linear-gradient(180deg, #bcd6fb 0%, #d6e6ff 55%, #ece6ff 100%);
+}
+body[data-hintergrund="schnee"] #spielfeld::before {
+  --kachel: 60px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='10' cy='12' r='3.2' fill='%23ffffff' stroke='%2387aee6' stroke-width='1'/%3E%3Ccircle cx='40' cy='30' r='2.4' fill='%23ffffff' stroke='%2387aee6' stroke-width='1'/%3E%3Ccircle cx='24' cy='50' r='2' fill='%23ffffff' stroke='%2387aee6' stroke-width='.8'/%3E%3Ccircle cx='52' cy='6' r='1.6' fill='%23ffffff'/%3E%3C/svg%3E");
+  opacity: 0.95;
+  animation: schneeHinten 8s linear infinite;
+}
+body[data-hintergrund="schnee"] #spielfeld::after {
+  --kachel: 150px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Cg stroke='%23ffffff' stroke-width='4' stroke-linecap='round' transform='translate(32 34)'%3E%3Cpath d='M0 -14V14M-12 -7L12 7M-12 7L12 -7'/%3E%3C/g%3E%3Cg stroke='%236f9bdc' stroke-width='1' stroke-linecap='round' transform='translate(32 34)' opacity='.6'%3E%3Cpath d='M0 -14V14M-12 -7L12 7M-12 7L12 -7'/%3E%3C/g%3E%3Cg stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' transform='translate(104 102) rotate(15) scale(.8)'%3E%3Cpath d='M0 -14V14M-12 -7L12 7M-12 7L12 -7'/%3E%3C/g%3E%3Cg stroke='%236f9bdc' stroke-width='1' stroke-linecap='round' transform='translate(104 102) rotate(15) scale(.8)' opacity='.6'%3E%3Cpath d='M0 -14V14M-12 -7L12 7M-12 7L12 -7'/%3E%3C/g%3E%3Ccircle cx='80' cy='40' r='4' fill='%23ffffff' stroke='%2387aee6' stroke-width='1'/%3E%3Ccircle cx='20' cy='120' r='3.5' fill='%23ffffff' stroke='%2387aee6' stroke-width='1'/%3E%3C/svg%3E");
+  animation: schneeVorne 7s linear infinite;
+}
+@keyframes schneeHinten {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(0, 60px); }
+}
+@keyframes schneeVorne {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(0, 150px); }
+}
+
 /* Genau eine Kachel nach rechts oben (Werte = --kachel der jeweiligen Ebene) */
 @keyframes diagonalHinten {
   from { transform: translate(0, 0); }
@@ -235,14 +261,15 @@ body[data-hintergrund="herbst"] #spielfeld::after {
   padding: 14px;
   border: 2px solid var(--rand);
   border-radius: 18px;
-  background: linear-gradient(135deg, #fff3e0, #ffe0c4);
+  /* Farben kommen pro Season aus skins.js ("design"), hier nur Ersatzwerte */
+  background: linear-gradient(135deg, var(--season-kopf-1, #fff3e0), var(--season-kopf-2, #ffe0c4));
   box-shadow: var(--schatten);
-  color: #5a3317;
+  color: var(--season-text, #5a3317);
 }
 .seasonTitel { font-size: 1.15rem; font-weight: 900; }
 .seasonZeit  { margin: 2px 0 8px; font-size: 0.8rem; opacity: 0.8; }
 .seasonStufeAnzeige { font-size: 0.95rem; }
-.seasonStufeAnzeige b { font-size: 1.5rem; color: #c2581e; }
+.seasonStufeAnzeige b { font-size: 1.5rem; color: var(--season-akzent, #c2581e); }
 .seasonBalken {
   height: 14px;
   margin: 6px 0;
@@ -254,7 +281,7 @@ body[data-hintergrund="herbst"] #spielfeld::after {
   height: 100%;
   width: 0;
   border-radius: 7px;
-  background: linear-gradient(90deg, #ffb347, #e8772e);
+  background: linear-gradient(90deg, var(--season-balken-1, #ffb347), var(--season-balken-2, #e8772e));
   transition: width 0.2s;
 }
 .seasonHinweis { font-size: 0.8rem; font-weight: bold; }
@@ -278,8 +305,8 @@ body[data-hintergrund="herbst"] #spielfeld::after {
 .seasonZeile.erreicht { opacity: 0.55; }
 .seasonZeile.erreicht .status { color: #2e9d55; font-weight: bold; }
 .seasonZeile.aktuell {
-  border-color: var(--akzent);
-  box-shadow: 0 0 0 3px rgba(232, 119, 46, 0.2);
+  border-color: var(--season-akzent, var(--akzent));
+  box-shadow: 0 0 0 3px var(--rand);
 }
 /* Skin-Belohnungen hervorheben */
 .seasonZeile.skin {

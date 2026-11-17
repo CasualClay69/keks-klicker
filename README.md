@@ -53,6 +53,12 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
   🎩 Pilgerhut (Stufe 10), 🎻 Erntedank-Walzer (20), 🍂 Herbstlaub-HUD (30), 🍁 Blätterregen (50, animiert)
 - Fortschritt und Skins bleiben auch nach dem Season-Ende und beim „Spielstand löschen“ erhalten
 
+### Season 2: Weihnachten 🎅 (1.–31. Dezember 2026)
+
+- Startet automatisch, wenn Season 1 endet; gleiche Regeln (50 Stufen, ~10 Stunden)
+- Skins: 🎅 Weihnachtsmütze (Stufe 10), 🔔 Glöckchen-Melodie (20), 🎄 Winterzauber-HUD (30), ❄️ Schneefall (50, animiert)
+- Jede Season hat eigene Farben für die Season-Seite (`design` in `SEASON_PAESSE`)
+
 ## Aufbau
 
 | Datei | Inhalt |

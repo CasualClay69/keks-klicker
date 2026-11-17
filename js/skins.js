@@ -77,6 +77,28 @@ const ERNTEDANK_WALZER = {
   ],
 };
 
+// "Glöckchen-Melodie" (Season 2) – helle, hüpfende Glöckchen
+// Akkorde: C – F – G – C | Am – F – G – C
+const GLOECKCHEN = {
+  achtelSek: 0.25,
+  melodie: [
+    ["G5", 1], ["G5", 1], ["E6", 2], ["D6", 1], ["C6", 1], ["G5", 2],   // C
+    ["A5", 1], ["A5", 1], ["F6", 2], ["E6", 1], ["D6", 1], ["A5", 2],   // F
+    ["B5", 1], ["D6", 1], ["G6", 2], ["F6", 1], ["E6", 1], ["D6", 2],   // G
+    ["E6", 2], ["C6", 2], ["G5", 2], [null, 2],                         // C
+    ["A5", 1], ["C6", 1], ["E6", 2], ["D6", 1], ["C6", 1], ["A5", 2],   // Am
+    ["F5", 1], ["A5", 1], ["C6", 2], ["D6", 1], ["C6", 1], ["A5", 2],   // F
+    ["G5", 1], ["B5", 1], ["D6", 1], ["F6", 1], ["E6", 1], ["D6", 1], ["B5", 2],   // G
+    ["C6", 4], ["G5", 2], ["C6", 2],                                    // C
+  ],
+  bass: [
+    ["C3", 4], ["G2", 4],  ["F2", 4], ["C3", 4],
+    ["G2", 4], ["D3", 4],  ["C3", 4], ["G2", 4],
+    ["A2", 4], ["E3", 4],  ["F2", 4], ["C3", 4],
+    ["G2", 4], ["B2", 4],  ["C3", 4], ["C3", 4],
+  ],
+};
+
 // ----- Alle Skins -----
 
 const SKINS = [
@@ -138,6 +160,41 @@ const SKINS = [
 
   { id: "hintergrund-herbst", kategorie: "hintergrund", season: "s1",
     name: "Blätterregen", icon: "🍁", wert: "herbst" },
+
+  // ───────── Season 2: Weihnachten ─────────
+
+  // Weihnachtsmütze: rote Mütze, Spitze hängt nach rechts, weißer Pelzrand und Bommel
+  { id: "hut-weihnachtsmuetze", kategorie: "hut", season: "s2",
+    name: "Weihnachtsmütze", icon: "🎅",
+    svg: `<g transform="rotate(-5 100 40)">
+            <path d="M54 40 C56 8 92 -4 124 4 C150 11 168 32 172 58 L160 60 C154 42 146 36 146 40 Z" fill="#e53946"/>
+            <path d="M120 6 C146 13 162 32 166 54 L160 56 C156 38 144 24 124 14 Z" fill="#c42a37"/>
+            <path d="M70 18 Q86 6 104 6" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <rect x="46" y="30" width="108" height="18" rx="9" fill="#ffffff"/>
+            <circle cx="56" cy="34" r="4" fill="#eef1f6"/><circle cx="80" cy="44" r="4" fill="#eef1f6"/>
+            <circle cx="108" cy="35" r="4" fill="#eef1f6"/><circle cx="138" cy="43" r="4" fill="#eef1f6"/>
+            <circle cx="170" cy="62" r="11" fill="#ffffff"/>
+            <circle cx="167" cy="59" r="4" fill="#eef1f6"/>
+          </g>` },
+
+  { id: "musik-gloeckchen", kategorie: "musik", season: "s2",
+    name: "Glöckchen-Melodie", icon: "🔔", musik: GLOECKCHEN },
+
+  { id: "hud-winterzauber", kategorie: "hud", season: "s2",
+    name: "Winterzauber", icon: "🎄",
+    farben: {
+      "--hintergrund": "#eef6ff", "--hintergrund-2": "#ece6ff", "--panel": "#f7fbff",
+      "--karte-hover": "#eef5ff", "--karte-upgrade": "#fff8e6", "--rand": "#c3d8f2",
+      "--akzent": "#d63a4a", "--akzent-dunkel": "#a3202f", "--lila": "#2f8f5b",
+      "--text": "#23324d", "--text-sanft": "#5f6f8c", "--gold": "#e5b53a",
+      "--schatten": "0 4px 14px rgba(40, 70, 130, 0.15)",
+      "--logo-1": "#ff9a9a", "--logo-2": "#d63a4a", "--logo-3": "#2f8f5b",
+      "--medaillon-1": "#dbe9ff", "--medaillon-2": "#f1e1ff",
+    },
+    symbole: { herz: "❤️", marie: "⛄", shop: "🎁", skins: "🎄", erfolge: "⭐" } },
+
+  { id: "hintergrund-schnee", kategorie: "hintergrund", season: "s2",
+    name: "Schneefall", icon: "❄️", wert: "schnee" },
 ];
 
 // ----- Season-Pässe -----
@@ -157,6 +214,27 @@ const SEASON_PAESSE = [
     klicksProStufe: 30,
     // Auf diesen Stufen gibt es Skins, auf allen anderen Herzen
     skinBelohnungen: { 10: "hut-pilgerhut", 20: "musik-erntedank", 30: "hud-herbstlaub", 50: "hintergrund-herbst" },
+    // Farben der Season-Seite (Kopf, Fortschrittsbalken)
+    design: {
+      "--season-kopf-1": "#fff3e0", "--season-kopf-2": "#ffe0c4", "--season-text": "#5a3317",
+      "--season-akzent": "#c2581e", "--season-balken-1": "#ffb347", "--season-balken-2": "#e8772e",
+    },
+  },
+  {
+    id: "s2",
+    name: "Season 2: Weihnachten",
+    icon: "🎅",
+    start: "2026-12-01T00:00:00",
+    ende:  "2027-01-01T00:00:00",   // = bis einschließlich 31. Dezember
+    stufen: 50,
+    // Wie Season 1: ~71.750 Klicks ≈ 10 Stunden bei 2 Klicks pro Sekunde
+    klicksBasis: 670,
+    klicksProStufe: 30,
+    skinBelohnungen: { 10: "hut-weihnachtsmuetze", 20: "musik-gloeckchen", 30: "hud-winterzauber", 50: "hintergrund-schnee" },
+    design: {
+      "--season-kopf-1": "#eef6ff", "--season-kopf-2": "#dbe9ff", "--season-text": "#23324d",
+      "--season-akzent": "#c62f3e", "--season-balken-1": "#ff8a8a", "--season-balken-2": "#d63a4a",
+    },
   },
 ];
 
@@ -215,6 +293,11 @@ function aktiverSeasonPass(jetzt = Date.now()) {
 
 function seasonRestMs(pass) {
   return Math.max(0, Date.parse(pass.ende) - Date.now());
+}
+
+// Letzter Tag der Season als Text, z.B. "31. Dezember"
+function seasonLetzterTag(pass) {
+  return new Date(Date.parse(pass.ende) - 1).toLocaleDateString("de-DE", { day: "numeric", month: "long" });
 }
 
 // Fortschritt eines Passes: erreichte Stufe + Klicks in der aktuellen Stufe
