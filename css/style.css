@@ -60,7 +60,7 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 64px 20px 20px;
+  padding: 130px 20px 20px;   /* oben: Platz für das Logo */
   padding-left:  max(20px, env(safe-area-inset-left));
   padding-right: max(20px, env(safe-area-inset-right));
   position: relative;
@@ -143,20 +143,80 @@ button {
   font-weight: bold;
 }
 
+/* ----- Logo "Marie Clicker" -----
+   top: env(safe-area-inset-top) = so viel Platz, wie Kamera/Statusleiste brauchen.
+   Das Logo beginnt immer darunter. */
 #titel {
-  position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%;
-  transform: translateX(-50%);
+  position: absolute;
+  top: calc(max(8px, env(safe-area-inset-top)) + 12px);   /* +12px: Platz für das Krönchen, das oben übersteht */
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
-  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  line-height: 1;
   white-space: nowrap;
   pointer-events: none;
-  /* Farbverlauf in der Schrift */
-  background: linear-gradient(90deg, var(--akzent), var(--lila));
+  transform: translateX(-50%);
+}
+
+/* "Marie": groß, Farbverlauf, weißer Sticker-Rand, weicher Schatten */
+.logo-marie {
+  display: inline-block;
+  padding: 0 0.08em;
+  font-size: clamp(3rem, 5vw, 4.4rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #ff9fd0 0%, #ff4f9a 50%, #b56bff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 2px 0 #fff);
+  /* 4 weiße Schatten rundherum = Umrandung, dazu ein rosa Schatten */
+  filter:
+    drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff)
+    drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff)
+    drop-shadow(0 5px 6px rgba(214, 51, 132, 0.35));
+  animation: logoWippen 3.5s ease-in-out infinite;
 }
+
+/* "CLICKER": kleines, schräges Schildchen */
+.logo-clicker {
+  margin-top: -0.35rem;
+  padding: 3px 10px 3px calc(10px + 0.35em);   /* links mehr wegen letter-spacing */
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--akzent-dunkel);
+  font-size: clamp(0.72rem, 1.3vw, 0.95rem);
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  box-shadow: 0 3px 8px rgba(214, 51, 132, 0.25);
+  transform: rotate(-3deg);
+}
+
+/* Krönchen schief auf dem "M" */
+.logo-krone {
+  position: absolute;
+  top: -0.45em;
+  left: -0.25em;
+  font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+  transform: rotate(-25deg);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+}
+
+/* Funkelnde Sternchen */
+.funkeln {
+  position: absolute;
+  color: var(--gold);
+  font-size: 0.95rem;
+  text-shadow: 0 0 6px #fff;
+  animation: funkeln 1.8s ease-in-out infinite;
+}
+.funkeln.f1 { top: 2px;     right: -16px; }
+.funkeln.f2 { bottom: 18px; right: -8px;  font-size: 0.7rem; animation-delay: 0.6s; color: var(--akzent); }
+.funkeln.f3 { bottom: 4px;  left: -14px;  font-size: 0.8rem; animation-delay: 1.2s; color: var(--lila); }
 
 /* ----- Zähler ----- */
 #herzen {
@@ -400,6 +460,14 @@ button {
 /* =====================================================
    ANIMATIONEN
    ===================================================== */
+@keyframes logoWippen {
+  0%, 100% { transform: rotate(-2deg) scale(1); }
+  50%      { transform: rotate(2deg) scale(1.03); }
+}
+@keyframes funkeln {
+  0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+  50%      { opacity: 1;    transform: scale(1.25) rotate(45deg); }
+}
 @keyframes schweben {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-4px); }
@@ -459,7 +527,7 @@ button {
     --bildschirm: 100vh;
     --nav-hoehe: 62px;
     --sheet-hoehe: 62vh;
-    --oben: calc(max(12px, env(safe-area-inset-top)) + 48px);   /* Kamera/Statusleiste + Knopf-Zeile */
+    --oben: calc(max(8px, env(safe-area-inset-top)) + 112px);   /* Kamera/Statusleiste + Logo */
     --unten: 12px;                                              /* Abstand unten im Spielfeld */
   }
   @supports (height: 1dvh) {
@@ -479,6 +547,11 @@ button {
   }
 
   #herzen { font-size: clamp(2rem, 9vw, 2.8rem); }
+
+  /* Logo auf dem Handy: so groß wie möglich, ohne die Knöpfe links zu berühren */
+  .logo-marie   { font-size: clamp(3rem, 14vw, 4.2rem); }
+  .logo-clicker { font-size: 0.8rem; }
+  .logo-krone   { font-size: 1.6rem; }
 
   /* Marie so groß wie möglich: freie Höhe = Bildschirm minus Symbolleiste, oben, unten
      und ~130px für die Texte. Bewusst mit Bildschirm-Einheiten statt cqh gerechnet:
@@ -607,7 +680,7 @@ button {
 /* Handy quer: nebeneinander lassen, alles kleiner */
 @media (max-height: 500px) and (orientation: landscape) {
   #spielfeld {
-    padding: 52px 8px 8px;   /* oben: unter der Knopf-Zeile */
+    padding: 84px 8px 8px;   /* oben: unter dem (hier kleineren) Logo */
     padding-left: max(8px, env(safe-area-inset-left));
   }
   #marie { width: clamp(90px, 45vh, 220px); }
@@ -616,6 +689,10 @@ button {
   }
   #herzen { font-size: 1.5rem; }
   #hps, #bonus { font-size: 0.8rem; }
+  #titel { top: 14px; }
+  .logo-marie { font-size: 2.3rem; }
+  .logo-clicker { font-size: 0.65rem; }
+  .logo-krone { font-size: 1rem; }
   #bonus { margin: 4px 0 8px; }
   #seitenleiste { width: 280px; padding-right: max(12px, env(safe-area-inset-right)); }
   #tabs { padding: 8px 0 6px; }
@@ -636,5 +713,5 @@ button {
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  #spielfeld::before, #spielfeld::after { animation: none; }
+  #spielfeld::before, #spielfeld::after, .logo-marie, .funkeln { animation: none; }
 }
