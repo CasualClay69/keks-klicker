@@ -15,7 +15,8 @@ function neuerSpielstand() {
     erfolge: [],       // IDs freigeschalteter Erfolge
     upgrades: [],      // IDs gekaufter Upgrades
     kaufModus: "1",    // siehe KONFIG.kaufModi
-    tonAn: true,
+    tonAn: true,       // Klang-Effekte
+    musikAn: true,     // Hintergrund-Melodie
   };
 }
 

@@ -121,7 +121,7 @@ button {
 #marie  { margin-bottom: auto; }
 
 /* ----- Obere Zeile: Ton – Titel – Installieren ----- */
-#tonBtn, #installBtn {
+#tonBtn, #musikBtn, #installBtn {
   position: absolute; top: max(12px, env(safe-area-inset-top));
   z-index: 7;
   padding: 6px 12px;
@@ -130,7 +130,11 @@ button {
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-#tonBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+#tonBtn, #musikBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+/* Musik-Knopf direkt unter dem Ton-Knopf */
+#musikBtn { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
+/* Ausgeschaltet: blass und durchgestrichen */
+#musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
 #installBtn {
   right: 12px;
   border-color: var(--akzent);

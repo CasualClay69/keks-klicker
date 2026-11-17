@@ -15,6 +15,7 @@ const ui = {
   marie:          $("marie"),
   stern:          $("stern"),
   tonBtn:         $("tonBtn"),
+  musikBtn:       $("musikBtn"),
   installBtn:     $("installBtn"),
   upgradeBereich: $("upgradeBereich"),
   shopBadge:      $("shopBadge"),
@@ -233,6 +234,7 @@ function zeigeStatistik() {
 
 function zeigeTonStatus() {
   ui.tonBtn.textContent = spiel.tonAn ? "🔊" : "🔇";
+  ui.musikBtn.classList.toggle("aus", !spiel.musikAn);
 }
 
 function zeigeAlles() {

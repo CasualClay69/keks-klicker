@@ -10,6 +10,7 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Sternschnuppen mit zufälligen Boni
 - 19 Erfolge (je +1 % Herzen)
 - Statistik, Soundeffekte, automatisches Speichern
+- Süße Spieluhr-Hintergrundmelodie (im Browser erzeugt, ein-/ausschaltbar mit 🎵)
 - Responsive für Handy, Tablet und Desktop
 - Als App installierbar (PWA) und offline spielbar
 
@@ -33,7 +34,7 @@ Oder lokal `index.html` im Browser öffnen (dann ohne App-Installation/Offline-M
 | `js/hilfen.js` | Zahlen formatieren, Zufall |
 | `js/zustand.js` | Spielstand, Speichern und Laden |
 | `js/logik.js` | Berechnungen und Käufe |
-| `js/sound.js` | Töne (Web Audio API) |
+| `js/sound.js` | Klänge und Hintergrundmelodie (Web Audio API) – Noten in `MELODIE` und `BASS` |
 | `js/anzeige.js` | HTML erzeugen und aktualisieren |
 | `js/main.js` | Verbindet alles und startet das Spiel |
 | `css/style.css` | Aussehen (Farben ganz oben als Variablen) |

@@ -56,6 +56,16 @@ function beimStern(ereignis) {
   planeStern();
 }
 
+// ----- Hintergrund-Musik -----
+
+let musikFreigegeben = false;   // erst nach der ersten Berührung darf Ton abgespielt werden
+
+// Musik läuft genau dann, wenn sie an ist, erlaubt ist und die App sichtbar ist
+function aktualisiereMusik() {
+  if (spiel.musikAn && musikFreigegeben && !document.hidden) starteMusik();
+  else stoppeMusik();
+}
+
 // ----- Eingaben verbinden -----
 
 function verbindeEreignisse() {
@@ -74,6 +84,23 @@ function verbindeEreignisse() {
     zeigeTonStatus();
     sound.klick();
   });
+
+  ui.musikBtn.addEventListener("click", () => {
+    spiel.musikAn = !spiel.musikAn;
+    zeigeTonStatus();
+    aktualisiereMusik();
+  });
+
+  // Browser erlauben Ton erst nach der ersten Berührung -> dann Musik starten
+  const freigeben = () => {
+    musikFreigegeben = true;
+    aktualisiereMusik();
+  };
+  document.addEventListener("pointerdown", freigeben, { once: true });
+  document.addEventListener("keydown", freigeben, { once: true });
+
+  // App im Hintergrund (anderer Tab, Handy gesperrt) -> Musik pausieren
+  document.addEventListener("visibilitychange", aktualisiereMusik);
 
   for (const btn of ui.kaufModusBtns) {
     btn.addEventListener("click", () => {
@@ -110,6 +137,7 @@ function verbindeEreignisse() {
     versteckeStern();
     planeStern();
     zeigeAlles();
+    aktualisiereMusik();
   });
 
   window.addEventListener("beforeunload", speichern);
