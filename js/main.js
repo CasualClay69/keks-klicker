@@ -549,7 +549,7 @@ function verbindeEreignisse() {
     zeigeSeite("seiteSeason");
     setzeMenue(true);
     zeigeSeason();
-    scrolleZuAktuellerStufe();
+    zeigeSeasonVonOben();
   });
 
   // Sticker-Album über das 📒-Symbol öffnen (nochmal tippen = schließen)
@@ -1003,16 +1003,33 @@ function zeigeUpdateFenster(version, neu) {
   $("updateOverlay").hidden = false;
 }
 
-// Aktualisieren: gespeicherte App-Dateien löschen und neu laden.
+// Aktualisieren: ALLE App-Dateien frisch vom Server holen und neu starten.
 // Der Spielstand liegt im localStorage und ist davon nicht betroffen.
+//
+// Wichtig: Es dürfen nie alte und neue Dateien gemischt werden (z.B. neue index.html mit
+// alter main.js) – dann bricht der Start mittendrin ab. Deshalb:
+// 1. jede Datei mit cache: "reload" holen – das erneuert auch den Zwischenspeicher des Browsers
+// 2. App-Speicher löschen und den Service Worker abmelden (er wird beim Start neu eingerichtet)
+// 3. erst dann neu laden
 async function aktualisiereApp() {
-  $("updateJetzt").disabled = true;
-  setzeText($("updateJetzt"), "⏳ Einen Moment …");
-  speichern();
+  const knopf = $("updateJetzt");
+  if (knopf) {
+    knopf.disabled = true;
+    setzeText(knopf, "⏳ Einen Moment …");
+  }
+  try { speichern(); } catch (e) { /* Spielstand ist ohnehin gespeichert */ }
+
+  const dateien = new Set(["./", "index.html", "sw.js", "manifest.webmanifest"]);
+  for (const s of document.scripts) if (s.src) dateien.add(s.src.split("?")[0]);
+  for (const l of document.querySelectorAll('link[rel="stylesheet"]')) dateien.add(l.href.split("?")[0]);
   try {
-    const registrierung = await navigator.serviceWorker?.getRegistration();
-    await registrierung?.update();
-  } catch (e) { /* egal – der Speicher wird unten ohnehin geleert */ }
+    await Promise.all([...dateien].map(d => fetch(d, { cache: "reload" }).catch(() => {})));
+  } catch (e) { /* offline – dann eben mit dem, was da ist */ }
+
+  try {
+    const registrierungen = await navigator.serviceWorker?.getRegistrations() || [];
+    await Promise.all(registrierungen.map(r => r.unregister()));
+  } catch (e) { /* kein Service Worker */ }
   try {
     const namen = await caches.keys();
     await Promise.all(namen.map(name => caches.delete(name)));
@@ -1117,4 +1134,18 @@ function starte() {
   planeRegen(REGEN.ersteMinuten);
 }
 
-starte();
+// Starten. Bricht der Start mit einem Fehler ab (z.B. weil alte und neue Dateien gemischt
+// geladen wurden), reparieren wir uns selbst: einmal alles frisch laden.
+// sessionStorage verhindert eine Endlosschleife, falls der Fehler danach bleibt.
+try {
+  starte();
+  try { sessionStorage.removeItem("marieClicker-reparatur"); } catch (e) {}
+} catch (fehler) {
+  console.error("Start fehlgeschlagen:", fehler);
+  let schonVersucht = false;
+  try {
+    schonVersucht = sessionStorage.getItem("marieClicker-reparatur") === "1";
+    sessionStorage.setItem("marieClicker-reparatur", "1");
+  } catch (e) { schonVersucht = true; }
+  if (!schonVersucht && location.protocol.startsWith("http")) aktualisiereApp();
+}

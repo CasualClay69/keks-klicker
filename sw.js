@@ -6,6 +6,8 @@
 //  1. Datei sofort aus dem Speicher (Cache) liefern → startet blitzschnell, auch offline
 //  2. Gleichzeitig im Hintergrund die neueste Version laden und den Cache aktualisieren
 //  → Änderungen, die du hochlädst, sind beim ÜBERNÄCHSTEN Öffnen da.
+//  Im Hintergrund wird immer beim Server nachgefragt (cache: "no-cache"), nie aus dem
+//  Browser-Zwischenspeicher genommen – sonst könnten alte und neue Dateien gemischt werden.
 //
 //  Wenn du Dateien hinzufügst oder umbenennst: in DATEIEN eintragen.
 //  Die Versionsnummer steht in js/version.js – dort hochzählen,
@@ -79,8 +81,8 @@ self.addEventListener("fetch", ereignis => {
   // Versions-Check des Spiels (…?frisch=…): immer direkt vom Server, nie aus dem Speicher
   if (adresse.searchParams.has("frisch")) return;
 
-  const ausDemNetz = fetch(anfrage).then(antwort => {
-    if (antwort.ok) {
+  const ausDemNetz = fetch(anfrage.url, { cache: "no-cache", credentials: "same-origin" }).then(antwort => {
+    if (antwort.ok && antwort.type === "basic") {
       const kopie = antwort.clone();
       caches.open(CACHE).then(cache => cache.put(anfrage, kopie));
     }

@@ -560,10 +560,8 @@ function seasonSymbolFeiern() {
   ui.seasonBtn.classList.add("feiern");
 }
 
-// Season-Seite: zur aktuellen Stufe scrollen
-function scrolleZuAktuellerStufe() {
-  const aktuell = document.querySelector(".seasonZeile.aktuell") || document.querySelector(".seasonZeile:last-child");
-  if (!aktuell) return;
+// Season-Seite öffnen: immer ganz oben, damit man zuerst das Logo sieht
+function zeigeSeasonVonOben() {
   const leiste = $("seitenleiste");
   const kopf = document.querySelector(".seasonKopf");
 
@@ -576,15 +574,7 @@ function scrolleZuAktuellerStufe() {
   const weg = Math.max(0, kopf.querySelector(".seasonStufeAnzeige").offsetTop - 5);
   kopf.style.setProperty("--kopf-weg", weg + "px");
 
-  // Ist die aktuelle Stufe schon ganz oben zu sehen (z.B. Stufe 1–2)? Dann bleibt das Logo sichtbar.
   leiste.scrollTop = 0;
-  if (aktuell.getBoundingClientRect().bottom <= leiste.getBoundingClientRect().bottom - 10) return;
-
-  // Nur die Seitenleiste scrollen (scrollIntoView würde evtl. die ganze Seite verschieben).
-  // Ziel: aktuelle Stufe direkt unter dem (klebenden) Season-Kopf, eine erledigte Stufe davor sichtbar.
-  const zeileOben = aktuell.getBoundingClientRect().top;
-  const kopfUnten = leiste.getBoundingClientRect().top + stickyOben - weg + kopf.offsetHeight;
-  leiste.scrollTop += zeileOben - kopfUnten - aktuell.offsetHeight - 18;
 }
 
 // ----- Tagesaufgaben -----

@@ -890,7 +890,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 
 #installBtn {
-  top: calc(max(12px, env(safe-area-inset-top)) + 192px);   /* unter Season, Glücksrad und Album */
+  top: calc(max(12px, env(safe-area-inset-top)) + 254px);   /* unter Season, Glücksrad, Album und Zimmer */
   right: 12px;
   border-color: var(--akzent);
   background: var(--akzent);
@@ -1868,6 +1868,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }
   #zimmerBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 222px); width: 64px; height: 64px; font-size: 2rem; }
+  #installBtn   { top: calc(max(12px, env(safe-area-inset-top)) + 296px); }
   #seasonBtnIcon { font-size: 2rem; }
 
   #marie {
