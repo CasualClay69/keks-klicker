@@ -22,6 +22,16 @@ function beimUpgradeKaufen(upgrade) {
   aktualisiereAnzeige();
 }
 
+// ----- Klick (oder Tipp mit einem Finger) auf Marie -----
+
+function klickAufMarie(position) {
+  const plus = klickeMarie();
+  sound.klick();
+  marieFreutSich();
+  zeigeSchwebeText(position, `+${format(plus)} 💖`);
+  aktualisiereAnzeige();
+}
+
 // ----- Sternschnuppe: erscheinen, verschwinden, neu planen -----
 
 let sternTimer = null;
@@ -69,12 +79,27 @@ function aktualisiereMusik() {
 // ----- Eingaben verbinden -----
 
 function verbindeEreignisse() {
+  // MULTITOUCH: "pointerdown" kommt für JEDEN Finger einzeln –
+  // "click" dagegen gibt es bei mehreren Fingern gleichzeitig nicht.
+  const aktiveFinger = new Set();
+
+  ui.marie.addEventListener("pointerdown", ereignis => {
+    if (ereignis.pointerType === "mouse" && ereignis.button !== 0) return;   // nur linke Maustaste
+    ereignis.preventDefault();   // keine Browser-Gesten, keine nachgeahmten Maus-Ereignisse
+
+    aktiveFinger.add(ereignis.pointerId);
+    spiel.maxFinger = Math.max(spiel.maxFinger, aktiveFinger.size);
+    klickAufMarie({ x: ereignis.clientX, y: ereignis.clientY });
+  });
+
+  const fingerWeg = ereignis => aktiveFinger.delete(ereignis.pointerId);
+  document.addEventListener("pointerup", fingerWeg);
+  document.addEventListener("pointercancel", fingerWeg);
+
+  // Tastatur (Enter/Leertaste) löst nur "click" aus. detail === 0 heißt:
+  // nicht von Maus oder Finger – die wurden oben schon gezählt.
   ui.marie.addEventListener("click", ereignis => {
-    const plus = klickeMarie();
-    sound.klick();
-    marieFreutSich();
-    zeigeSchwebeText(klickPosition(ereignis, ui.marie), `+${format(plus)} 💖`);
-    aktualisiereAnzeige();
+    if (ereignis.detail === 0) klickAufMarie(klickPosition(ereignis, ui.marie));
   });
 
   ui.stern.addEventListener("click", beimStern);

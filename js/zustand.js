@@ -9,6 +9,7 @@ function neuerSpielstand() {
     gesamt: 0,         // insgesamt gesammelte Herzen
     klicks: 0,         // Klicks auf Marie
     klickHerzen: 0,    // durch Klicks gesammelte Herzen
+    maxFinger: 0,      // meiste Finger gleichzeitig auf Marie (Multitouch)
     sternKlicks: 0,    // gefangene Sternschnuppen
     spielzeit: 0,      // Sekunden
     anzahl: {},        // gekaufte Dinge, z.B. { teddy: 3 }

@@ -77,6 +77,7 @@ const ERFOLGE = [
   { id: "klick1",    icon: "👋", name: "Hallo Marie!",      beschr: "Klicke Marie zum ersten Mal",              bedingung: s => s.klicks >= 1 },
   { id: "klick100",  icon: "🤝", name: "Unzertrennlich",    beschr: "Klicke 100 Mal",                           bedingung: s => s.klicks >= 100 },
   { id: "klick1000", icon: "📣", name: "Fan Nr. 1",         beschr: "Klicke 1.000 Mal",                         bedingung: s => s.klicks >= 1000 },
+  { id: "finger3",   icon: "🖐️", name: "Fingerakrobatin",   beschr: "Tippe mit 3 Fingern gleichzeitig auf Marie", bedingung: s => s.maxFinger >= 3 },
   { id: "herz100",   icon: "💗", name: "Herzchen",          beschr: "Sammle insgesamt 100 Herzen",              bedingung: s => s.gesamt >= 100 },
   { id: "herz1k",    icon: "💓", name: "Herzklopfen",       beschr: "Sammle insgesamt 1.000 Herzen",            bedingung: s => s.gesamt >= 1e3 },
   { id: "herz100k",  icon: "💌", name: "Liebesbriefe",      beschr: "Sammle insgesamt 100.000 Herzen",          bedingung: s => s.gesamt >= 1e5 },

@@ -88,6 +88,7 @@ const STATISTIK_ZEILEN = [
   ["Insgesamt gesammelt",     () => format(spiel.gesamt)],
   ["Durch Klicks gesammelt",  () => format(spiel.klickHerzen)],
   ["Klicks auf Marie",        () => spiel.klicks.toLocaleString("de-DE")],
+  ["Meiste Finger gleichzeitig", () => String(spiel.maxFinger)],
   ["Herzen pro Klick",        () => format(herzenProKlick())],
   ["Herzen pro Sekunde",      () => formatKomma(herzenProSekunde())],
   ["Herzschenker",            () => String(anzahlGebaeude())],
@@ -281,6 +282,11 @@ function zeigeUntenNav() {
 // Marie freut sich kurz (Augen ^^, Mund offen)
 let freudeTimer = null;
 function marieFreutSich() {
+  // Kleiner Hüpfer – Animation bei jedem Tipp neu starten
+  ui.marie.classList.remove("hopser");
+  void ui.marie.offsetWidth;
+  ui.marie.classList.add("hopser");
+
   ui.marie.classList.add("freut-sich");
   clearTimeout(freudeTimer);
   freudeTimer = setTimeout(() => ui.marie.classList.remove("freut-sich"), 350);

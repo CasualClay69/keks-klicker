@@ -5,10 +5,11 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 ## Funktionen
 
 - Marie anklicken, Herzen sammeln (sie blinzelt und freut sich über jeden Klick)
+- Multitouch: auf dem Handy zählt jeder Finger einzeln
 - 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
-- 19 Erfolge (je +1 % Herzen)
+- 20 Erfolge (je +1 % Herzen)
 - Statistik, Soundeffekte, automatisches Speichern
 - Süße Spieluhr-Hintergrundmelodie (im Browser erzeugt, ein-/ausschaltbar mit 🎵)
 - Responsive für Handy, Tablet und Desktop
