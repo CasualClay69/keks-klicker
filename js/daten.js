@@ -100,6 +100,7 @@ const ERFOLGE = [
   { id: "rad10",     icon: "🍀", name: "Glückskind",        beschr: "Drehe 10-mal am Glücksrad",                bedingung: s => ((s.gluecksrad && s.gluecksrad.gesamt) || 0) >= 10 },
   { id: "sticker10",  icon: "📒", name: "Sticker-Fan",       beschr: "Sammle 10 verschiedene Sticker",           bedingung: () => anzahlVerschiedeneSticker() >= 10 },
   { id: "seite1",     icon: "📗", name: "Seite voll!",       beschr: "Mache eine Album-Seite voll",              bedingung: () => STICKER_SEITEN.some(seiteVoll) },
-  { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker",                   bedingung: () => anzahlVerschiedeneSticker() >= ALLE_STICKER.length },
+  { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker der 5 Grundseiten", bedingung: () => anzahlVerschiedeneSticker(GRUND_STICKER) >= GRUND_STICKER.length },
+  { id: "seasonSeite", icon: "🎟️", name: "Season-Sammelprofi", beschr: "Mache eine Season-Sticker-Seite voll",   bedingung: () => STICKER_SEITEN.some(s => s.season && seiteVoll(s)) },
   { id: "zeit30",icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

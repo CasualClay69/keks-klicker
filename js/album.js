@@ -2,7 +2,8 @@
 // =====================================================
 //  STICKER-ALBUM
 //  Beim Klicken, beim Fangen von Sternschnuppen und bei Season-Stufen
-//  fallen ab und zu Sticker heraus. 5 Seiten × 12 Sticker.
+//  fallen ab und zu Sticker heraus. 5 Grundseiten × 12 Sticker,
+//  dazu je Season eine eigene Seite, die nur während der Season sammelbar ist.
 //  Gespeichert in spiel.sticker = { stickerId: anzahl } und spiel.stickerNeu = [ids]
 //  Diese Datei fasst das HTML nicht an.
 // =====================================================
@@ -29,6 +30,16 @@ const STICKER_SEITEN = [
     ["🌈", "Regenbogen"], ["⭐", "Stern"], ["🌙", "Mond"], ["🎈", "Luftballon"], ["🔮", "Zauberkugel"], ["🪄", "Zauberstab"], ["👑", "Krone"],
     ["🧚", "Fee"], ["🐉", "Drache"], ["🏰", "Schloss"],
     ["🦄", "Einhorn"], ["👸", "Prinzessin"] ] },
+
+  // ───── Season-Seiten: erscheinen erst, wenn ihre Season beginnt, und sind nur dann sammelbar ─────
+  { id: "s1-thanksgiving", season: "s1", name: "Thanksgiving", icon: "🦃", farbe: "#ffe9d2", sticker: [
+    ["🍂", "Herbstblatt"], ["🍁", "Ahornblatt"], ["🎃", "Kürbis"], ["🌽", "Maiskolben"], ["🍎", "Apfel"], ["🥧", "Kuchen"], ["🌰", "Kastanie"],
+    ["🦃", "Truthahn"], ["🐿️", "Eichhörnchen"], ["🧺", "Erntekorb"],
+    ["🎩", "Pilgerhut"], ["🍽️", "Festessen"] ] },
+  { id: "s2-weihnachten", season: "s2", name: "Weihnachten", icon: "🎅", farbe: "#e6f0ff", sticker: [
+    ["❄️", "Schneeflocke"], ["🔔", "Glöckchen"], ["🕯️", "Kerze"], ["🧦", "Strumpf"], ["🧤", "Handschuhe"], ["⛸️", "Schlittschuh"], ["🎀", "Schleife"],
+    ["⛄", "Schneemann"], ["🦌", "Rentier"], ["🎁", "Geschenk"],
+    ["🎅", "Weihnachtsmann"], ["🎄", "Tannenbaum"] ] },
 ];
 
 const SELTENHEITEN = [
@@ -43,6 +54,8 @@ const STICKER_CHANCE = {
   stern: 0.5,       // jede zweite Sternschnuppe
   season: 1,        // jede Season-Stufe
 };
+// Während einer Season: so oft kommt ein Sticker von der Season-Seite (Season-Stufen: immer)
+const SEASON_STICKER_ANTEIL = 0.35;
 
 // Alle Sticker als flache Liste: { id, seite, emoji, name, seltenheit }
 const ALLE_STICKER = STICKER_SEITEN.flatMap(seite => seite.sticker.map(([emoji, name], i) => ({
@@ -53,12 +66,36 @@ const ALLE_STICKER = STICKER_SEITEN.flatMap(seite => seite.sticker.map(([emoji, 
   seltenheit: i < 7 ? "normal" : i < 10 ? "selten" : "super",
 })));
 
+// Die 60 Sticker der 5 Grundseiten (ohne Season-Seiten)
+const GRUND_STICKER = ALLE_STICKER.filter(s => !s.seite.season);
+
 function stickerAnzahl(sticker) {
   return (spiel.sticker && spiel.sticker[sticker.id]) || 0;
 }
 
-function anzahlVerschiedeneSticker() {
-  return ALLE_STICKER.filter(s => stickerAnzahl(s) > 0).length;
+function anzahlVerschiedeneSticker(liste = ALLE_STICKER) {
+  return liste.filter(s => stickerAnzahl(s) > 0).length;
+}
+
+// Season-Seiten erscheinen erst, wenn ihre Season begonnen hat (und bleiben danach als Andenken)
+function seiteSichtbar(seite) {
+  if (!seite.season) return true;
+  const pass = SEASON_PAESSE.find(p => p.id === seite.season);
+  return Boolean(pass) && Date.now() >= Date.parse(pass.start);
+}
+
+function sichtbareSeiten() {
+  return STICKER_SEITEN.filter(seiteSichtbar);
+}
+
+function sichtbareSticker() {
+  return ALLE_STICKER.filter(s => seiteSichtbar(s.seite));
+}
+
+// Die Sticker-Seite der gerade laufenden Season (oder undefined)
+function aktuelleSeasonSeite() {
+  const pass = aktiverSeasonPass();
+  return pass && STICKER_SEITEN.find(s => s.season === pass.id);
 }
 
 function seiteFortschritt(seite) {
@@ -88,16 +125,21 @@ function seitenBelohnung() {
 // Würfelt, ob bei dieser Gelegenheit ein Sticker herausfällt ("klick", "stern", "season")
 function versucheSticker(quelle) {
   if (Math.random() >= STICKER_CHANCE[quelle]) return null;
-  return gibSticker();
+  return gibSticker(quelle);
 }
 
 // Gibt einen zufälligen Sticker. Rückgabe: { sticker, neu, herzen, seiteFertig, seitenHerzen }
-function gibSticker() {
+function gibSticker(quelle = "klick") {
   if (!spiel.sticker) spiel.sticker = {};
   if (!spiel.stickerNeu) spiel.stickerNeu = [];
 
+  // Aus welchem Vorrat? Während einer Season manchmal (bei Season-Stufen immer) von der Season-Seite
+  const seasonSeite = aktuelleSeasonSeite();
+  const vonSeason = seasonSeite && (quelle === "season" || Math.random() < SEASON_STICKER_ANTEIL);
+  const vorrat = vonSeason ? ALLE_STICKER.filter(s => s.seite === seasonSeite) : GRUND_STICKER;
+
   const stufe = zufallGewichtet(SELTENHEITEN);
-  const kandidaten = ALLE_STICKER.filter(s => s.seltenheit === stufe.id);
+  const kandidaten = vorrat.filter(s => s.seltenheit === stufe.id);
   // Zur Hälfte bevorzugt einen fehlenden Sticker – damit das Vollmachen nicht ewig dauert
   const fehlend = kandidaten.filter(s => stickerAnzahl(s) === 0);
   const sticker = fehlend.length && Math.random() < 0.5 ? zufallAus(fehlend) : zufallAus(kandidaten);

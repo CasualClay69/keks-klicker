@@ -111,7 +111,7 @@ const STATISTIK_ZEILEN = [
   ["Tagesaufgaben erledigt",  () => String(spiel.aufgabenGesamt || 0)],
   ["Längste Geschenk-Serie",  () => `${(spiel.geschenk && spiel.geschenk.beste) || 0} Tage`],
   ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
-  ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker()} / ${ALLE_STICKER.length}`],
+  ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker(sichtbareSticker())} / ${sichtbareSticker().length}`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -761,16 +761,19 @@ let albumSeite = STICKER_SEITEN[0];   // gerade aufgeschlagene Seite
 
 // Album zeichnen: Seitenwahl oben, 12 Sticker-Felder der aktuellen Seite
 function zeigeAlbum() {
-  setzeText($("albumGesamt"), `${anzahlVerschiedeneSticker()} von ${ALLE_STICKER.length} Stickern gesammelt`);
+  const sichtbar = sichtbareSticker();
+  setzeText($("albumGesamt"), `${anzahlVerschiedeneSticker(sichtbar)} von ${sichtbar.length} Stickern gesammelt`);
+  if (!seiteSichtbar(albumSeite)) albumSeite = STICKER_SEITEN[0];
 
   // Seitenwahl: Symbol, Fortschritt, Punkt bei neuen Stickern
   const wahl = $("albumSeitenwahl");
   wahl.textContent = "";
-  for (const seite of STICKER_SEITEN) {
+  for (const seite of sichtbareSeiten()) {
     const knopf = document.createElement("button");
     knopf.type = "button";
     knopf.classList.toggle("aktiv", seite === albumSeite);
     knopf.classList.toggle("voll", seiteVoll(seite));
+    knopf.classList.toggle("season", Boolean(seite.season));
     knopf.append(seite.icon, Object.assign(document.createElement("small"), {
       textContent: seiteVoll(seite) ? "✓ voll" : `${seiteFortschritt(seite)}/${seite.sticker.length}`,
     }));
@@ -787,7 +790,14 @@ function zeigeAlbum() {
 
   // Die aufgeschlagene Seite
   const seite = albumSeite;
-  setzeText($("albumSeitenTitel"), `${seite.icon} ${seite.name}  ·  ${seiteFortschritt(seite)}/${seite.sticker.length}`);
+  let titel = `${seite.icon} ${seite.name}  ·  ${seiteFortschritt(seite)}/${seite.sticker.length}`;
+  if (seite.season) {
+    const pass = SEASON_PAESSE.find(p => p.id === seite.season);
+    if (seiteVoll(seite)) titel += "  ·  ✓";
+    else if (aktiverSeasonPass() === pass) titel += `  ·  ⏳ nur bis ${seasonLetzterTag(pass)}`;
+    else titel += "  ·  Season vorbei";
+  }
+  setzeText($("albumSeitenTitel"), titel);
   const neuGesehen = markiereStickerGesehen(seite);   // ab jetzt nicht mehr "neu" – aber diesmal noch markieren
   const raster = $("albumRaster");
   raster.style.setProperty("--seiten-farbe", seite.farbe);

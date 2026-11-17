@@ -429,7 +429,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 
 .albumSeitenwahl {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));   /* 5 Grundseiten + Season-Seiten */
   gap: 6px;
   margin-bottom: 4px;
 }
@@ -448,6 +448,9 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .albumSeitenwahl button small { font-size: 0.62rem; font-weight: bold; color: var(--text-sanft); }
 .albumSeitenwahl button.aktiv { border-color: var(--akzent); background: var(--karte-hover); }
 .albumSeitenwahl button.voll small { color: #2e9d55; }
+/* Season-Seiten: goldener, gestrichelter Rand */
+.albumSeitenwahl button.season { border-style: dashed; border-color: #f0b75a; background: #fff8e8; }
+.albumSeitenwahl button.season.aktiv { border-style: solid; border-color: #e0a526; }
 .albumSeitenwahl button { position: relative; }
 .albumSeitenwahl .punkt {      /* neue Sticker auf dieser Seite */
   position: absolute; top: 3px; right: 6px;

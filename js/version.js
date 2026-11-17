@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.29";
-const APP_NEU = "Neu: Jeder Season-Pass hat jetzt sein eigenes schönes Logo!";
+const APP_VERSION = "1.30";
+const APP_NEU = "Neu: Season-Sticker 🦃 – sammle sie nur, solange die Season läuft!";

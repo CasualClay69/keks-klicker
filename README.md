@@ -9,8 +9,9 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
-- 27 Erfolge (je +1 % Herzen)
-- Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten
+- 28 Erfolge (je +1 % Herzen)
+- Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten,
+  dazu pro Season eine eigene Sticker-Seite, die nur während der Season sammelbar ist (🦃 Thanksgiving, 🎅 Weihnachten)
 - Glücksrad 🎡: einmal am Tag drehen – Herzen, Boni, Sternschnuppe, Season-Punkte oder Jackpot
 - Tägliches Geschenk 🎁: wächst mit jedem Tag hintereinander (Tag 1–7, ab Tag 7 jeden Tag das große Geschenk)
 - Tagesaufgaben 📋: jeden Tag 3 neue Aufgaben mit Herzen und Season-Pass-Fortschritt als Belohnung
@@ -65,7 +66,8 @@ Neuen Skin hinzufügen:
    - **Logo:** `krone`, `deko`, `funkeln` und Farben (`--logo-skin-*`, `--logo-schild-*`, `--logo-funkeln`)
    - **Musik:** Noten in `musik` (Aufbau wie `SPIELUHR`)
 2. Den Season-Pass in `SEASON_PAESSE` eintragen (bzw. die Skin-ID dort ergänzen)
-3. In `js/version.js` die Versionsnummer erhöhen
+3. Optional: eine Season-Sticker-Seite in `STICKER_SEITEN` (`js/album.js`) mit `season: "<Pass-ID>"` anlegen
+4. In `js/version.js` die Versionsnummer erhöhen
 
 Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 
