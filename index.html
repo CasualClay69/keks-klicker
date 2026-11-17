@@ -28,6 +28,7 @@
   <script src="js/hilfen.js"  defer></script>
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
+  <script src="js/sicherung.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
   <script src="js/main.js"    defer></script>
@@ -197,6 +198,26 @@
 
     <section id="seiteStatistik" class="seite" role="tabpanel" hidden>
       <table id="statistik"></table>
+
+      <h2>💾 Spielstand sichern</h2>
+      <p class="seitenInfo">
+        Damit nichts verloren geht: Sichere deinen Spielstand ab und zu. Mit dem Code oder der Datei
+        kannst du ihn auf einem anderen Gerät weiterspielen oder zurückholen, falls er gelöscht wurde.
+      </p>
+      <p id="sicherungInfo" class="sicherungInfo"></p>
+      <div class="knopfReihe">
+        <button id="sicherungKopieren" type="button" class="knopf haupt">📋 Code kopieren</button>
+        <button id="sicherungDatei" type="button" class="knopf">💾 Als Datei speichern</button>
+      </div>
+
+      <h2>📥 Spielstand wiederherstellen</h2>
+      <textarea id="sicherungText" rows="3" placeholder="Hier den Spielstand-Code einfügen …" spellcheck="false" autocomplete="off"></textarea>
+      <div class="knopfReihe">
+        <button id="sicherungLaden" type="button" class="knopf haupt">📥 Code laden</button>
+        <button id="sicherungDateiLaden" type="button" class="knopf">📂 Datei auswählen</button>
+        <input id="sicherungDateiInput" type="file" accept=".txt,text/plain" hidden>
+      </div>
+
       <button id="reset" type="button">Spielstand löschen</button>
     </section>
   </aside>

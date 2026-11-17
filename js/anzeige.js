@@ -241,6 +241,21 @@ function zeigeErfolge() {
 
 function zeigeStatistik() {
   STATISTIK_ZEILEN.forEach(([, wert], i) => setzeText(statistikZellen[i], wert()));
+  zeigeSicherungInfo();
+}
+
+// "Zuletzt gesichert: …" – nach 7 Tagen ohne Sicherung orange als Erinnerung
+function zeigeSicherungInfo() {
+  const info = $("sicherungInfo");
+  const zeit = letzteSicherung();
+  const tage = Math.floor((Date.now() - zeit) / 86400000);
+  let text;
+  if (!zeit) text = "⚠️ Noch nie gesichert";
+  else if (tage === 0) text = "✅ Zuletzt gesichert: heute";
+  else if (tage === 1) text = "✅ Zuletzt gesichert: gestern";
+  else text = `${tage >= 7 ? "⚠️" : "✅"} Zuletzt gesichert: vor ${tage} Tagen`;
+  setzeText(info, text);
+  info.classList.toggle("alt", !zeit || tage >= 7);
 }
 
 function zeigeTonStatus() {

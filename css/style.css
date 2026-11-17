@@ -695,6 +695,42 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 #statistik td { padding: 8px 4px; border-bottom: 1px dashed var(--rand); }
 #statistik td:last-child { text-align: right; font-weight: bold; color: var(--akzent-dunkel); }
 
+/* ----- Spielstand sichern ----- */
+.knopfReihe { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+.knopf {
+  flex: 1 1 140px;
+  padding: 10px 12px;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: var(--karte);
+  font-weight: bold;
+  cursor: pointer;
+}
+.knopf.haupt { border-color: var(--akzent); background: var(--akzent); color: #fff; }
+.knopf:active { transform: scale(0.97); }
+
+.sicherungInfo {
+  margin: 4px 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--karte);
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+.sicherungInfo.alt { background: #fff1d6; color: #9a5a00; }   /* lange nicht gesichert */
+
+#sicherungText {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--rand);
+  border-radius: 12px;
+  background: var(--karte);
+  color: var(--text);
+  font: 0.75rem ui-monospace, Consolas, monospace;
+  resize: vertical;
+  word-break: break-all;
+}
+
 #reset {
   width: 100%;
   margin-top: 16px;

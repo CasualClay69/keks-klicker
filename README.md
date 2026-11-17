@@ -27,6 +27,16 @@ Oder lokal `index.html` im Browser öffnen (dann ohne App-Installation/Offline-M
 - **Android / Chrome / Edge:** Knopf „📲 Installieren“ oben rechts, oder Browsermenü → „App installieren“
 - **iPhone / iPad (Safari):** Teilen-Symbol → „Zum Home-Bildschirm“
 
+## Spielstand sichern
+
+Unter **📊 Statistik → 💾 Spielstand sichern**:
+
+- **📋 Code kopieren** bzw. **💾 Als Datei speichern** – erzeugt einen Code `MARIE1:<Inhalt>:<Prüfsumme>`
+- **📥 Code laden** bzw. **📂 Datei auswählen** – stellt den Spielstand wieder her (mit Sicherheitsfrage)
+- Die Prüfsumme erkennt abgeschnittene oder falsch kopierte Codes
+- Skins und Season-Fortschritt werden beim Wiederherstellen zusammengeführt – es geht nichts verloren
+- Nach 7 Tagen ohne Sicherung erscheint ein orangefarbener Hinweis
+
 ## Skins & Season-Pässe
 
 Am Anfang ist pro Kategorie nur der normale Skin freigeschaltet. Freigeschaltete Skins werden
@@ -72,6 +82,7 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/hilfen.js` | Zahlen formatieren, Zufall |
 | `js/zustand.js` | Spielstand, Speichern und Laden |
 | `js/logik.js` | Berechnungen und Käufe |
+| `js/sicherung.js` | Spielstand als Code sichern und wiederherstellen |
 | `js/sound.js` | Klänge und Musik-Abspieler (Web Audio API) |
 | `js/anzeige.js` | HTML erzeugen und aktualisieren |
 | `js/main.js` | Verbindet alles und startet das Spiel |

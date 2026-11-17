@@ -241,6 +241,84 @@ function pruefeErfolgeUndStatistik() {
   zeigeStatistik();
 }
 
+// ----- Spielstand sichern & wiederherstellen -----
+
+// In die Zwischenablage kopieren. Klappt das nicht (z.B. ohne https),
+// steht der Code markiert im Textfeld zum Selber-Kopieren.
+async function kopiereText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    const feld = $("sicherungText");
+    feld.value = text;
+    feld.select();
+    try { return document.execCommand("copy"); } catch (e2) { return false; }
+  }
+}
+
+function heuteAlsText() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function ladeSicherung(code) {
+  let daten;
+  try {
+    daten = leseSicherungsCode(code);
+  } catch (fehler) {
+    sound.fehler();
+    meldung("⚠️ Laden nicht möglich", fehler.message);
+    return;
+  }
+  const datum = daten.datum ? new Date(daten.datum).toLocaleString("de-DE") : "unbekannt";
+  const frage = `Diesen Spielstand laden?\n\n💖 ${format(daten.spiel.herzen)} Herzen\n📅 gesichert am ${datum}\n\n`
+              + `Dein jetziger Spielstand wird dadurch ersetzt. Deine Skins bleiben erhalten.`;
+  if (!confirm(frage)) return;
+
+  stelleSicherungWiederHer(daten);
+  location.reload();   // alles mit dem neuen Spielstand frisch aufbauen
+}
+
+function richteSicherungEin() {
+  $("sicherungKopieren").addEventListener("click", async () => {
+    const ok = await kopiereText(erstelleSicherungsCode());
+    if (ok) {
+      merkeSicherungszeit();
+      sound.kauf();
+      meldung("📋 Code kopiert!", "Füge ihn z.B. in eine Nachricht an dich selbst ein und bewahre ihn gut auf.");
+    } else {
+      meldung("📋 Bitte selbst kopieren", "Der Code steht markiert im Textfeld unten.");
+    }
+    zeigeSicherungInfo();
+  });
+
+  $("sicherungDatei").addEventListener("click", () => {
+    const datei = new Blob([erstelleSicherungsCode()], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(datei);
+    link.download = `marie-clicker-${heuteAlsText()}.txt`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    merkeSicherungszeit();
+    sound.kauf();
+    meldung("💾 Datei gespeichert!", "Du findest sie bei deinen Downloads bzw. in der Dateien-App.");
+    zeigeSicherungInfo();
+  });
+
+  $("sicherungLaden").addEventListener("click", () => ladeSicherung($("sicherungText").value));
+
+  const dateiAuswahl = $("sicherungDateiInput");
+  $("sicherungDateiLaden").addEventListener("click", () => dateiAuswahl.click());
+  dateiAuswahl.addEventListener("change", async () => {
+    const datei = dateiAuswahl.files[0];
+    dateiAuswahl.value = "";   // gleiche Datei nochmal wählbar
+    if (datei) ladeSicherung(await datei.text());
+  });
+}
+
 // ----- App (PWA) -----
 
 function richteAppEin() {
@@ -286,7 +364,11 @@ function starte() {
   baueSkinSeite(beimSkinWaehlen);
   zeigeSkins();
   verbindeEreignisse();
+  richteSicherungEin();
   richteAppEin();
+
+  // Den Browser bitten, unsere Daten nicht automatisch zu löschen (z.B. bei Speicherplatzmangel)
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
   zeigeSeite("seiteShop");
   zeigeAlles();
 
