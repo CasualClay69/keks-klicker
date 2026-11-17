@@ -49,6 +49,8 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 - Erreichbar über das 🦃-Symbol oben rechts (nur sichtbar, solange die Season läuft)
 - 50 Stufen, aufsteigen durch Klicks auf Marie: Stufe n braucht `670 + 30·n` Klicks,
   zusammen ~71.750 Klicks ≈ 10 Stunden bei 2 Klicks/Sekunde
+- Herz-Belohnungen wachsen mit dem Fortschritt: Produktion von (5,5 + 0,5·n) Minuten + Wert von (100 + 10·n) Klicks,
+  mindestens 50·n² (gilt für alle Seasons, siehe `seasonHerzen` in `js/skins.js`)
 - Belohnungen: Herzen auf jeder Stufe, dazu
   🎩 Pilgerhut (Stufe 10), 🎻 Erntedank-Walzer (20), 🍂 Herbstlaub-HUD (30), 🍁 Blätterregen (50, animiert)
 - Fortschritt und Skins bleiben auch nach dem Season-Ende und beim „Spielstand löschen“ erhalten

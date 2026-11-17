@@ -332,31 +332,48 @@ function wendeSkinsAn() {
 // ----- Season-Pass -----
 
 let seasonListe = { passId: null, stufe: -1, herz: "" };   // was die Stufen-Liste gerade zeigt
+let seasonHerzZeilen = [];   // [{ n, text }] – Zeilen mit Herz-Belohnung, deren Wert sich ändert
 
 // Stufen-Liste neu aufbauen (nur wenn sich Stufe oder Herz-Symbol geändert haben)
 function baueSeasonListe(pass, stand) {
   const liste = $("seasonStufen");
   liste.textContent = "";
+  seasonHerzZeilen = [];
   for (let n = 1; n <= pass.stufen; n++) {
-    const b = seasonBelohnung(pass, n);
+    const skinId = pass.skinBelohnungen[n];
+    const skin = skinId && SKINS.find(s => s.id === skinId);
     const li = document.createElement("li");
     li.className = "seasonZeile";
-    if (b.typ === "skin") li.classList.add("skin");
+    if (skin) li.classList.add("skin");
     if (n <= stand.stufe) li.classList.add("erreicht");
     if (n === stand.stufe + 1) li.classList.add("aktuell");
 
-    const text = b.typ === "skin"
-      ? `${SKIN_KATEGORIEN.find(k => k.id === b.skin.kategorie).name}: ${b.skin.name}`
-      : `${format(b.menge)} ${herz()}`;
+    const text = span("text", skin ? `${SKIN_KATEGORIEN.find(k => k.id === skin.kategorie).name}: ${skin.name}` : "");
     li.append(
       span("nr", String(n)),
-      span("icon", b.typ === "skin" ? b.skin.icon : herz()),
-      span("text", text),
+      span("icon", skin ? skin.icon : herz()),
+      text,
       span("status", n <= stand.stufe ? "✓" : n === stand.stufe + 1 ? "▶" : "🔒"),
     );
+    if (!skin) seasonHerzZeilen.push({ n, text });
     liste.append(li);
   }
   seasonListe = { passId: pass.id, stufe: stand.stufe, herz: herz() };
+  zeigeSeasonHerzen(stand);
+}
+
+// Herz-Werte in der Liste: erreichte Stufen = was es gab, kommende = was es jetzt ungefähr gäbe
+function zeigeSeasonHerzen(stand) {
+  const hps = basisHps();
+  const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
+  const erhalten = stand.herzen || {};
+  for (const { n, text } of seasonHerzZeilen) {
+    if (n <= stand.stufe) {
+      setzeText(text, erhalten[n] ? `${format(erhalten[n])} ${herz()}` : `Herzen ${herz()}`);
+    } else {
+      setzeText(text, `≈ ${format(seasonHerzen(n, hps, proKlick))} ${herz()}`);
+    }
+  }
 }
 
 function formatRestzeit(ms) {
@@ -401,6 +418,8 @@ function zeigeSeason() {
   }
   if (seasonListe.passId !== pass.id || seasonListe.stufe !== stand.stufe || seasonListe.herz !== herz()) {
     baueSeasonListe(pass, stand);
+  } else if (!$("seiteSeason").hidden) {
+    zeigeSeasonHerzen(stand);   // Werte wachsen mit der Produktion mit
   }
 }
 
@@ -510,6 +529,8 @@ function meldung(titel, text) {
   el.className = "meldung";
   el.append(Object.assign(document.createElement("b"), { textContent: titel }), text);
   ui.meldungen.append(el);
+  // Höchstens 3 gleichzeitig – sonst verdecken sie auf dem Handy den halben Bildschirm
+  while (ui.meldungen.children.length > 3) ui.meldungen.firstElementChild.remove();
   setTimeout(() => el.remove(), 4000);
 }
 

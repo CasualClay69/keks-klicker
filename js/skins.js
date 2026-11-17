@@ -316,11 +316,23 @@ function rundeHuebsch(x) {
   return Math.round(x / stufe) * stufe;
 }
 
+// Herz-Belohnung für Stufe n – wächst mit dem aktuellen Fortschritt:
+//   Produktion von (5,5 + 0,5·n) Minuten  +  Wert von (100 + 10·n) Klicks
+//   -> Stufe 1: 5,5 Min. + 110 Klicks … Stufe 50: 30 Min. + 600 Klicks
+// Ohne Sternschnuppen-Bonus gerechnet (sonst wäre es Zufall, wie viel man bekommt).
+// Mindestens 50·n² Herzen, damit es sich auch ganz am Anfang lohnt.
+function seasonHerzen(n, hps = basisHps(), proKlick = herzenProKlick() / aktuellerBonus().klickFaktor) {
+  const sekunden = 300 + 30 * n;
+  const klicks = 100 + 10 * n;
+  const wert = hps * sekunden + proKlick * klicks;
+  return rundeHuebsch(Math.max(50 * n * n, wert));
+}
+
 // Was gibt es auf Stufe n?  { typ: "skin", skin }  oder  { typ: "herzen", menge }
 function seasonBelohnung(pass, n) {
   const skinId = pass.skinBelohnungen[n];
   if (skinId) return { typ: "skin", skin: SKINS.find(s => s.id === skinId) };
-  return { typ: "herzen", menge: rundeHuebsch(100 * Math.pow(1.32, n)) };   // 130 … 82 Mio.
+  return { typ: "herzen", menge: seasonHerzen(n) };
 }
 
 // Auf welcher Stufe gibt es diesen Skin? (für "🔒 Stufe 10")
@@ -345,8 +357,14 @@ function seasonKlick(anzahl = 1) {
     stand.xp -= klicksFuerStufe(pass, stand.stufe + 1);
     stand.stufe++;
     const belohnung = seasonBelohnung(pass, stand.stufe);
-    if (belohnung.typ === "herzen") herzenDazu(belohnung.menge);
-    else schalteSkinFrei(belohnung.skin.id);
+    if (belohnung.typ === "herzen") {
+      herzenDazu(belohnung.menge);
+      // Merken, wie viel es gab – die Liste zeigt das bei erreichten Stufen an
+      stand.herzen = stand.herzen || {};
+      stand.herzen[stand.stufe] = belohnung.menge;
+    } else {
+      schalteSkinFrei(belohnung.skin.id);
+    }
     neu.push({ pass, stufe: stand.stufe, belohnung });
   }
   if (stand.stufe >= pass.stufen) stand.xp = 0;
