@@ -9,7 +9,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
-- 20 Erfolge (je +1 % Herzen)
+- 22 Erfolge (je +1 % Herzen)
+- Tagesaufgaben 📋: jeden Tag 3 neue Aufgaben mit Herzen und Season-Pass-Fortschritt als Belohnung
 - Statistik, Soundeffekte, automatisches Speichern
 - Süße Spieluhr-Hintergrundmelodie (im Browser erzeugt, ein-/ausschaltbar mit 🎵)
 - Skins für Hintergrund, Maries Hut, HUD-Farben und Musik – neue Skins kommen mit Season-Pässen
@@ -83,6 +84,7 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/zustand.js` | Spielstand, Speichern und Laden |
 | `js/logik.js` | Berechnungen und Käufe |
 | `js/sicherung.js` | Spielstand als Code sichern und wiederherstellen |
+| `js/aufgaben.js` | Tagesaufgaben: Vorrat (`AUFGABEN_VORLAGEN`), Fortschritt, Belohnungen |
 | `js/sound.js` | Klänge und Musik-Abspieler (Web Audio API) |
 | `js/anzeige.js` | HTML erzeugen und aktualisieren |
 | `js/main.js` | Verbindet alles und startet das Spiel |

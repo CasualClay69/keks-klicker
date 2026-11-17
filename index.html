@@ -29,6 +29,7 @@
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
   <script src="js/sicherung.js" defer></script>
+  <script src="js/aufgaben.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
   <script src="js/main.js"    defer></script>
@@ -39,6 +40,7 @@
   <main id="spielfeld">
     <button id="tonBtn" type="button" title="Klänge an/aus" aria-label="Klänge an/aus">🔊</button>
     <button id="musikBtn" type="button" title="Musik an/aus" aria-label="Musik an/aus">🎵</button>
+    <button id="aufgabenBtn" type="button" title="Tagesaufgaben" aria-label="Tagesaufgaben öffnen">📋<b id="aufgabenBadge" hidden></b></button>
     <h1 id="titel" aria-label="Marie Clicker">
       <span class="logo-krone" aria-hidden="true">👑</span>
       <span class="logo-deko" aria-hidden="true"></span>
@@ -177,6 +179,14 @@
     <section id="seiteSkins" class="seite" role="tabpanel" hidden>
       <p class="seitenInfo">Wähle aus, wie Marie und dein Spiel aussehen und klingen. Neue Skins kommen mit den Season-Pässen!</p>
       <div id="skinBereich"></div>
+    </section>
+
+    <section id="seiteAufgaben" class="seite" role="tabpanel" hidden>
+      <div class="aufgabenKopf">
+        <div class="aufgabenTitel">📋 Deine Aufgaben für heute</div>
+        <div class="aufgabenZeit" id="aufgabenZeit"></div>
+      </div>
+      <div id="aufgabenListe"></div>
     </section>
 
     <section id="seiteSeason" class="seite" role="tabpanel" hidden>

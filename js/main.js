@@ -7,8 +7,13 @@
 // ----- Aktionen aus dem Shop -----
 
 function beimKaufen(item) {
-  if (kaufeItem(item)) sound.kauf();
-  else sound.fehler();
+  const menge = kaufMenge(item);   // vorher merken – für Tagesaufgaben wie "Kaufe 3 Kuscheltiere"
+  if (kaufeItem(item)) {
+    sound.kauf();
+    meldeAufgaben(aufgabenEreignis("kauf", menge, item.id));
+  } else {
+    sound.fehler();
+  }
   aktualisiereAnzeige();
 }
 
@@ -16,6 +21,7 @@ function beimUpgradeKaufen(upgrade) {
   if (kaufeUpgrade(upgrade)) {
     sound.kauf();
     meldung(`${upgrade.medaille} ${upgrade.name}`, upgrade.beschr + "!");
+    meldeAufgaben(aufgabenEreignis("upgrade"));
   } else {
     sound.fehler();
   }
@@ -32,8 +38,46 @@ function klickAufMarie(position) {
 
   // Season-Pass: jeder Klick zählt
   for (const neueStufe of seasonKlick(1)) meldeSeasonStufe(neueStufe);
+  meldeAufgaben(aufgabenEreignis("klick"));
 
   aktualisiereAnzeige();
+}
+
+// ----- Tagesaufgaben -----
+
+// Gerade fertig gewordene Aufgaben melden
+function meldeAufgaben(fertige) {
+  for (const a of fertige) {
+    sound.erfolg();
+    aufgabenSymbolFeiern();
+    meldung(`✅ Aufgabe geschafft! ${aufgabeIcon(a)}`, `${aufgabeText(a)} – tippe auf 📋 und hol dir deine Belohnung!`);
+  }
+}
+
+// "Abholen"-Knopf (index 0..2 oder "bonus")
+function beimAufgabeAbholen(index) {
+  const ergebnis = holeAufgabeAb(index);
+  if (!ergebnis) return;
+  sound.stern();
+  const pass = aktiverSeasonPass();
+  const season = ergebnis.seasonPunkte ? ` · +${ergebnis.seasonPunkte} ${pass.icon}` : "";
+  meldung(ergebnis.istBonus ? "🎁 Bonus abgeholt!" : "🎁 Belohnung abgeholt!", `+${format(ergebnis.herzen)} ${herz()}${season}`);
+  for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+  aktualisiereAnzeige();
+}
+
+// Neuer Tag? -> neue Aufgaben, Vortags-Belohnungen automatisch gutschreiben
+function pruefeTageswechsel() {
+  const { neu, nachgeholt } = pruefeAufgabenTag();
+  for (const b of nachgeholt) {
+    if (!b) continue;
+    meldung("🎁 Belohnung von gestern", `Automatisch gutgeschrieben: +${format(b.herzen)} ${herz()}`);
+    for (const stufe of b.stufen) meldeSeasonStufe(stufe);
+  }
+  if (neu) {
+    aufgabenSymbolFeiern();
+    meldung("📋 Neue Tagesaufgaben!", "Tippe auf 📋 und schau, was heute zu tun ist.");
+  }
 }
 
 // Neue Season-Stufe erreicht -> Meldung, Sound, Symbol leuchtet
@@ -99,6 +143,7 @@ function beimStern(ereignis) {
 
   zeigeSchwebeText(position, text, true);
   marieFreutSich();
+  meldeAufgaben(aufgabenEreignis("stern"));
   aktualisiereAnzeige();
   planeStern();
 }
@@ -126,6 +171,7 @@ function verbindeEreignisse() {
 
     aktiveFinger.add(ereignis.pointerId);
     spiel.maxFinger = Math.max(spiel.maxFinger, aktiveFinger.size);
+    meldeAufgaben(aufgabenEreignis("finger", aktiveFinger.size));
     klickAufMarie({ x: ereignis.clientX, y: ereignis.clientY });
   });
 
@@ -203,11 +249,24 @@ function verbindeEreignisse() {
     zeigeSeason();
     scrolleZuAktuellerStufe();
   });
+
+  // Tagesaufgaben über das 📋-Symbol öffnen (nochmal tippen = schließen)
+  ui.aufgabenBtn.addEventListener("click", () => {
+    if (menueOffen && aktuelleSeite === "seiteAufgaben") {
+      setzeMenue(false);
+      return;
+    }
+    zeigeSeite("seiteAufgaben");
+    setzeMenue(true);
+    zeigeAufgaben();
+    $("seitenleiste").scrollTop = 0;
+  });
   document.addEventListener("keydown", e => { if (e.key === "Escape") setzeMenue(false); });
 
   $("reset").addEventListener("click", () => {
     if (!confirm("Wirklich alles löschen?")) return;
     zuruecksetzen();
+    pruefeAufgabenTag();   // frische Tagesaufgaben für den neuen Spielstand
     versteckeStern();
     planeStern();
     zeigeAlles();
@@ -232,6 +291,9 @@ function tick() {
 }
 
 function pruefeErfolgeUndStatistik() {
+  pruefeTageswechsel();
+  meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
+
   for (const erfolg of pruefeNeueErfolge()) {
     const prozent = Math.round(KONFIG.erfolgBonus * 100);
     meldung(`🏆 ${erfolg.icon} ${erfolg.name}`, `${erfolg.beschr} (+${prozent} % Herzen)`);
@@ -255,11 +317,6 @@ async function kopiereText(text) {
     feld.select();
     try { return document.execCommand("copy"); } catch (e2) { return false; }
   }
-}
-
-function heuteAlsText() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function ladeSicherung(code) {
@@ -297,7 +354,7 @@ function richteSicherungEin() {
     const datei = new Blob([erstelleSicherungsCode()], { type: "text/plain" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(datei);
-    link.download = `marie-clicker-${heuteAlsText()}.txt`;
+    link.download = `marie-clicker-${datumText()}.txt`;
     document.body.append(link);
     link.click();
     link.remove();
@@ -359,6 +416,7 @@ function starte() {
   laden();
   ladeSkins();
   const nachgeliefert = seasonSkinsNachliefern();   // z.B. neues Logo für schon erreichte Stufe 40
+  setzeAufgabenAbholAktion(beimAufgabeAbholen);
   wendeSkinsAn();
   baueOberflaeche({ kaufeItem: beimKaufen, kaufeUpgrade: beimUpgradeKaufen });
   baueSkinSeite(beimSkinWaehlen);
@@ -370,6 +428,7 @@ function starte() {
   // Den Browser bitten, unsere Daten nicht automatisch zu löschen (z.B. bei Speicherplatzmangel)
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
   zeigeSeite("seiteShop");
+  pruefeTageswechsel();   // Tagesaufgaben für heute
   zeigeAlles();
 
   for (const skin of nachgeliefert) {

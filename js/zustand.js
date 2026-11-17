@@ -15,6 +15,8 @@ function neuerSpielstand() {
     anzahl: {},        // gekaufte Dinge, z.B. { teddy: 3 }
     erfolge: [],       // IDs freigeschalteter Erfolge
     upgrades: [],      // IDs gekaufter Upgrades
+    aufgaben: null,    // Tagesaufgaben (siehe aufgaben.js)
+    aufgabenGesamt: 0, // insgesamt erledigte Tagesaufgaben
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

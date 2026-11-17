@@ -27,6 +27,7 @@ const DATEIEN = [
   "js/zustand.js",
   "js/logik.js",
   "js/sicherung.js",
+  "js/aufgaben.js",
   "js/sound.js",
   "js/anzeige.js",
   "js/main.js",

@@ -94,5 +94,7 @@ const ERFOLGE = [
   { id: "upg1",      icon: "🎀", name: "Erste Schleife",    beschr: "Kaufe dein erstes Upgrade",                bedingung: s => s.upgrades.length >= 1 },
   { id: "upg10",     icon: "💄", name: "Stylistin",         beschr: "Kaufe 10 Upgrades",                        bedingung: s => s.upgrades.length >= 10 },
   { id: "upgAlle",   icon: "👑", name: "Prinzessin",        beschr: "Kaufe alle Upgrades",                      bedingung: s => s.upgrades.length >= UPGRADES.length },
-  { id: "zeit30",    icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
+  { id: "aufg10",    icon: "🐝", name: "Fleißige Biene",    beschr: "Erledige 10 Tagesaufgaben",                bedingung: s => (s.aufgabenGesamt || 0) >= 10 },
+  { id: "aufg50",    icon: "🏅", name: "Aufgaben-Profi",    beschr: "Erledige 50 Tagesaufgaben",                bedingung: s => (s.aufgabenGesamt || 0) >= 50 },
+  { id: "zeit30",   icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

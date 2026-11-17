@@ -18,6 +18,8 @@ const ui = {
   stern:          $("stern"),
   tonBtn:         $("tonBtn"),
   musikBtn:       $("musikBtn"),
+  aufgabenBtn:    $("aufgabenBtn"),
+  aufgabenBadge:  $("aufgabenBadge"),
   installBtn:     $("installBtn"),
   seasonBtn:      $("seasonBtn"),
   seasonBtnIcon:  $("seasonBtnIcon"),
@@ -102,6 +104,7 @@ const STATISTIK_ZEILEN = [
   ["Herzschenker",            () => String(anzahlGebaeude())],
   ["Upgrades",                () => `${spiel.upgrades.length} / ${UPGRADES.length}`],
   ["Sternschnuppen gefangen", () => String(spiel.sternKlicks)],
+  ["Tagesaufgaben erledigt",  () => String(spiel.aufgabenGesamt || 0)],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -227,6 +230,7 @@ function aktualisiereAnzeige() {
   zeigeGebaeude();
   zeigeUpgrades();
   zeigeSeason();
+  zeigeAufgaben();
 }
 
 // Wird 1× pro Sekunde aufgerufen
@@ -475,6 +479,112 @@ function scrolleZuAktuellerStufe() {
   leiste.scrollTop += zeileOben - kopfUnten - aktuell.offsetHeight - 18;
 }
 
+// ----- Tagesaufgaben -----
+
+let aufgabenKarten = { tag: null, karten: [] };   // die gebauten Karten des aktuellen Tages
+let aufgabenAbholAktion = () => {};                // setzt main.js: was "Abholen" tut
+
+function setzeAufgabenAbholAktion(aktion) {
+  aufgabenAbholAktion = aktion;
+}
+
+function belohnungText(istBonus) {
+  const b = aufgabenBelohnung(istBonus);
+  const pass = aktiverSeasonPass();
+  let text = `🎁 +${format(b.herzen)} ${herz()}`;
+  if (b.seasonPunkte) text += ` · +${b.seasonPunkte} ${pass.icon}`;
+  return text;
+}
+
+// Karten für den Tag einmal bauen
+function baueAufgabenKarten() {
+  const liste = $("aufgabenListe");
+  liste.textContent = "";
+  const karten = [];
+
+  const eintraege = spiel.aufgaben.liste.map((a, i) => ({ index: i, aufgabe: a }));
+  eintraege.push({ index: "bonus", aufgabe: null });
+
+  for (const { index, aufgabe } of eintraege) {
+    const karte = document.createElement("div");
+    karte.className = "aufgabe" + (aufgabe ? "" : " bonus");
+    const fuellung = document.createElement("div");
+    fuellung.className = "aufgabeFuellung";
+    const balken = document.createElement("div");
+    balken.className = "aufgabeBalken";
+    balken.append(fuellung);
+
+    const zahl = span("aufgabeZahl");
+    const belohnung = span("aufgabeBelohnung");
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.className = "abholen";
+    knopf.addEventListener("click", () => aufgabenAbholAktion(index));
+    const zeile = document.createElement("div");
+    zeile.className = "aufgabeZeile";
+    zeile.append(zahl, belohnung, knopf);
+
+    karte.append(
+      span("aufgabeIcon", aufgabe ? aufgabeIcon(aufgabe) : "🎁"),
+      span("aufgabeText", aufgabe ? aufgabeText(aufgabe) : "Bonus: Schaffe alle 3 Aufgaben!"),
+      balken,
+      zeile,
+    );
+    liste.append(karte);
+    karten.push({ index, aufgabe, karte, fuellung, zahl, belohnung, knopf });
+  }
+  aufgabenKarten = { tag: spiel.aufgaben.tag, karten };
+}
+
+// 10× pro Sekunde: Zahl am Symbol, und – wenn die Seite offen ist – Fortschritt der Karten
+function zeigeAufgaben() {
+  if (!spiel.aufgaben) return;
+  const abholbar = anzahlAbholbar();
+  ui.aufgabenBadge.hidden = abholbar === 0;
+  setzeText(ui.aufgabenBadge, String(abholbar));
+
+  // Neuer Tag oder Spielstand gelöscht/geladen -> Karten neu bauen
+  if (aufgabenKarten.tag !== spiel.aufgaben.tag || aufgabenKarten.karten[0]?.aufgabe !== spiel.aufgaben.liste[0]) {
+    baueAufgabenKarten();
+  }
+  if ($("seiteAufgaben").hidden) return;
+
+  const ms = msBisMitternacht();
+  setzeText($("aufgabenZeit"),
+    `⏳ Neue Aufgaben in ${Math.floor(ms / 3600000)} Std. ${Math.floor((ms % 3600000) / 60000)} Min.`);
+
+  const alleAbgeholt = spiel.aufgaben.liste.every(a => a.abgeholt);
+  for (const k of aufgabenKarten.karten) {
+    let anteil, zahl, fertig, abgeholt;
+    if (k.aufgabe) {
+      const a = k.aufgabe;
+      anteil = a.fortschritt / a.ziel;
+      zahl = aufgabeFortschrittText(a);
+      fertig = a.erledigt;
+      abgeholt = a.abgeholt;
+    } else {
+      const geschafft = spiel.aufgaben.liste.filter(a => a.abgeholt).length;
+      anteil = geschafft / spiel.aufgaben.liste.length;
+      zahl = `${geschafft} / ${spiel.aufgaben.liste.length}`;
+      fertig = alleAbgeholt;
+      abgeholt = spiel.aufgaben.bonusAbgeholt;
+    }
+    k.fuellung.style.width = (Math.min(1, anteil) * 100).toFixed(1) + "%";
+    setzeText(k.zahl, zahl);
+    setzeText(k.belohnung, abgeholt ? "" : belohnungText(!k.aufgabe));
+    setzeText(k.knopf, abgeholt ? "✓ Abgeholt" : fertig ? "🎁 Abholen" : "Noch nicht");
+    k.knopf.disabled = !fertig || abgeholt;
+    k.karte.classList.toggle("fertig", fertig && !abgeholt);
+    k.karte.classList.toggle("abgeholt", abgeholt);
+  }
+}
+
+function aufgabenSymbolFeiern() {
+  ui.aufgabenBtn.classList.remove("feiern");
+  void ui.aufgabenBtn.offsetWidth;
+  ui.aufgabenBtn.classList.add("feiern");
+}
+
 // ----- Seiten (Shop / Erfolge / Statistik) und Handy-Menü -----
 
 let aktuelleSeite = "seiteShop";
@@ -497,6 +607,7 @@ function zeigeSeite(seiteId) {
     const pass = aktiverSeasonPass();
     titel = `${pass ? pass.icon : "🎟️"} Season-Pass`;
   }
+  if (seiteId === "seiteAufgaben") titel = "📋 Tagesaufgaben";
   setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();
 }

@@ -179,7 +179,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 #marie  { margin-bottom: auto; }
 
 /* ----- Obere Zeile: Ton – Titel – Installieren ----- */
-#tonBtn, #musikBtn, #installBtn {
+#tonBtn, #musikBtn, #aufgabenBtn, #installBtn {
   position: absolute; top: max(12px, env(safe-area-inset-top));
   z-index: 7;
   padding: 6px 12px;
@@ -188,9 +188,83 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-#tonBtn, #musikBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
-/* Musik-Knopf direkt unter dem Ton-Knopf */
-#musikBtn { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
+#tonBtn, #musikBtn, #aufgabenBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+/* Musik-Knopf unter dem Ton-Knopf, Aufgaben-Knopf darunter */
+#musikBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
+#aufgabenBtn { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
+#aufgabenBtn.feiern { animation: feiern 0.9s ease-out; }
+
+/* Grüne Zahl: so viele Belohnungen liegen zum Abholen bereit */
+#aufgabenBadge {
+  position: absolute;
+  right: -6px; top: -6px;
+  min-width: 22px; height: 22px;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  border-radius: 11px;
+  background: #2fa35a;
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 18px;
+  text-align: center;
+  animation: badgeHuepfen 1.2s ease-in-out infinite;
+}
+@keyframes badgeHuepfen {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.18); }
+}
+
+/* ----- Tagesaufgaben-Seite ----- */
+.aufgabenKopf {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 2px solid var(--rand);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #eafff1, #e2f4ff);
+  color: #24513a;
+}
+.aufgabenTitel { font-size: 1.1rem; font-weight: 900; }
+.aufgabenZeit  { margin-top: 2px; font-size: 0.8rem; opacity: 0.8; }
+
+.aufgabe {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 4px 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 2px solid var(--rand);
+  border-radius: 16px;
+  background: var(--karte);
+  box-shadow: var(--schatten);
+}
+.aufgabe .aufgabeIcon { grid-row: span 3; font-size: 2rem; text-align: center; }
+.aufgabe .aufgabeText { font-weight: bold; }
+.aufgabe .aufgabeBalken { height: 10px; border-radius: 5px; background: var(--hintergrund); overflow: hidden; }
+.aufgabe .aufgabeFuellung {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #7ee0a1, #2fa35a);
+  transition: width 0.2s;
+}
+.aufgabe .aufgabeZeile {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px;
+  font-size: 0.78rem; color: var(--text-sanft);
+}
+.aufgabe .abholen {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 999px;
+  background: #2fa35a;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  animation: badgeHuepfen 1.2s ease-in-out infinite;
+}
+.aufgabe .abholen:disabled { background: var(--rand); color: var(--text-sanft); animation: none; cursor: default; }
+.aufgabe.fertig { background: #f2fff6; border-color: #9ad8b0; }
+.aufgabe.abgeholt { opacity: 0.6; box-shadow: none; }
+.aufgabe.bonus { border-style: dashed; border-color: #f0b75a; background: linear-gradient(90deg, #fff6df, #ffffff); }
 /* Ausgeschaltet: blass und durchgestrichen */
 #musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
 #installBtn {
@@ -1013,8 +1087,9 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   .logo-krone   { font-size: 2rem; }
   #herzen       { font-size: 3.4rem; }
   #hps          { font-size: 1.25rem; }
-  #tonBtn, #musikBtn { font-size: 1.6rem; }
+  #tonBtn, #musikBtn, #aufgabenBtn { font-size: 1.6rem; }
   #musikBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
+  #aufgabenBtn  { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
   #seasonBtn    { width: 64px; height: 64px; }
   #seasonBtnIcon { font-size: 2rem; }
 
@@ -1084,5 +1159,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
+  #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }
