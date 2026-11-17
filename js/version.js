@@ -3,4 +3,4 @@
 //  Wird unter dem Logo angezeigt und vom Service Worker (sw.js) benutzt.
 //  Bei jeder Änderung am Spiel hochzählen, dann bekommen alle die neue Version.
 // =====================================================
-const APP_VERSION = "1.20";
+const APP_VERSION = "1.21";

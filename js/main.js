@@ -376,6 +376,110 @@ function richteSicherungEin() {
   });
 }
 
+// ----- Online-Bestenliste -----
+
+let bestenlisteLaedt = false;
+
+// Eigene Punkte senden und die Liste neu holen (nur wenn die Seite offen ist)
+async function aktualisiereBestenliste() {
+  zeigeBestenlisteBereich();
+  if (!mitglied || bestenlisteLaedt) return;
+  bestenlisteLaedt = true;
+  setzeBestenlisteStatus("⏳ Lädt …");
+  try {
+    await sendePunkte();
+    zeigeBestenlisteEintraege(await holeBestenliste());
+    setzeBestenlisteStatus(`Aktualisiert um ${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`);
+  } catch (fehler) {
+    setzeBestenlisteStatus("⚠️ " + fehler.message);
+  } finally {
+    bestenlisteLaedt = false;
+  }
+}
+
+function richteBestenlisteEin() {
+  if (!bestenlisteEingerichtet()) return;   // ohne Supabase-Daten bleibt alles unsichtbar
+  ladeMitgliedschaft();
+  ui.bestenlisteBtn = $("bestenlisteBtn");
+  ui.bestenlisteBtn.hidden = false;
+
+  ui.bestenlisteBtn.addEventListener("click", () => {
+    if (menueOffen && aktuelleSeite === "seiteBestenliste") {
+      setzeMenue(false);
+      return;
+    }
+    zeigeSeite("seiteBestenliste");
+    setzeMenue(true);
+    aktualisiereBestenliste();
+  });
+
+  $("blNeueGruppe").addEventListener("click", () => {
+    $("blGruppe").value = neuerGruppenCode();
+    sound.klick();
+  });
+
+  $("blMitmachen").addEventListener("click", async () => {
+    const knopf = $("blMitmachen");
+    knopf.disabled = true;
+    try {
+      await trittBestenlisteBei($("blName").value, $("blGruppe").value);
+      sound.erfolg();
+      meldung("🏅 Du bist dabei!", `Gruppe ${mitglied.gruppe.toUpperCase()} – lade Freunde mit dem Code ein.`);
+      aktualisiereBestenliste();
+    } catch (fehler) {
+      sound.fehler();
+      meldung("⚠️ Mitmachen nicht möglich", fehler.message);
+    } finally {
+      knopf.disabled = false;
+    }
+  });
+
+  $("blAktualisieren").addEventListener("click", () => aktualisiereBestenliste());
+
+  // Einladen: Teilen-Menü des Handys, sonst Text kopieren
+  $("blTeilen").addEventListener("click", async () => {
+    const code = mitglied.gruppe.toUpperCase();
+    const text = `Spiel mit mir Marie Clicker! 💖 Tippe auf 🏅 und gib diesen Gruppen-Code ein: ${code}`;
+    const adresse = location.href.split("#")[0];
+    if (navigator.share) {
+      try { await navigator.share({ title: "Marie Clicker", text, url: adresse }); } catch (e) { /* abgebrochen */ }
+    } else if (await kopiereText(`${text}\n${adresse}`)) {
+      meldung("📋 Einladung kopiert!", "Schicke sie z.B. per Nachricht an deine Freunde.");
+    }
+  });
+
+  $("blAendern").addEventListener("click", async () => {
+    const neu = prompt("Neuer Spitzname (höchstens 16 Zeichen):", mitglied.name);
+    if (neu === null) return;
+    try {
+      await trittBestenlisteBei(neu, mitglied.gruppe);
+      aktualisiereBestenliste();
+    } catch (fehler) {
+      meldung("⚠️ Ändern nicht möglich", fehler.message);
+    }
+  });
+
+  $("blVerlassen").addEventListener("click", async () => {
+    if (!confirm("Gruppe wirklich verlassen? Dein Eintrag wird aus der Liste gelöscht.")) return;
+    try { await verlasseBestenliste(); } catch (e) { /* lokal trotzdem verlassen */ }
+    $("blName").value = "";
+    $("blGruppe").value = "";
+    zeigeBestenlisteBereich();
+  });
+
+  // Regelmäßig die eigenen Punkte melden (und die Liste auffrischen, wenn sie offen ist)
+  setInterval(() => {
+    if (!mitglied || document.hidden) return;
+    if (!$("seiteBestenliste").hidden) aktualisiereBestenliste();
+    else sendePunkte().catch(() => {});
+  }, BESTENLISTE.sendenAlleSek * 1000);
+
+  // Beim Verlassen der App noch schnell den neuesten Stand senden
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && mitglied) sendePunkte().catch(() => {});
+  });
+}
+
 // ----- App (PWA) -----
 
 function richteAppEin() {
@@ -423,6 +527,7 @@ function starte() {
   zeigeSkins();
   verbindeEreignisse();
   richteSicherungEin();
+  richteBestenlisteEin();
   richteAppEin();
 
   // Den Browser bitten, unsere Daten nicht automatisch zu löschen (z.B. bei Speicherplatzmangel)

@@ -38,6 +38,15 @@ Unter **📊 Statistik → 💾 Spielstand sichern**:
 - Skins und Season-Fortschritt werden beim Wiederherstellen zusammengeführt – es geht nichts verloren
 - Nach 7 Tagen ohne Sicherung erscheint ein orangefarbener Hinweis
 
+## Online-Bestenliste 🏅 (Familie & Freunde)
+
+- Private Gruppen per Gruppen-Code (z.B. `HERZ-7K3P`) – nur wer den Code kennt, sieht die Liste
+- Gespeichert werden nur Spitzname, Herzen insgesamt, Herzen/Sek., Season-Stufe und Anzahl Erfolge
+- Server: [Supabase](https://supabase.com) – Datenbank-Regeln in `supabase/bestenliste.sql`
+- Einrichtung: SQL im Supabase-„SQL Editor“ ausführen, dann Projekt-URL und öffentlichen Schlüssel
+  in `js/bestenliste.js` (`BESTENLISTE.url` / `BESTENLISTE.schluessel`) eintragen.
+  Solange beides leer ist, ist die Bestenliste unsichtbar.
+
 ## Skins & Season-Pässe
 
 Am Anfang ist pro Kategorie nur der normale Skin freigeschaltet. Freigeschaltete Skins werden
@@ -85,6 +94,8 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/logik.js` | Berechnungen und Käufe |
 | `js/sicherung.js` | Spielstand als Code sichern und wiederherstellen |
 | `js/aufgaben.js` | Tagesaufgaben: Vorrat (`AUFGABEN_VORLAGEN`), Fortschritt, Belohnungen |
+| `js/bestenliste.js` | Online-Bestenliste (Supabase-Verbindung) |
+| `supabase/bestenliste.sql` | Datenbank-Tabelle und -Funktionen für die Bestenliste |
 | `js/sound.js` | Klänge und Musik-Abspieler (Web Audio API) |
 | `js/anzeige.js` | HTML erzeugen und aktualisieren |
 | `js/main.js` | Verbindet alles und startet das Spiel |

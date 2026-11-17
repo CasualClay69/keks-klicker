@@ -179,7 +179,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 #marie  { margin-bottom: auto; }
 
 /* ----- Obere Zeile: Ton – Titel – Installieren ----- */
-#tonBtn, #musikBtn, #aufgabenBtn, #installBtn {
+#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #installBtn {
   position: absolute; top: max(12px, env(safe-area-inset-top));
   z-index: 7;
   padding: 6px 12px;
@@ -188,10 +188,11 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-#tonBtn, #musikBtn, #aufgabenBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
-/* Musik-Knopf unter dem Ton-Knopf, Aufgaben-Knopf darunter */
-#musikBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
-#aufgabenBtn { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
+#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+/* Links untereinander: Ton, Musik, Aufgaben, Bestenliste */
+#musikBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
+#aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
+#bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 144px); }
 #aufgabenBtn.feiern { animation: feiern 0.9s ease-out; }
 
 /* Grüne Zahl: so viele Belohnungen liegen zum Abholen bereit */
@@ -265,6 +266,56 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .aufgabe.fertig { background: #f2fff6; border-color: #9ad8b0; }
 .aufgabe.abgeholt { opacity: 0.6; box-shadow: none; }
 .aufgabe.bonus { border-style: dashed; border-color: #f0b75a; background: linear-gradient(90deg, #fff6df, #ffffff); }
+
+/* ----- Bestenliste ----- */
+.blKopf {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 2px solid var(--rand);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff7d6, #ffe6f2);
+  color: #6b4a00;
+}
+.blTitel { font-size: 1.1rem; font-weight: 900; }
+.blUnter { margin-top: 2px; font-size: 0.8rem; opacity: 0.85; }
+
+.feld { display: block; margin: 10px 0 4px; font-weight: bold; font-size: 0.9rem; }
+.feld input {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px 12px;
+  border: 2px solid var(--rand);
+  border-radius: 12px;
+  background: var(--karte);
+  color: var(--text);
+  font: inherit;
+  font-weight: normal;
+}
+.feld input:focus { outline: none; border-color: var(--akzent); }
+
+.blListe { margin: 0 0 6px; padding: 0; list-style: none; }
+.blZeile {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 2px 8px;
+  margin-bottom: 6px;
+  padding: 8px 12px;
+  border: 2px solid var(--rand);
+  border-radius: 14px;
+  background: var(--karte);
+}
+.blZeile .platz  { grid-row: span 2; font-size: 1.4rem; font-weight: 900; text-align: center; color: var(--text-sanft); }
+.blZeile .name   { font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.blZeile .punkte { font-weight: 900; color: var(--akzent-dunkel); white-space: nowrap; }
+.blZeile .details { grid-column: 2 / 4; font-size: 0.72rem; color: var(--text-sanft); }
+.blZeile.du {
+  border-color: var(--akzent);
+  background: var(--karte-hover);
+  box-shadow: 0 0 0 3px rgba(255, 95, 162, 0.2);
+}
+.blLeer { padding: 12px; text-align: center; color: var(--text-sanft); }
 /* Ausgeschaltet: blass und durchgestrichen */
 #musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
 #installBtn {
@@ -1087,9 +1138,10 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   .logo-krone   { font-size: 2rem; }
   #herzen       { font-size: 3.4rem; }
   #hps          { font-size: 1.25rem; }
-  #tonBtn, #musikBtn, #aufgabenBtn { font-size: 1.6rem; }
-  #musikBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
-  #aufgabenBtn  { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
+  #tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn { font-size: 1.6rem; }
+  #musikBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
+  #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
+  #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
   #seasonBtn    { width: 64px; height: 64px; }
   #seasonBtnIcon { font-size: 2rem; }
 

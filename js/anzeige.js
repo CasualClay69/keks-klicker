@@ -585,6 +585,60 @@ function aufgabenSymbolFeiern() {
   ui.aufgabenBtn.classList.add("feiern");
 }
 
+// ----- Bestenliste -----
+
+// Welcher Teil der Seite ist sichtbar: Beitreten-Formular oder die Liste
+function zeigeBestenlisteBereich() {
+  $("blBeitreten").hidden = Boolean(mitglied);
+  $("blListeBereich").hidden = !mitglied;
+  if (mitglied) setzeText($("blGruppenName"), mitglied.gruppe.toUpperCase());
+}
+
+function setzeBestenlisteStatus(text) {
+  setzeText($("blStatus"), text);
+}
+
+function vorWieLangeText(zeitpunkt) {
+  const minuten = Math.floor((Date.now() - Date.parse(zeitpunkt)) / 60000);
+  if (minuten < 2) return "gerade eben";
+  if (minuten < 60) return `vor ${minuten} Min.`;
+  const stunden = Math.floor(minuten / 60);
+  if (stunden < 24) return `vor ${stunden} Std.`;
+  return `vor ${Math.floor(stunden / 24)} Tagen`;
+}
+
+// Liste zeichnen. Die Namen kommen von anderen Spielern -> nur als Text einsetzen (textContent)
+function zeigeBestenlisteEintraege(eintraege) {
+  const liste = $("blListe");
+  liste.textContent = "";
+  if (!eintraege.length) {
+    const leer = document.createElement("li");
+    leer.className = "blLeer";
+    leer.textContent = "Noch niemand hier – lade Freunde ein!";
+    liste.append(leer);
+    return;
+  }
+  const medaillen = ["🥇", "🥈", "🥉"];
+  eintraege.forEach((e, i) => {
+    const zeile = document.createElement("li");
+    zeile.className = "blZeile";
+    const istDu = mitglied && e.spieler_id === mitglied.spielerId;
+    if (istDu) zeile.classList.add("du");
+
+    const details = [`${formatKomma(e.hps)} ${herz()}/Sek.`];
+    if (e.season_stufe > 0) details.push(`Season-Stufe ${e.season_stufe}`);
+    details.push(`🏆 ${e.erfolge}`, vorWieLangeText(e.aktualisiert));
+
+    zeile.append(
+      span("platz", medaillen[i] || String(i + 1)),
+      span("name", istDu ? `${e.name} (du)` : e.name),
+      span("punkte", `${format(e.herzen_gesamt)} ${herz()}`),
+      span("details", details.join(" · ")),
+    );
+    liste.append(zeile);
+  });
+}
+
 // ----- Seiten (Shop / Erfolge / Statistik) und Handy-Menü -----
 
 let aktuelleSeite = "seiteShop";
@@ -608,6 +662,7 @@ function zeigeSeite(seiteId) {
     titel = `${pass ? pass.icon : "🎟️"} Season-Pass`;
   }
   if (seiteId === "seiteAufgaben") titel = "📋 Tagesaufgaben";
+  if (seiteId === "seiteBestenliste") titel = "🏅 Bestenliste";
   setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();
 }

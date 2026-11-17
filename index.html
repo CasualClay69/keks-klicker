@@ -30,6 +30,7 @@
   <script src="js/logik.js"   defer></script>
   <script src="js/sicherung.js" defer></script>
   <script src="js/aufgaben.js" defer></script>
+  <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
   <script src="js/main.js"    defer></script>
@@ -41,6 +42,7 @@
     <button id="tonBtn" type="button" title="Klänge an/aus" aria-label="Klänge an/aus">🔊</button>
     <button id="musikBtn" type="button" title="Musik an/aus" aria-label="Musik an/aus">🎵</button>
     <button id="aufgabenBtn" type="button" title="Tagesaufgaben" aria-label="Tagesaufgaben öffnen">📋<b id="aufgabenBadge" hidden></b></button>
+    <button id="bestenlisteBtn" type="button" title="Bestenliste" aria-label="Bestenliste öffnen" hidden>🏅</button>
     <h1 id="titel" aria-label="Marie Clicker">
       <span class="logo-krone" aria-hidden="true">👑</span>
       <span class="logo-deko" aria-hidden="true"></span>
@@ -187,6 +189,45 @@
         <div class="aufgabenZeit" id="aufgabenZeit"></div>
       </div>
       <div id="aufgabenListe"></div>
+    </section>
+
+    <section id="seiteBestenliste" class="seite" role="tabpanel" hidden>
+      <!-- Noch keiner Gruppe beigetreten -->
+      <div id="blBeitreten" hidden>
+        <div class="blKopf">
+          <div class="blTitel">🏅 Bestenliste</div>
+          <div class="blUnter">Wer hat die meisten Herzen? Vergleiche dich mit Familie und Freunden!</div>
+        </div>
+        <label class="feld">Dein Spitzname
+          <input id="blName" type="text" maxlength="16" autocomplete="off" placeholder="z.B. Herzchen7">
+        </label>
+        <p class="seitenInfo">🔒 Bitte nicht deinen echten Namen benutzen. Gespeichert werden nur dein Spitzname und deine Punkte.</p>
+        <label class="feld">Gruppen-Code
+          <input id="blGruppe" type="text" maxlength="32" autocomplete="off" placeholder="z.B. HERZ-7K3P">
+        </label>
+        <p class="seitenInfo">Alle, die denselben Gruppen-Code eingeben, sehen sich gegenseitig. Noch keinen? Tippe auf „Neue Gruppe“.</p>
+        <div class="knopfReihe">
+          <button id="blMitmachen" type="button" class="knopf haupt">🏅 Mitmachen</button>
+          <button id="blNeueGruppe" type="button" class="knopf">✨ Neue Gruppe</button>
+        </div>
+      </div>
+
+      <!-- In einer Gruppe -->
+      <div id="blListeBereich" hidden>
+        <div class="blKopf">
+          <div class="blTitel">🏅 Gruppe <span id="blGruppenName"></span></div>
+          <div class="blUnter" id="blStatus"></div>
+        </div>
+        <ol id="blListe" class="blListe"></ol>
+        <div class="knopfReihe">
+          <button id="blTeilen" type="button" class="knopf haupt">📨 Freunde einladen</button>
+          <button id="blAktualisieren" type="button" class="knopf">🔄 Aktualisieren</button>
+        </div>
+        <div class="knopfReihe">
+          <button id="blAendern" type="button" class="knopf">✏️ Spitzname ändern</button>
+          <button id="blVerlassen" type="button" class="knopf">🚪 Gruppe verlassen</button>
+        </div>
+      </div>
     </section>
 
     <section id="seiteSeason" class="seite" role="tabpanel" hidden>
