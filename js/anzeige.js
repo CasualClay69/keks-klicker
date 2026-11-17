@@ -304,7 +304,16 @@ function zeigeSkins() {
 }
 
 // Setzt die gewählten Skins im Spiel um (Musik startet main.js neu)
-let hudVariablen = [];   // welche Farben der aktuelle HUD-Skin gesetzt hat
+let hudVariablen = [];    // welche Farben der aktuelle HUD-Skin gesetzt hat
+let logoVariablen = [];   // … und welche der Logo-Skin
+
+// Setzt CSS-Variablen eines Skins und entfernt vorher die des alten. Gibt die neuen Namen zurück.
+function tauscheVariablen(alteNamen, farben) {
+  const wurzel = document.documentElement.style;
+  for (const name of alteNamen) wurzel.removeProperty(name);
+  for (const [name, wert] of Object.entries(farben)) wurzel.setProperty(name, wert);
+  return Object.keys(farben);
+}
 
 function wendeSkinsAn() {
   // Hintergrund: per Attribut, das Aussehen steht in style.css
@@ -314,11 +323,14 @@ function wendeSkinsAn() {
   ui.hut.innerHTML = aktiverSkin("hut").svg;
 
   // HUD: Farben als CSS-Variablen. Erst die alten entfernen, dann die neuen setzen.
-  const wurzel = document.documentElement.style;
-  for (const name of hudVariablen) wurzel.removeProperty(name);
-  const farben = aktiverSkin("hud").farben;
-  for (const [name, wert] of Object.entries(farben)) wurzel.setProperty(name, wert);
-  hudVariablen = Object.keys(farben);
+  hudVariablen = tauscheVariablen(hudVariablen, aktiverSkin("hud").farben);
+
+  // Logo: eigene Farben (--logo-skin-* haben Vorrang vor den HUD-Logofarben) und Zeichen
+  const logo = aktiverSkin("logo");
+  logoVariablen = tauscheVariablen(logoVariablen, logo.farben);
+  setzeText(document.querySelector(".logo-krone"), logo.krone);
+  setzeText(document.querySelector(".logo-deko"), logo.deko);
+  for (const stern of document.querySelectorAll(".funkeln")) setzeText(stern, logo.funkeln);
 
   // HUD: Symbole (Elemente mit data-symbol). Das ursprüngliche Symbol merken wir uns beim ersten Mal.
   const symbole = aktiverSkin("hud").symbole;

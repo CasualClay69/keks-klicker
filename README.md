@@ -37,7 +37,8 @@ Neuen Skin hinzufügen:
 1. In `js/skins.js` einen Eintrag in `SKINS` anlegen, mit `season: "<Pass-ID>"`
    - **Hintergrund:** `wert` + CSS-Regeln für `body[data-hintergrund="<wert>"]` in `css/style.css`
    - **Hut:** SVG-Code in `svg`
-   - **HUD:** CSS-Farbvariablen in `farben`
+   - **HUD:** CSS-Farbvariablen in `farben`, Symbole in `symbole`
+   - **Logo:** `krone`, `deko`, `funkeln` und Farben (`--logo-skin-*`, `--logo-schild-*`, `--logo-funkeln`)
    - **Musik:** Noten in `musik` (Aufbau wie `SPIELUHR`)
 2. Den Season-Pass in `SEASON_PAESSE` eintragen (bzw. die Skin-ID dort ergänzen)
 3. In `js/version.js` die Versionsnummer erhöhen
@@ -52,13 +53,13 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 - Herz-Belohnungen wachsen mit dem Fortschritt: Produktion von (5,5 + 0,5·n) Minuten + Wert von (100 + 10·n) Klicks,
   mindestens 50·n² (gilt für alle Seasons, siehe `seasonHerzen` in `js/skins.js`)
 - Belohnungen: Herzen auf jeder Stufe, dazu
-  🎩 Pilgerhut (Stufe 10), 🎻 Erntedank-Walzer (20), 🍂 Herbstlaub-HUD (30), 🍁 Blätterregen (50, animiert)
+  🎩 Pilgerhut (Stufe 10), 🎻 Erntedank-Walzer (20), 🍂 Herbstlaub-HUD (30), 🦃 Erntedank-Logo (40), 🍁 Blätterregen (50, animiert)
 - Fortschritt und Skins bleiben auch nach dem Season-Ende und beim „Spielstand löschen“ erhalten
 
 ### Season 2: Weihnachten 🎅 (1.–31. Dezember 2026)
 
 - Startet automatisch, wenn Season 1 endet; gleiche Regeln (50 Stufen, ~10 Stunden)
-- Skins: 🎅 Weihnachtsmütze (Stufe 10), 🔔 Glöckchen-Melodie (20), 🎄 Winterzauber-HUD (30), ❄️ Schneefall (50, animiert)
+- Skins: 🎅 Weihnachtsmütze (Stufe 10), 🔔 Glöckchen-Melodie (20), 🎄 Winterzauber-HUD (30), 🎄 Weihnachts-Logo (40), ❄️ Schneefall (50, animiert)
 - Jede Season hat eigene Farben für die Season-Seite (`design` in `SEASON_PAESSE`)
 
 ## Aufbau

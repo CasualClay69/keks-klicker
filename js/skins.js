@@ -13,6 +13,8 @@
 //     • hut:         SVG-Code im Feld "svg" (Koordinaten wie in Maries Zeichnung,
 //                    viewBox -10 0 220 220, Kopf-Oberkante bei etwa y = 34)
 //     • hud:         Farben im Feld "farben" (CSS-Variablen aus style.css :root)
+//     • logo:        krone (Zeichen auf dem "M"), deko (Zeichen rechts, "" = keins),
+//                    funkeln (Zeichen der Sternchen) und farben (--logo-skin-*, siehe style.css)
 //     • musik:       Noten im Feld "musik" (wie SPIELUHR unten)
 //  3. Die Skin-ID beim Season-Pass in SEASON_PAESSE eintragen.
 //  4. In js/version.js die Versionsnummer erhöhen.
@@ -22,6 +24,7 @@ const SKIN_KATEGORIEN = [
   { id: "hintergrund", name: "Hintergrund",   icon: "🖼️" },
   { id: "hut",         name: "Hut für Marie", icon: "👒" },
   { id: "hud",         name: "HUD-Farben",    icon: "🎨" },
+  { id: "logo",        name: "Logo",          icon: "✨" },
   { id: "musik",       name: "Musik",         icon: "🎵" },
 ];
 
@@ -120,6 +123,10 @@ const SKINS = [
   { id: "hud-normal", kategorie: "hud", standard: true,
     name: "Zuckerwatte", icon: "🍬", farben: {}, symbole: {} },
 
+  // Logo – leere Farben = die Logo-Farben des HUD-Skins
+  { id: "logo-normal", kategorie: "logo", standard: true,
+    name: "Prinzessin", icon: "👑", krone: "👑", deko: "", funkeln: "✦", farben: {} },
+
   // Musik
   { id: "musik-normal", kategorie: "musik", standard: true,
     name: "Spieluhr", icon: "🎶", musik: SPIELUHR },
@@ -161,6 +168,14 @@ const SKINS = [
   { id: "hintergrund-herbst", kategorie: "hintergrund", season: "s1",
     name: "Blätterregen", icon: "🍁", wert: "herbst" },
 
+  { id: "logo-erntedank", kategorie: "logo", season: "s1",
+    name: "Erntedank-Logo", icon: "🦃", krone: "🍁", deko: "🦃", funkeln: "✦",
+    farben: {
+      "--logo-skin-1": "#ffd56b", "--logo-skin-2": "#e8772e", "--logo-skin-3": "#8f3d14",
+      "--logo-schild-hg": "#fff3dc", "--logo-schild-text": "#a0461c", "--logo-schild-rand": "#f0b770",
+      "--logo-funkeln": "#e0a526",
+    } },
+
   // ───────── Season 2: Weihnachten ─────────
 
   // Weihnachtsmütze: rote Mütze, Spitze hängt nach rechts, weißer Pelzrand und Bommel
@@ -195,6 +210,14 @@ const SKINS = [
 
   { id: "hintergrund-schnee", kategorie: "hintergrund", season: "s2",
     name: "Schneefall", icon: "❄️", wert: "schnee" },
+
+  { id: "logo-weihnachten", kategorie: "logo", season: "s2",
+    name: "Weihnachts-Logo", icon: "🎄", krone: "⭐", deko: "🎄", funkeln: "❅",
+    farben: {
+      "--logo-skin-1": "#ff7b7b", "--logo-skin-2": "#d42a3c", "--logo-skin-3": "#1f7a45",
+      "--logo-schild-hg": "#ffffff", "--logo-schild-text": "#1f7a45", "--logo-schild-rand": "#e05a66",
+      "--logo-funkeln": "#7fb2ea",
+    } },
 ];
 
 // ----- Season-Pässe -----
@@ -213,7 +236,7 @@ const SEASON_PAESSE = [
     klicksBasis: 670,
     klicksProStufe: 30,
     // Auf diesen Stufen gibt es Skins, auf allen anderen Herzen
-    skinBelohnungen: { 10: "hut-pilgerhut", 20: "musik-erntedank", 30: "hud-herbstlaub", 50: "hintergrund-herbst" },
+    skinBelohnungen: { 10: "hut-pilgerhut", 20: "musik-erntedank", 30: "hud-herbstlaub", 40: "logo-erntedank", 50: "hintergrund-herbst" },
     // Farben der Season-Seite (Kopf, Fortschrittsbalken)
     design: {
       "--season-kopf-1": "#fff3e0", "--season-kopf-2": "#ffe0c4", "--season-text": "#5a3317",
@@ -230,7 +253,7 @@ const SEASON_PAESSE = [
     // Wie Season 1: ~71.750 Klicks ≈ 10 Stunden bei 2 Klicks pro Sekunde
     klicksBasis: 670,
     klicksProStufe: 30,
-    skinBelohnungen: { 10: "hut-weihnachtsmuetze", 20: "musik-gloeckchen", 30: "hud-winterzauber", 50: "hintergrund-schnee" },
+    skinBelohnungen: { 10: "hut-weihnachtsmuetze", 20: "musik-gloeckchen", 30: "hud-winterzauber", 40: "logo-weihnachten", 50: "hintergrund-schnee" },
     design: {
       "--season-kopf-1": "#eef6ff", "--season-kopf-2": "#dbe9ff", "--season-text": "#23324d",
       "--season-akzent": "#c62f3e", "--season-balken-1": "#ff8a8a", "--season-balken-2": "#d63a4a",
@@ -341,6 +364,24 @@ function skinStufe(skin) {
   if (!pass) return null;
   const eintrag = Object.entries(pass.skinBelohnungen).find(([, id]) => id === skin.id);
   return eintrag ? Number(eintrag[0]) : null;
+}
+
+// Skins für schon erreichte Stufen nachliefern – z.B. wenn eine Belohnung nachträglich
+// zu einer Stufe hinzugefügt wurde, die man schon geschafft hatte. Gibt die neuen Skins zurück.
+function seasonSkinsNachliefern() {
+  const neu = [];
+  for (const pass of SEASON_PAESSE) {
+    const stand = skinStand.seasons[pass.id];
+    if (!stand) continue;
+    for (const [stufe, skinId] of Object.entries(pass.skinBelohnungen)) {
+      if (Number(stufe) <= stand.stufe && !skinStand.freigeschaltet.includes(skinId)) {
+        schalteSkinFrei(skinId);
+        neu.push(SKINS.find(s => s.id === skinId));
+      }
+    }
+  }
+  if (neu.length) speichereSkins();
+  return neu;
 }
 
 // Wird bei jedem Klick auf Marie aufgerufen. Gibt die neu erreichten Stufen zurück

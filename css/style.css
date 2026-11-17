@@ -341,7 +341,11 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   font-size: clamp(3rem, 5vw, 4.4rem);
   font-weight: 900;
   letter-spacing: 0.02em;
-  background: linear-gradient(180deg, var(--logo-1) 0%, var(--logo-2) 50%, var(--logo-3) 100%);
+  /* Logo-Skin-Farben (--logo-skin-*) haben Vorrang, sonst die Logo-Farben des HUD-Skins */
+  background: linear-gradient(180deg,
+    var(--logo-skin-1, var(--logo-1)) 0%,
+    var(--logo-skin-2, var(--logo-2)) 50%,
+    var(--logo-skin-3, var(--logo-3)) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -357,10 +361,10 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .logo-clicker {
   margin-top: -0.35rem;
   padding: 3px 10px 3px calc(10px + 0.35em);   /* links mehr wegen letter-spacing */
-  border: 2px solid var(--rand);
+  border: 2px solid var(--logo-schild-rand, var(--rand));
   border-radius: 999px;
-  background: #fff;
-  color: var(--akzent-dunkel);
+  background: var(--logo-schild-hg, #fff);
+  color: var(--logo-schild-text, var(--akzent-dunkel));
   font-size: clamp(0.72rem, 1.3vw, 0.95rem);
   font-weight: 800;
   letter-spacing: 0.35em;
@@ -399,9 +403,22 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   text-shadow: 0 0 6px #fff;
   animation: funkeln 1.8s ease-in-out infinite;
 }
-.funkeln.f1 { top: 2px;     right: -16px; }
-.funkeln.f2 { bottom: 18px; right: -8px;  font-size: 0.7rem; animation-delay: 0.6s; color: var(--akzent); }
-.funkeln.f3 { bottom: 4px;  left: -14px;  font-size: 0.8rem; animation-delay: 1.2s; color: var(--lila); }
+/* Farbe: vom Logo-Skin (--logo-funkeln), sonst je Sternchen eine eigene */
+.funkeln.f1 { top: 2px;     right: -16px; color: var(--logo-funkeln, var(--gold)); }
+.funkeln.f2 { bottom: 18px; right: -8px;  font-size: 0.7rem; animation-delay: 0.6s; color: var(--logo-funkeln, var(--akzent)); }
+.funkeln.f3 { bottom: 4px;  left: -14px;  font-size: 0.8rem; animation-delay: 1.2s; color: var(--logo-funkeln, var(--lila)); }
+
+/* Deko rechts am Logo (nur bei manchen Logo-Skins, z.B. 🦃 oder 🎄) */
+.logo-deko {
+  position: absolute;
+  top: 0.1em;
+  right: -1.15em;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  transform: rotate(12deg);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+  animation: logoWippen 3.5s ease-in-out infinite reverse;
+}
+.logo-deko:empty { display: none; }
 
 /* ----- Zähler ----- */
 #herzen {
@@ -1016,6 +1033,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  #spielfeld::before, #spielfeld::after, .logo-marie, .funkeln, #seasonBtn.feiern,
+  #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

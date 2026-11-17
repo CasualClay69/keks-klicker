@@ -280,6 +280,7 @@ function starte() {
   $("version").textContent = "v" + APP_VERSION;
   laden();
   ladeSkins();
+  const nachgeliefert = seasonSkinsNachliefern();   // z.B. neues Logo für schon erreichte Stufe 40
   wendeSkinsAn();
   baueOberflaeche({ kaufeItem: beimKaufen, kaufeUpgrade: beimUpgradeKaufen });
   baueSkinSeite(beimSkinWaehlen);
@@ -288,6 +289,10 @@ function starte() {
   richteAppEin();
   zeigeSeite("seiteShop");
   zeigeAlles();
+
+  for (const skin of nachgeliefert) {
+    meldung(`🎁 Neuer Skin: ${skin.icon} ${skin.name}`, "Für deine schon erreichte Season-Stufe – jetzt unter Skins auswählbar");
+  }
 
   setInterval(tick, KONFIG.tickMs);
   setInterval(pruefeErfolgeUndStatistik, KONFIG.erfolgPruefenMs);
