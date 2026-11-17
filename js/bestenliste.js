@@ -1,8 +1,8 @@
 "use strict";
 // =====================================================
-//  ONLINE-BESTENLISTE (Supabase) – für Familie & Freunde
+//  ONLINE-BESTENLISTE (Supabase)
 //
-//  Wer denselben Gruppen-Code eingibt, landet in derselben Liste.
+//  Es gibt genau EINE gemeinsame Liste für alle Spieler (feste Gruppe, siehe unten).
 //  Gespeichert werden nur: Spitzname, Herzen insgesamt, Herzen/Sek., Season-Stufe, Anzahl Erfolge.
 //  Datenbank-Regeln: supabase/bestenliste.sql
 //
@@ -14,6 +14,7 @@ const BESTENLISTE = {
   url: "https://tpbsqfivdkgkqpktqnlv.supabase.co",            // Supabase-Projekt-Adresse
   schluessel: "sb_publishable_Penidm4iDwsdKhpk74WUvg_kpA5A7S-", // öffentlicher Schlüssel ("Publishable key")
   sendenAlleSek: 60,
+  gruppe: "marie-clicker",   // die eine, gemeinsame Bestenliste
 };
 const BESTENLISTE_SPEICHER = "marieClicker-bestenliste";
 
@@ -51,13 +52,6 @@ function zufallsUuid() {
   if (crypto.randomUUID) return crypto.randomUUID();
   const h = zufallsHex(16);
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-a${h.slice(17, 20)}-${h.slice(20, 32)}`;
-}
-
-// Gut lesbarer Code ohne verwechselbare Zeichen (kein 0/O, 1/I/L), z.B. "HERZ-7K3P"
-function neuerGruppenCode() {
-  const zeichen = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-  const werte = crypto.getRandomValues(new Uint8Array(4));
-  return "HERZ-" + Array.from(werte, w => zeichen[w % zeichen.length]).join("");
 }
 
 // ----- Verbindung zu Supabase -----
@@ -113,12 +107,11 @@ async function holeBestenliste() {
   return (await rufeBestenlisteAuf("hole_bestenliste", { p_gruppe: mitglied.gruppe })) || [];
 }
 
-// Einer Gruppe beitreten (oder Spitzname/Gruppe wechseln)
-async function trittBestenlisteBei(name, gruppe) {
+// Der Bestenliste beitreten (oder den Spitznamen ändern)
+async function trittBestenlisteBei(name) {
   name = String(name).trim();
-  gruppe = String(gruppe).trim().toLowerCase();
+  const gruppe = BESTENLISTE.gruppe;
   if (name.length < 1 || name.length > 16) throw new Error("Bitte gib einen Spitznamen mit 1 bis 16 Zeichen ein.");
-  if (gruppe.length < 4 || gruppe.length > 32) throw new Error("Der Gruppen-Code muss 4 bis 32 Zeichen lang sein.");
 
   const vorher = mitglied;
   mitglied = {
@@ -134,7 +127,7 @@ async function trittBestenlisteBei(name, gruppe) {
   }
   speichereMitgliedschaft();
 
-  // Gruppe gewechselt? Dann den alten Eintrag in der alten Gruppe aufräumen
+  // Früher gab es mehrere Gruppen: alten Eintrag in der alten Gruppe aufräumen
   if (vorher && vorher.gruppe !== gruppe) {
     rufeBestenlisteAuf("verlasse_bestenliste", {
       p_gruppe: vorher.gruppe, p_spieler_id: vorher.spielerId, p_geheimnis: vorher.geheimnis,

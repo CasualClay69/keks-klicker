@@ -413,18 +413,13 @@ function richteBestenlisteEin() {
     aktualisiereBestenliste();
   });
 
-  $("blNeueGruppe").addEventListener("click", () => {
-    $("blGruppe").value = neuerGruppenCode();
-    sound.klick();
-  });
-
   $("blMitmachen").addEventListener("click", async () => {
     const knopf = $("blMitmachen");
     knopf.disabled = true;
     try {
-      await trittBestenlisteBei($("blName").value, $("blGruppe").value);
+      await trittBestenlisteBei($("blName").value);
       sound.erfolg();
-      meldung("🏅 Du bist dabei!", `Gruppe ${mitglied.gruppe.toUpperCase()} – lade Freunde mit dem Code ein.`);
+      meldung("🏅 Du bist dabei!", `Viel Spaß, ${mitglied.name}!`);
       aktualisiereBestenliste();
     } catch (fehler) {
       sound.fehler();
@@ -436,23 +431,11 @@ function richteBestenlisteEin() {
 
   $("blAktualisieren").addEventListener("click", () => aktualisiereBestenliste());
 
-  // Einladen: Teilen-Menü des Handys, sonst Text kopieren
-  $("blTeilen").addEventListener("click", async () => {
-    const code = mitglied.gruppe.toUpperCase();
-    const text = `Spiel mit mir Marie Clicker! 💖 Tippe auf 🏅 und gib diesen Gruppen-Code ein: ${code}`;
-    const adresse = location.href.split("#")[0];
-    if (navigator.share) {
-      try { await navigator.share({ title: "Marie Clicker", text, url: adresse }); } catch (e) { /* abgebrochen */ }
-    } else if (await kopiereText(`${text}\n${adresse}`)) {
-      meldung("📋 Einladung kopiert!", "Schicke sie z.B. per Nachricht an deine Freunde.");
-    }
-  });
-
   $("blAendern").addEventListener("click", async () => {
     const neu = prompt("Neuer Spitzname (höchstens 16 Zeichen):", mitglied.name);
     if (neu === null) return;
     try {
-      await trittBestenlisteBei(neu, mitglied.gruppe);
+      await trittBestenlisteBei(neu);
       aktualisiereBestenliste();
     } catch (fehler) {
       meldung("⚠️ Ändern nicht möglich", fehler.message);
@@ -460,12 +443,16 @@ function richteBestenlisteEin() {
   });
 
   $("blVerlassen").addEventListener("click", async () => {
-    if (!confirm("Gruppe wirklich verlassen? Dein Eintrag wird aus der Liste gelöscht.")) return;
+    if (!confirm("Wirklich nicht mehr mitmachen? Dein Eintrag wird aus der Bestenliste gelöscht.")) return;
     try { await verlasseBestenliste(); } catch (e) { /* lokal trotzdem verlassen */ }
     $("blName").value = "";
-    $("blGruppe").value = "";
     zeigeBestenlisteBereich();
   });
+
+  // Wer früher einer Gruppe mit eigenem Code beigetreten ist, kommt in die gemeinsame Liste
+  if (mitglied && mitglied.gruppe !== BESTENLISTE.gruppe) {
+    trittBestenlisteBei(mitglied.name).catch(() => {});
+  }
 
   // Regelmäßig die eigenen Punkte melden (und die Liste auffrischen, wenn sie offen ist)
   setInterval(() => {

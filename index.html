@@ -192,40 +192,34 @@
     </section>
 
     <section id="seiteBestenliste" class="seite" role="tabpanel" hidden>
-      <!-- Noch keiner Gruppe beigetreten -->
+      <!-- Noch nicht dabei -->
       <div id="blBeitreten" hidden>
         <div class="blKopf">
           <div class="blTitel">🏅 Bestenliste</div>
-          <div class="blUnter">Wer hat die meisten Herzen? Vergleiche dich mit Familie und Freunden!</div>
+          <div class="blUnter">Wer hat die meisten Herzen? Mach mit und vergleiche dich!</div>
         </div>
         <label class="feld">Dein Spitzname
           <input id="blName" type="text" maxlength="16" autocomplete="off" placeholder="z.B. Herzchen7">
         </label>
         <p class="seitenInfo">🔒 Bitte nicht deinen echten Namen benutzen. Gespeichert werden nur dein Spitzname und deine Punkte.</p>
-        <label class="feld">Gruppen-Code
-          <input id="blGruppe" type="text" maxlength="32" autocomplete="off" placeholder="z.B. HERZ-7K3P">
-        </label>
-        <p class="seitenInfo">Alle, die denselben Gruppen-Code eingeben, sehen sich gegenseitig. Noch keinen? Tippe auf „Neue Gruppe“.</p>
         <div class="knopfReihe">
           <button id="blMitmachen" type="button" class="knopf haupt">🏅 Mitmachen</button>
-          <button id="blNeueGruppe" type="button" class="knopf">✨ Neue Gruppe</button>
         </div>
       </div>
 
-      <!-- In einer Gruppe -->
+      <!-- Dabei -->
       <div id="blListeBereich" hidden>
         <div class="blKopf">
-          <div class="blTitel">🏅 Gruppe <span id="blGruppenName"></span></div>
+          <div class="blTitel">🏅 Bestenliste</div>
           <div class="blUnter" id="blStatus"></div>
         </div>
         <ol id="blListe" class="blListe"></ol>
         <div class="knopfReihe">
-          <button id="blTeilen" type="button" class="knopf haupt">📨 Freunde einladen</button>
-          <button id="blAktualisieren" type="button" class="knopf">🔄 Aktualisieren</button>
+          <button id="blAktualisieren" type="button" class="knopf haupt">🔄 Aktualisieren</button>
+          <button id="blAendern" type="button" class="knopf">✏️ Spitzname ändern</button>
         </div>
         <div class="knopfReihe">
-          <button id="blAendern" type="button" class="knopf">✏️ Spitzname ändern</button>
-          <button id="blVerlassen" type="button" class="knopf">🚪 Gruppe verlassen</button>
+          <button id="blVerlassen" type="button" class="knopf">🚪 Nicht mehr mitmachen</button>
         </div>
       </div>
     </section>

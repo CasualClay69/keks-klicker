@@ -587,11 +587,10 @@ function aufgabenSymbolFeiern() {
 
 // ----- Bestenliste -----
 
-// Welcher Teil der Seite ist sichtbar: Beitreten-Formular oder die Liste
+// Welcher Teil der Seite ist sichtbar: Mitmachen-Formular oder die Liste
 function zeigeBestenlisteBereich() {
   $("blBeitreten").hidden = Boolean(mitglied);
   $("blListeBereich").hidden = !mitglied;
-  if (mitglied) setzeText($("blGruppenName"), mitglied.gruppe.toUpperCase());
 }
 
 function setzeBestenlisteStatus(text) {
@@ -614,7 +613,7 @@ function zeigeBestenlisteEintraege(eintraege) {
   if (!eintraege.length) {
     const leer = document.createElement("li");
     leer.className = "blLeer";
-    leer.textContent = "Noch niemand hier – lade Freunde ein!";
+    leer.textContent = "Noch niemand hier – mach den Anfang!";
     liste.append(leer);
     return;
   }

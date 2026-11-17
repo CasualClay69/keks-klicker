@@ -38,9 +38,10 @@ Unter **📊 Statistik → 💾 Spielstand sichern**:
 - Skins und Season-Fortschritt werden beim Wiederherstellen zusammengeführt – es geht nichts verloren
 - Nach 7 Tagen ohne Sicherung erscheint ein orangefarbener Hinweis
 
-## Online-Bestenliste 🏅 (Familie & Freunde)
+## Online-Bestenliste 🏅
 
-- Private Gruppen per Gruppen-Code (z.B. `HERZ-7K3P`) – nur wer den Code kennt, sieht die Liste
+- Eine gemeinsame Liste für alle Spieler: Spitzname eingeben, „Mitmachen“ – fertig
+  (intern immer die Gruppe `BESTENLISTE.gruppe` = `marie-clicker`)
 - Gespeichert werden nur Spitzname, Herzen insgesamt, Herzen/Sek., Season-Stufe und Anzahl Erfolge
 - Server: [Supabase](https://supabase.com) – Datenbank-Regeln in `supabase/bestenliste.sql`
 - Einrichtung: SQL im Supabase-„SQL Editor“ ausführen, dann Projekt-URL und öffentlichen Schlüssel
