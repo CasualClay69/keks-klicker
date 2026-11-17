@@ -121,6 +121,7 @@ const STATISTIK_ZEILEN = [
   ["Längste Geschenk-Serie",  () => `${(spiel.geschenk && spiel.geschenk.beste) || 0} Tage`],
   ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
   ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker(sichtbareSticker())} / ${sichtbareSticker().length}`],
+  ["Zimmer-Teile",            () => `${anzahlZimmerTeile()} / ${anzahlZimmerTeileGesamt()} (+${Math.round((zimmerFaktor() - 1) * 100)} %)`],
   ["Haustier",                () => haustier() ? `${haustier().name} (Level ${haustier().level})` : "noch keins"],
   ["Bester Herzregen",        () => `${spiel.regenBest || 0} Punkte`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
@@ -467,14 +468,14 @@ function baueSeasonListe(pass, stand) {
   seasonHerzZeilen = [];
   for (let n = 1; n <= pass.stufen; n++) {
     const skinId = pass.skinBelohnungen[n];
-    const skin = skinId && SKINS.find(s => s.id === skinId);
+    const skin = skinId && belohnungNachId(skinId);   // Skin oder Zimmer-Teil
     const li = document.createElement("li");
     li.className = "seasonZeile";
     if (skin) li.classList.add("skin");
     if (n <= stand.stufe) li.classList.add("erreicht");
     if (n === stand.stufe + 1) li.classList.add("aktuell");
 
-    const text = span("text", skin ? `${SKIN_KATEGORIEN.find(k => k.id === skin.kategorie).name}: ${skin.name}` : "");
+    const text = span("text", skin ? `${belohnungsArt(skin)}: ${skin.name}` : "");
     li.append(
       span("nr", String(n)),
       span("icon", skin ? skin.icon : herz()),
@@ -1018,6 +1019,131 @@ function marieSagt(text, dauerMs = 2800) {
   }, dauerMs);
 }
 
+// ----- Zimmer -----
+
+let zimmerPlatz = "bett";   // welcher Platz unten zur Auswahl steht
+
+// Ein Teil im Zimmer zeichnen (Inhalt des Platz-Elements)
+function zeichneZimmerTeil(el, teil) {
+  el.textContent = "";
+  el.style.removeProperty("--teil-filter");
+  if (!teil) return;
+  if (teil.platz === "fenster") {
+    el.style.setProperty("--himmel", teil.himmel);
+    el.append(span("draussen", teil.icon));
+    return;
+  }
+  if (teil.platz === "teppich") {
+    el.style.setProperty("--teppich", teil.farbe);
+    return;
+  }
+  const bild = span("bild", teil.svg ? "" : teil.icon);
+  if (teil.svg) bild.innerHTML = teil.svg;
+  el.append(bild);
+  if (teil.zusatz) el.append(span("zusatz", teil.zusatz));
+}
+
+// Figur (mit Kleid, Frisur, Hut) und Haustier als Kopie ins Zimmer stellen
+function zimmerFigurHtml() {
+  // IDs umbenennen, sonst gibt es sie doppelt im Dokument
+  return ui.marie.querySelector("svg").outerHTML
+    .replace(/id="([^"]+)"/g, 'id="zimmer-$1"')
+    .replace(/url\(#([^)]+)\)/g, "url(#zimmer-$1)");
+}
+
+// Das Zimmer selbst (oben auf der Seite)
+function baueZimmer(beimTippen) {
+  const zimmer = $("zimmer");
+  zimmer.append(span("zimmerWand"), span("zimmerBoden"));
+  for (const platz of ZIMMER_PLAETZE) {
+    if (platz.id === "wand" || platz.id === "boden") continue;
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "zimmerPlatz";
+    el.dataset.platz = platz.id;
+    el.setAttribute("aria-label", platz.name);
+    el.addEventListener("click", () => beimTippen(platz.id));
+    zimmer.append(el);
+  }
+  const figur = span("zimmerFigur");
+  figur.id = "zimmerFigur";
+  const tier = span("zimmerTier");
+  tier.id = "zimmerTier";
+  zimmer.append(figur, tier);
+
+  // Schriftgröße der Teile wächst mit der Zimmerbreite
+  if (typeof ResizeObserver === "function") {
+    new ResizeObserver(([e]) => zimmer.style.setProperty("--zb", e.contentRect.width + "px")).observe(zimmer);
+  }
+
+  // Auswahl der Plätze unter dem Zimmer
+  for (const platz of ZIMMER_PLAETZE) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "albumSeitenBtn";
+    btn.dataset.platz = platz.id;
+    btn.append(platz.icon, Object.assign(document.createElement("small"), { textContent: platz.name }));
+    btn.addEventListener("click", () => beimTippen(platz.id));
+    $("zimmerPlatzwahl").append(btn);
+  }
+}
+
+function zeigeZimmer(beimTeilWaehlen) {
+  const zimmer = $("zimmer");
+
+  // Wand und Boden
+  const wand = teilAufPlatz("wand");
+  zimmer.style.setProperty("--wand", wand.muster ? `${emojiKachel([wand.muster, wand.muster], 70)} 0 0 / 22% auto, ${wand.farbe}` : wand.farbe);
+  zimmer.style.setProperty("--boden", teilAufPlatz("boden").farbe);
+
+  // Plätze
+  for (const el of zimmer.querySelectorAll(".zimmerPlatz")) {
+    const teil = teilAufPlatz(el.dataset.platz);
+    el.classList.toggle("leer", !teil);
+    el.classList.toggle("gewaehlt", el.dataset.platz === zimmerPlatz);
+    zeichneZimmerTeil(el, teil);
+  }
+
+  // Figur und Haustier
+  $("zimmerFigur").innerHTML = zimmerFigurHtml();
+  const t = haustier();
+  const tierEl = $("zimmerTier");
+  tierEl.hidden = !t;
+  if (t) setzeTierBild(tierEl, tierArt(t), TIER_STUFEN.indexOf(tierStufe(t)));
+
+  setzeText($("zimmerInfo"),
+    `🏠 ${anzahlZimmerTeile()} von ${anzahlZimmerTeileGesamt()} Teilen · Gemütlichkeit: +${Math.round((zimmerFaktor() - 1) * 100)} % Herzen`);
+
+  // Platz-Auswahl und Teile des gewählten Platzes
+  for (const btn of $("zimmerPlatzwahl").children) btn.classList.toggle("aktiv", btn.dataset.platz === zimmerPlatz);
+  const platz = ZIMMER_PLAETZE.find(p => p.id === zimmerPlatz);
+  setzeText($("zimmerPlatzTitel"), `${platz.icon} ${platz.name}`);
+
+  const raster = $("zimmerRaster");
+  raster.textContent = "";
+  const steht = teilAufPlatz(zimmerPlatz);
+  for (const teil of teileFuerPlatz(zimmerPlatz)) {
+    const karte = document.createElement("button");
+    karte.type = "button";
+    karte.className = "skinKarte zimmerKarte";
+    const besitzt = zimmerTeilBesitzt(teil);
+    let status;
+    if (steht === teil) status = "✓ Im Zimmer";
+    else if (besitzt) status = "Hinstellen";
+    else if (teil.preis === null) status = `🔒 Season-Stufe ${Object.entries(SEASON_PAESSE.find(p => p.id === teil.season).skinBelohnungen).find(([, id]) => id === teil.id)[0]}`;
+    else status = `${herz()} ${format(teil.preis)}`;
+    karte.classList.toggle("aktiv", steht === teil);
+    karte.classList.toggle("gesperrt", !besitzt && teil.preis === null);
+    karte.classList.toggle("zuTeuer", !besitzt && teil.preis !== null && spiel.herzen < teil.preis);
+    const icon = span("skinIcon", teil.svg ? "" : teil.icon);
+    if (teil.svg) icon.innerHTML = teil.svg;
+    karte.append(icon, span("skinName", teil.name), span("skinStatus", status));
+    if (teil.season && !besitzt) karte.title = seasonName(teil.season);
+    karte.addEventListener("click", () => beimTeilWaehlen(teil));
+    raster.append(karte);
+  }
+}
+
 // ----- Haustier -----
 
 // Das Tier wächst und schrumpft mit Marie: ihre Breite als CSS-Variable bereitstellen
@@ -1293,6 +1419,7 @@ function zeigeSeite(seiteId) {
   if (seiteId === "seiteAufgaben") titel = "📋 Tagesaufgaben";
   if (seiteId === "seiteBestenliste") titel = "🏅 Bestenliste";
   if (seiteId === "seiteAlbum") titel = "📒 Sticker-Album";
+  if (seiteId === "seiteZimmer") titel = `🏠 ${figurName()}s Zimmer`;
   setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();
 }

@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.41";
-const APP_NEU = "Neu: Im Season-Pass scrollt das Logo jetzt mit – so siehst du viel mehr Belohnungen auf einmal! 🎁";
+const APP_VERSION = "1.42";
+const APP_NEU = "Neu: Dein eigenes Zimmer! Tippe auf 🏠 und richte es mit Möbeln und Deko ein – jedes Teil bringt +1 % Herzen.";

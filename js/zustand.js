@@ -30,6 +30,7 @@ function neuerSpielstand() {
     gesamtFrueher: 0,  // Herzen aus früheren Durchgängen
     neustarts: 0,
     zuletztAktiv: 0,   // Zeitpunkt (ms), zu dem das Spiel zuletzt lief – für den Offline-Fortschritt
+    zimmer: { besitz: [], platz: {} },   // Maries Zimmer (siehe zimmer.js)
     offlineMax: 0,     // längste Abwesenheit in Sekunden (für den Erfolg "Über Nacht")
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte

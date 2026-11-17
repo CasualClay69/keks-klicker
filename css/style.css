@@ -844,7 +844,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* Ausgeschaltet: blass und durchgestrichen */
 #musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
 /* Glücksrad- und Album-Knopf rechts, unter dem Season-Symbol */
-#radBtn, #albumBtn {
+#radBtn, #albumBtn, #zimmerBtn {
   position: absolute;
   top: calc(max(12px, env(safe-area-inset-top)) + 66px);
   right: max(12px, env(safe-area-inset-right));
@@ -859,6 +859,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   box-shadow: var(--schatten);
 }
 #albumBtn { top: calc(max(12px, env(safe-area-inset-top)) + 128px); }
+#zimmerBtn { top: calc(max(12px, env(safe-area-inset-top)) + 190px); }
 #albumBadge {
   position: absolute;
   right: -4px; top: -4px;
@@ -945,6 +946,131 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   30%  { transform: scale(1.25); }
   100% { transform: scale(1);   box-shadow: 0 0 0 22px rgba(255, 180, 60, 0); }
 }
+
+/* ----- Zimmer -----
+   Alle Positionen in % der Zimmerbreite/-höhe. --zb = Zimmerbreite (setzt anzeige.js),
+   damit die Emojis mit dem Zimmer mitwachsen. */
+.zimmer {
+  --zb: 320px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 8px;
+  overflow: hidden;
+  border: 3px solid var(--rand);
+  border-radius: 18px;
+  box-shadow: var(--schatten);
+  font-size: calc(var(--zb) * 0.1);
+  line-height: 1;
+}
+.zimmerWand  { position: absolute; inset: 0 0 34% 0; background: var(--wand, #ffe1ee); }
+.zimmerBoden {
+  position: absolute; inset: 66% 0 0 0;
+  background: var(--boden, #e9c08f);
+  border-top: calc(var(--zb) * 0.014) solid #fff;          /* Fußleiste */
+  box-shadow: inset 0 calc(var(--zb) * 0.02) 0 rgba(0, 0, 0, 0.06);
+}
+.zimmerPlatz {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateX(-50%);
+  -webkit-tap-highlight-color: transparent;
+}
+.zimmerPlatz .bild { display: block; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.15)); }
+.zimmerPlatz .bild svg { display: block; width: 1.15em; height: auto; }
+.zimmerKarte .skinIcon svg { display: block; width: 1.6em; height: auto; margin: 0 auto; }
+.zimmerPlatz .zusatz { position: absolute; top: -0.15em; right: -0.2em; font-size: 0.4em; }
+/* Leerer Platz: gestrichelter Rahmen mit "+" */
+.zimmerPlatz.leer {
+  width: calc(var(--zb) * 0.11); height: calc(var(--zb) * 0.11);
+  border: 2px dashed rgba(120, 60, 100, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.35);
+}
+.zimmerPlatz.leer::after { content: "+"; font-size: 0.5em; font-weight: 900; color: rgba(120, 60, 100, 0.45); }
+.zimmerPlatz.gewaehlt { outline: 3px dashed var(--akzent); outline-offset: 3px; border-radius: 10px; }
+
+/* Die einzelnen Plätze */
+.zimmerPlatz[data-platz="fenster"] {
+  left: 20%; top: 9%; z-index: 1;
+  width: 22%; aspect-ratio: 1 / 1.1;
+  border: calc(var(--zb) * 0.014) solid #fff;
+  border-radius: 10px 10px 4px 4px;
+  background: var(--himmel, #8fd3ff);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+.zimmerPlatz[data-platz="fenster"]::before {   /* Fensterkreuz */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 47%, #fff 47% 53%, transparent 53%),
+              linear-gradient(transparent 47%, #fff 47% 53%, transparent 53%);
+}
+.zimmerPlatz[data-platz="fenster"] .draussen { font-size: 0.75em; }
+.zimmerPlatz[data-platz="wandbild"] { left: 52%; top: 8%; z-index: 1; font-size: 0.9em; }
+.zimmerPlatz[data-platz="wandbild"]:not(.leer) {
+  padding: 0.12em 0.16em;
+  border: calc(var(--zb) * 0.012) solid #d9a441;
+  border-radius: 4px;
+  background: #fff;
+}
+.zimmerPlatz[data-platz="lampe"] { left: 80%; top: 0; z-index: 1; padding-top: calc(var(--zb) * 0.07); font-size: 0.85em; }
+.zimmerPlatz[data-platz="lampe"]::before {     /* Kabel von der Decke */
+  content: ""; position: absolute; top: 0; left: 50%;
+  width: 2px; height: calc(var(--zb) * 0.075);
+  background: rgba(90, 60, 80, 0.5);
+}
+.zimmerPlatz[data-platz="lampe"].leer { padding-top: 0; top: calc(var(--zb) * 0.07); }
+.zimmerPlatz[data-platz="regal"] { left: 82%; top: 33%; z-index: 1; font-size: 0.85em; padding-bottom: calc(var(--zb) * 0.012); }
+.zimmerPlatz[data-platz="regal"]::after {      /* Regalbrett */
+  content: ""; position: absolute; bottom: 0; left: 50%;
+  width: calc(var(--zb) * 0.2); height: calc(var(--zb) * 0.018);
+  border-radius: 3px;
+  background: #c98b55;
+  transform: translateX(-50%);
+}
+.zimmerPlatz[data-platz="regal"].leer::after { content: "+"; position: static; width: auto; height: auto; background: none; transform: none; }
+.zimmerPlatz[data-platz="teppich"] {
+  left: 50%; bottom: 3%; z-index: 1;
+  width: 54%; height: 17%;
+  border-radius: 50%;
+  background: var(--teppich, #ff9cc9);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+}
+.zimmerPlatz[data-platz="teppich"].leer { width: 30%; height: 12%; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
+.zimmerPlatz[data-platz="bett"]      { left: 19%; bottom: 5%;  font-size: 2.5em; }
+.zimmerPlatz[data-platz="moebel"]    { left: 84%; bottom: 6%;  font-size: 1.9em; }
+.zimmerPlatz[data-platz="pflanze"]   { left: 66%; bottom: 27%; font-size: 1.2em; }
+.zimmerPlatz[data-platz="spielzeug"] { left: 70%; bottom: 2%;  font-size: 1.05em; z-index: 4; }
+.zimmerPlatz.leer[data-platz="bett"], .zimmerPlatz.leer[data-platz="moebel"] { font-size: 1.6em; width: calc(var(--zb) * 0.16); height: calc(var(--zb) * 0.12); }
+.zimmerPlatz.leer[data-platz="pflanze"], .zimmerPlatz.leer[data-platz="spielzeug"] { font-size: 1em; }
+
+/* Marie bzw. Hannah steht vorne in der Mitte (Kopie der Zeichnung), daneben das Haustier */
+.zimmerFigur {
+  position: absolute; left: 50%; bottom: 0; z-index: 3;
+  width: 30%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.zimmerFigur svg { display: block; width: 100%; height: auto; }
+.zimmerFigur .augen-zu, .zimmerFigur .mund-offen { display: none; }
+.zimmerTier {
+  position: absolute; left: 33%; bottom: 2%; z-index: 4;
+  width: calc(var(--zb) * 0.13); height: calc(var(--zb) * 0.13);
+  display: grid; place-items: center;
+  font-size: 0.9em;
+  pointer-events: none;
+}
+.zimmerTier svg { width: 100%; height: 100%; }
+.zimmerInfo { margin: 4px 0 10px; font-weight: bold; text-align: center; color: var(--akzent-dunkel); }
+.zimmerKarte.zuTeuer .skinStatus { opacity: 0.55; }
+.zimmerKarte .skinStatus { white-space: nowrap; }
 
 /* ----- Season-Seite ----- */
 .seasonKopf {
@@ -1741,6 +1867,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #seasonBtn    { width: 64px; height: 64px; }
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }
+  #zimmerBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 222px); width: 64px; height: 64px; font-size: 2rem; }
   #seasonBtnIcon { font-size: 2rem; }
 
   #marie {

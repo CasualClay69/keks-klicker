@@ -26,6 +26,7 @@
   <script src="js/daten.js"   defer></script>
   <script src="js/skins.js"   defer></script>
   <script src="js/kleiderschrank.js" defer></script>
+  <script src="js/zimmer.js" defer></script>
   <script src="js/hilfen.js"  defer></script>
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
@@ -70,6 +71,8 @@
 
     <!-- Sticker-Album. Zahl = neue, noch nicht angeschaute Sticker -->
     <button id="albumBtn" type="button" title="Sticker-Album" aria-label="Sticker-Album öffnen">📒<b id="albumBadge" hidden></b></button>
+    <!-- Zimmer einrichten -->
+    <button id="zimmerBtn" type="button" title="Zimmer" aria-label="Zimmer öffnen">🏠</button>
 
     <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
     <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
@@ -256,6 +259,19 @@
         💡 Sticker gibt es ab und zu beim Klicken auf <span class="figurName">Marie</span>, beim Fangen von Sternschnuppen und bei jeder Season-Stufe.
         Doppelte Sticker werden zu Herzen. Eine volle Seite bringt eine große Belohnung!
         Season-Sticker (goldener Rahmen oben) gibt es nur, solange ihre Season läuft.
+      </p>
+    </section>
+
+    <section id="seiteZimmer" class="seite" role="tabpanel" hidden>
+      <div id="zimmer" class="zimmer" aria-label="Zimmer"></div>
+      <p id="zimmerInfo" class="zimmerInfo"></p>
+      <div id="zimmerPlatzwahl" class="albumSeitenwahl"></div>
+      <h2 id="zimmerPlatzTitel"></h2>
+      <div id="zimmerRaster" class="skinRaster"></div>
+      <p class="seitenInfo">
+        💡 Kaufe Möbel und Deko mit Herzen. Jedes Teil macht das Zimmer gemütlicher: +1 % Herzen für immer!
+        Tippe ein Teil, das schon im Zimmer steht, nochmal an, um es wegzuräumen.
+        Besondere Teile gibt es im Season-Pass.
       </p>
     </section>
 

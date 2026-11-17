@@ -378,6 +378,10 @@ function meldeSeasonStufe({ pass, stufe, belohnung }) {
   seasonSymbolFeiern();
   if (belohnung.typ === "herzen") {
     meldung(`${pass.icon} Season-Stufe ${stufe}!`, `+${format(belohnung.menge)} ${herz()}`);
+  } else if (belohnung.typ === "zimmer") {
+    const t = belohnung.teil;
+    meldung(`${pass.icon} Stufe ${stufe}: Fürs Zimmer! ${t.icon}`, `„${t.name}“ – tippe auf 🏠 und stell es auf`);
+    zeigeZimmerFallsOffen();
   } else {
     const s = belohnung.skin;
     meldung(`${pass.icon} Stufe ${stufe}: Neuer Skin! ${s.icon}`, `„${s.name}“ – jetzt unter Skins auswählbar`);
@@ -563,6 +567,18 @@ function verbindeEreignisse() {
     $("seitenleiste").scrollTop = 0;
   });
 
+  // Zimmer über das 🏠-Symbol öffnen (nochmal tippen = schließen)
+  $("zimmerBtn").addEventListener("click", () => {
+    if (menueOffen && aktuelleSeite === "seiteZimmer") {
+      setzeMenue(false);
+      return;
+    }
+    zeigeSeite("seiteZimmer");
+    setzeMenue(true);
+    zeigeZimmer(beimZimmerTeil);
+    $("seitenleiste").scrollTop = 0;
+  });
+
   // Tagesaufgaben über das 📋-Symbol öffnen (nochmal tippen = schließen)
   ui.aufgabenBtn.addEventListener("click", () => {
     if (menueOffen && aktuelleSeite === "seiteAufgaben") {
@@ -605,6 +621,55 @@ function tick() {
   if (sekunden > 60) meldeOffline(sekunden);
   else if (sekunden > 0) produziere(sekunden);
   spiel.zuletztAktiv = jetzt;
+  aktualisiereAnzeige();
+  pruefeZimmerPreise();
+}
+
+// ----- Zimmer -----
+
+function zeigeZimmerFallsOffen() {
+  if (!$("seiteZimmer").hidden) zeigeZimmer(beimZimmerTeil);
+}
+
+// Ist das Zimmer offen und kann man sich inzwischen ein Teil mehr (oder weniger) leisten? Dann neu zeigen.
+let zimmerLeistbar = "";
+function pruefeZimmerPreise() {
+  if ($("seiteZimmer").hidden) return;
+  const jetzt = teileFuerPlatz(zimmerPlatz).map(t => t.preis !== null && spiel.herzen >= t.preis ? 1 : 0).join("");
+  if (jetzt !== zimmerLeistbar) zeigeZimmer(beimZimmerTeil);
+  zimmerLeistbar = jetzt;
+}
+
+// Platz im Zimmer oder in der Auswahl angetippt
+function beimZimmerPlatz(platzId) {
+  zimmerPlatz = platzId;
+  sound.klick();
+  zeigeZimmer(beimZimmerTeil);
+}
+
+function beimZimmerTeil(teil) {
+  const ergebnis = waehleZimmerTeil(teil);
+  if (ergebnis === "zuTeuer") {
+    sound.fehler();
+    meldung("💖 Noch nicht genug Herzen", `„${teil.name}“ kostet ${format(teil.preis)} ${herz()}. Sammle noch ein bisschen!`);
+    return;
+  }
+  if (ergebnis === "gesperrt") {
+    sound.fehler();
+    meldung("🔒 Season-Belohnung", `„${teil.name}“ gibt es im ${seasonName(teil.season)}.`);
+    return;
+  }
+  if (ergebnis === "gekauft") {
+    sound.kauf();
+    setTimeout(() => sound.erfolg(), 250);
+    meldung(`🏠 ${teil.icon} ${teil.name}`, `Steht jetzt in ${figurName()}s Zimmer! Gemütlichkeit: +${Math.round((zimmerFaktor() - 1) * 100)} % Herzen`);
+    konfetti($("zimmer"));
+    pruefeErfolgeUndStatistik();
+  } else {
+    sound.klick();
+  }
+  speichern();
+  zeigeZimmer(beimZimmerTeil);
   aktualisiereAnzeige();
 }
 
@@ -1020,6 +1085,7 @@ function starte() {
   richteGeschenkEin();
   richteGluecksradEin();
   richteHaustierEin();
+  baueZimmer(beimZimmerPlatz);
   richteGeburtstagEin();
   richteNeustartEin();
   richteOfflineEin();
@@ -1041,7 +1107,7 @@ function starte() {
   pruefeGeschenk();       // erstes Öffnen heute? -> Geschenk zeigen (wartet, bis das Geburtstagsfenster zu ist)
 
   for (const skin of nachgeliefert) {
-    meldung(`🎁 Neuer Skin: ${skin.icon} ${skin.name}`, "Für deine schon erreichte Season-Stufe – jetzt unter Skins auswählbar");
+    meldung(`🎁 Neu: ${skin.icon} ${skin.name}`, `Für deine schon erreichte Season-Stufe – jetzt ${skin.platz ? "im Zimmer (🏠)" : "unter Skins"} auswählbar`);
   }
 
   setInterval(tick, KONFIG.tickMs);

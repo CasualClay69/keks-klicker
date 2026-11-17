@@ -24,6 +24,7 @@ const DATEIEN = [
   "js/daten.js",
   "js/skins.js",
   "js/kleiderschrank.js",
+  "js/zimmer.js",
   "js/hilfen.js",
   "js/zustand.js",
   "js/logik.js",

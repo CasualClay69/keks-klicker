@@ -498,10 +498,21 @@ function seasonHerzen(n, hps = basisHps(), proKlick = herzenProKlick() / aktuell
   return rundeHuebsch(Math.max(50 * n * n, wert));
 }
 
-// Was gibt es auf Stufe n?  { typ: "skin", skin }  oder  { typ: "herzen", menge }
+// Eine Season-Belohnung nach ID: ein Skin oder ein Zimmer-Teil (zimmer.js)
+function belohnungNachId(id) {
+  return SKINS.find(s => s.id === id) || ZIMMER_TEILE.find(t => t.id === id);
+}
+
+// Wie heißt die Art der Belohnung? z.B. "Kleider" oder "Zimmer"
+function belohnungsArt(teil) {
+  return teil.platz ? "Fürs Zimmer" : SKIN_KATEGORIEN.find(k => k.id === teil.kategorie).name;
+}
+
+// Was gibt es auf Stufe n?  { typ: "skin", skin } | { typ: "zimmer", teil } | { typ: "herzen", menge }
 function seasonBelohnung(pass, n) {
-  const skinId = pass.skinBelohnungen[n];
-  if (skinId) return { typ: "skin", skin: SKINS.find(s => s.id === skinId) };
+  const id = pass.skinBelohnungen[n];
+  const teil = id && belohnungNachId(id);
+  if (teil) return teil.platz ? { typ: "zimmer", teil } : { typ: "skin", skin: teil };
   return { typ: "herzen", menge: seasonHerzen(n) };
 }
 
@@ -523,7 +534,7 @@ function seasonSkinsNachliefern() {
     for (const [stufe, skinId] of Object.entries(pass.skinBelohnungen)) {
       if (Number(stufe) <= stand.stufe && !skinStand.freigeschaltet.includes(skinId)) {
         schalteSkinFrei(skinId);
-        neu.push(SKINS.find(s => s.id === skinId));
+        neu.push(belohnungNachId(skinId));
       }
     }
   }
@@ -551,7 +562,7 @@ function seasonKlick(anzahl = 1) {
       stand.herzen = stand.herzen || {};
       stand.herzen[stand.stufe] = belohnung.menge;
     } else {
-      schalteSkinFrei(belohnung.skin.id);
+      schalteSkinFrei((belohnung.skin || belohnung.teil).id);   // Zimmer-Teile werden wie Skins gemerkt
     }
     neu.push({ pass, stufe: stand.stufe, belohnung });
   }

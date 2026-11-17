@@ -254,6 +254,7 @@ function registriereSeason(s) {
     regen: s.regen,
   });
   if (KLEIDERSCHRANK[s.id]) registriereKleiderschrank(s.id, KLEIDERSCHRANK[s.id]);   // Kleid (Stufe 25) usw.
+  if (ZIMMER_SEASON[s.id]) registriereZimmerSeason(s.id);                            // Zimmer (Stufe 15 und 45)
   fuegeStickerSeiteHinzu({ id: `${s.id}-sticker`, season: s.id, name: s.titel, icon: s.icon, farbe: s.stickerFarbe, sticker: s.sticker });
 }
 
