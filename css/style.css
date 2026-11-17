@@ -33,7 +33,8 @@ body {
   display: flex;
   height: 100vh;
   height: 100dvh;
-  overflow: hidden;   /* nur die Seitenleiste scrollt */
+  overflow: hidden;            /* nur die Seitenleiste scrollt */
+  overscroll-behavior: none;   /* kein "Ziehen zum Neuladen" in der App */
 }
 
 button {
@@ -74,13 +75,21 @@ button {
   text-shadow: 0 0 8px #ff9800;
 }
 
-#tonBtn {
-  position: absolute; top: 12px; left: 12px;
-  font-size: 1.5rem;
+#tonBtn, #installBtn {
+  position: absolute; top: max(12px, env(safe-area-inset-top));
+  z-index: 7;
   background: rgba(0, 0, 0, 0.3);
   border: none; border-radius: 8px;
   padding: 4px 10px;
   cursor: pointer;
+}
+#tonBtn { left: 12px; font-size: 1.5rem; }
+#installBtn {
+  right: 12px;
+  padding: 8px 12px;
+  background: var(--akzent);
+  color: var(--hintergrund);
+  font-weight: bold;
 }
 
 /* ----- Der Keks (komplett mit CSS gezeichnet) ----- */

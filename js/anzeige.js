@@ -15,6 +15,7 @@ const ui = {
   keks:           $("keks"),
   goldKeks:       $("goldKeks"),
   tonBtn:         $("tonBtn"),
+  installBtn:     $("installBtn"),
   upgradeBereich: $("upgradeBereich"),
   erfolgInfo:     $("erfolgInfo"),
   meldungen:      $("meldungen"),

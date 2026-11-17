@@ -120,12 +120,46 @@ function pruefeErfolgeUndStatistik() {
   zeigeStatistik();
 }
 
+// ----- App (PWA) -----
+
+function richteAppEin() {
+  // Service Worker nur über http(s) – beim Öffnen per Doppelklick (file://) geht das nicht
+  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    navigator.serviceWorker.register("sw.js").catch(fehler =>
+      console.warn("Service Worker konnte nicht registriert werden:", fehler));
+  }
+
+  // Chrome/Edge/Android melden, dass die App installiert werden kann.
+  // Wir merken uns die Anfrage und zeigen dafür einen eigenen Knopf.
+  let installAnfrage = null;
+
+  window.addEventListener("beforeinstallprompt", ereignis => {
+    ereignis.preventDefault();          // Standard-Hinweis des Browsers unterdrücken
+    installAnfrage = ereignis;
+    ui.installBtn.hidden = false;
+  });
+
+  ui.installBtn.addEventListener("click", async () => {
+    if (!installAnfrage) return;
+    installAnfrage.prompt();            // Installations-Dialog des Browsers öffnen
+    await installAnfrage.userChoice;
+    installAnfrage = null;
+    ui.installBtn.hidden = true;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    ui.installBtn.hidden = true;
+    meldung("📲 Installiert!", "Du findest den Keks-Klicker jetzt bei deinen Apps.");
+  });
+}
+
 // ----- Start -----
 
 function starte() {
   laden();
   baueOberflaeche({ kaufeItem: beimKaufen, kaufeUpgrade: beimUpgradeKaufen });
   verbindeEreignisse();
+  richteAppEin();
   zeigeAlles();
 
   setInterval(tick, KONFIG.tickMs);

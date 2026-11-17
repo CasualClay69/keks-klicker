@@ -11,10 +11,18 @@ Ein kleines Klickspiel im Browser – reines HTML, CSS und JavaScript, ohne Fram
 - 19 Erfolge (je +1 % Produktion)
 - Statistik, Soundeffekte, automatisches Speichern
 - Responsive für Handy, Tablet und Desktop
+- Als App installierbar (PWA) und offline spielbar
 
 ## Spielen
 
-`index.html` im Browser öffnen – fertig.
+Online: **https://casualclay69.github.io/keks-klicker/**
+
+Oder lokal `index.html` im Browser öffnen (dann ohne App-Installation/Offline-Modus).
+
+### Als App installieren
+
+- **Android / Chrome / Edge:** Knopf „📲 Installieren“ oben rechts, oder Browsermenü → „App installieren“
+- **iPhone / iPad (Safari):** Teilen-Symbol → „Zum Home-Bildschirm“
 
 ## Aufbau
 
@@ -28,3 +36,6 @@ Ein kleines Klickspiel im Browser – reines HTML, CSS und JavaScript, ohne Fram
 | `js/anzeige.js` | HTML erzeugen und aktualisieren |
 | `js/main.js` | Verbindet alles und startet das Spiel |
 | `css/style.css` | Aussehen |
+| `manifest.webmanifest` | App-Name, Symbole, Farben (PWA) |
+| `sw.js` | Service Worker: Offline-Cache. Bei neuen Dateien `DATEIEN` und `VERSION` anpassen |
+| `icons/` | App-Symbole |
