@@ -10,6 +10,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
 - 30 Erfolge (je +1 % Herzen)
+- Marie spricht 💬: Sprechblasen beim Klicken, bei Sternschnuppen, Erfolgen, Begrüßung nach Tageszeit
+  und „Mir ist langweilig…“, wenn 45 Sekunden niemand klickt (Sprüche in `js/sprechen.js`)
 - Haustier 🐾: Kätzchen (grau-weiß, selbst gezeichnet), Häschen, Hündchen oder Einhorn-Baby – füttern, streicheln,
   wächst von Baby über Kind zu Groß; satt gibt es +1 % Herzen pro Level (bis +20 %), hungrig schläft es nur
 - Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten,

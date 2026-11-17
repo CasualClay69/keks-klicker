@@ -761,6 +761,37 @@ function zeigeRadErgebnis(ergebnis) {
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
 }
 
+// ----- Marie spricht -----
+
+let sprechTimer = null, mundTimer = null;
+
+// Sprechblase zeigen, Mund bewegen, leise "plappern"
+function marieSagt(text, dauerMs = 2800) {
+  if (!text) return;
+  const blase = $("sprechblase");
+  clearTimeout(sprechTimer);
+  blase.classList.remove("weg");
+  blase.hidden = true;
+  void blase.offsetWidth;          // Aufplopp-Animation neu starten
+  blase.textContent = text;
+  blase.hidden = false;
+
+  ui.marie.classList.add("spricht");
+  clearTimeout(mundTimer);
+  mundTimer = setTimeout(() => ui.marie.classList.remove("spricht"), 1100);
+
+  // 3–4 kurze, hohe Töne wie Plappern
+  const silben = 3 + Math.floor(Math.random() * 2);
+  for (let i = 0; i < silben; i++) {
+    setTimeout(() => spieleTon(950 + Math.random() * 450, 0.06, "sine", 0.05), i * 95);
+  }
+
+  sprechTimer = setTimeout(() => {
+    blase.classList.add("weg");
+    sprechTimer = setTimeout(() => { blase.hidden = true; blase.classList.remove("weg"); }, 260);
+  }, dauerMs);
+}
+
 // ----- Haustier -----
 
 // Das Tier wächst und schrumpft mit Marie: ihre Breite als CSS-Variable bereitstellen

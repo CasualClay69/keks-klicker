@@ -11,6 +11,7 @@ function beimKaufen(item) {
   if (kaufeItem(item)) {
     sound.kauf();
     meldeAufgaben(aufgabenEreignis("kauf", menge, item.id));
+    sag("kauf", { chance: 0.35 });
   } else {
     sound.fehler();
   }
@@ -22,6 +23,7 @@ function beimUpgradeKaufen(upgrade) {
     sound.kauf();
     meldung(`${upgrade.medaille} ${upgrade.name}`, upgrade.beschr + "!");
     meldeAufgaben(aufgabenEreignis("upgrade"));
+    sag("kauf", { chance: 0.5 });
   } else {
     sound.fehler();
   }
@@ -41,6 +43,15 @@ function klickAufMarie(position) {
   meldeAufgaben(aufgabenEreignis("klick"));
   meldeSticker(versucheSticker("klick"), position);   // ab und zu fällt ein Sticker heraus
 
+  // Marie sagt ab und zu etwas – und freut sich, wenn man nach einer Pause zurückkommt
+  letzterKlick = Date.now();
+  if (langweiligGesagt) {
+    langweiligGesagt = false;
+    sag("zurueck", { wichtig: true });
+  } else {
+    sag("klick", { chance: 1 / 35 });
+  }
+
   // Das Haustier hüpft mit – und alle 25 Klicks schickt es ein Herzchen
   haustierHopst();
   if (haustier() && spiel.klicks % 25 === 0) {
@@ -49,6 +60,54 @@ function klickAufMarie(position) {
   }
 
   aktualisiereAnzeige();
+}
+
+// ----- Marie spricht -----
+
+let letzteSprechblase = 0;        // wann Marie zuletzt etwas gesagt hat
+let letzterKlick = Date.now();    // für "Mir ist langweilig…"
+let langweiligGesagt = false;     // hat sie sich gelangweilt, seit zuletzt geklickt wurde?
+let begruessungOffen = true;      // Begrüßung kommt, sobald kein Fenster mehr offen ist
+let letzterHungerHinweis = 0;
+
+// Kann Marie gerade sprechen? (nicht bei offenen Fenstern oder offenem Handy-Menü)
+function marieDarfSprechen() {
+  if (document.hidden) return false;
+  if ([...document.querySelectorAll(".overlay")].some(el => !el.hidden)) return false;
+  const handyMenue = document.body.classList.contains("menue-offen") && getComputedStyle($("untenNav")).display !== "none";
+  return !handyMenue;
+}
+
+// art = Schlüssel in SPRUECHE. chance = Wahrscheinlichkeit. wichtig = auch kurz nach der letzten Blase
+// Gibt true zurück, wenn Marie wirklich etwas gesagt hat.
+function sag(art, { chance = 1, wichtig = false } = {}) {
+  if (Math.random() > chance || !marieDarfSprechen()) return false;
+  if (!wichtig && Date.now() - letzteSprechblase < 8000) return false;
+  marieSagt(spruch(art));
+  letzteSprechblase = Date.now();
+  return true;
+}
+
+// 1× pro Sekunde: Begrüßung, Langeweile, hungriges Haustier
+function pruefeMarieSpricht() {
+  const jetzt = Date.now();
+  if (begruessungOffen && marieDarfSprechen()) {
+    begruessungOffen = false;
+    setTimeout(() => sag(begruessungsArt(), { wichtig: true }), 700);
+    return;
+  }
+  // Niemand klickt seit 45 Sekunden -> langweilig (danach höchstens jede Minute)
+  if (jetzt - letzterKlick > 45000 && jetzt - letzteSprechblase > 60000) {
+    if (sag("langweilig", { wichtig: true })) langweiligGesagt = true;
+    return;
+  }
+  // Hungriges Haustier: höchstens alle 10 Minuten erinnern
+  if (tierLaune() === "hungrig" || tierLaune() === "schlaeft") {
+    if (jetzt - letzterHungerHinweis > 10 * 60000 && jetzt - letzterKlick < 45000) {
+      letzterHungerHinweis = jetzt;
+      sag("tierHunger");
+    }
+  }
 }
 
 // ----- Haustier -----
@@ -69,7 +128,13 @@ function richteHaustierEin() {
     sound.klick();
     zeigeTierFenster();
   });
-  $("tierZu").addEventListener("click", () => { $("tierOverlay").hidden = true; });
+  // Fenster zu – wurde gefüttert, freut sich Marie mit ("Lecker, oder, Mimi?")
+  let gefuettert = false;
+  $("tierZu").addEventListener("click", () => {
+    $("tierOverlay").hidden = true;
+    if (gefuettert) sag("fuettern", { wichtig: true });
+    gefuettert = false;
+  });
 
   $("tierAdoptieren").addEventListener("click", () => {
     if (!adoptiere(tierAuswahl.id, $("tierName").value)) return;
@@ -89,6 +154,7 @@ function richteHaustierEin() {
     }
     sound.kauf();
     tierFreutSich();
+    gefuettert = true;
     const t = haustier();
     const r = $("tierGross").getBoundingClientRect();
     zeigeSchwebeText({ x: r.left + r.width / 2, y: r.top }, `${tierArt(t)[sorte].icon} Mmmh!`);
@@ -124,6 +190,7 @@ function meldeSticker(ergebnis, position = null) {
   albumSymbolFeiern();
   if (neu) {
     sound.stern();
+    sag("sticker");
     meldung(`📒 Neuer Sticker! ${sticker.emoji}`, `${sticker.name}${art ? ` – ${art === "Super-selten" ? "🌟" : "✨"} ${art}!` : ""}`);
   } else {
     sound.kauf();
@@ -185,6 +252,7 @@ function meldeSeasonStufe({ pass, stufe, belohnung }) {
     zeigeSkins();
   }
   meldeSticker(versucheSticker("season"));   // jede Season-Stufe bringt einen Sticker
+  sag("season");
 }
 
 // ----- Skin auswählen -----
@@ -219,6 +287,7 @@ function planeStern() {
 
 function sternErscheint() {
   zeigeStern();
+  sag("sternDa", { wichtig: true });
   sternTimer = setTimeout(() => {
     versteckeStern();
     planeStern();
@@ -237,6 +306,7 @@ function beimStern(ereignis) {
 
   zeigeSchwebeText(position, text, true);
   marieFreutSich();
+  sag("sternGefangen", { wichtig: true });
   meldeAufgaben(aufgabenEreignis("stern"));
   meldeSticker(versucheSticker("stern"));
   aktualisiereAnzeige();
@@ -266,6 +336,7 @@ function verbindeEreignisse() {
 
     aktiveFinger.add(ereignis.pointerId);
     spiel.maxFinger = Math.max(spiel.maxFinger, aktiveFinger.size);
+    if (aktiveFinger.size === 3) sag("finger", { wichtig: true });
     meldeAufgaben(aufgabenEreignis("finger", aktiveFinger.size));
     klickAufMarie({ x: ereignis.clientX, y: ereignis.clientY });
   });
@@ -410,7 +481,9 @@ function pruefeErfolgeUndStatistik() {
     const prozent = Math.round(KONFIG.erfolgBonus * 100);
     meldung(`🏆 ${erfolg.icon} ${erfolg.name}`, `${erfolg.beschr} (+${prozent} % Herzen)`);
     sound.erfolg();
+    sag("erfolg", { wichtig: true });
   }
+  pruefeMarieSpricht();
   zeigeErfolge();
   zeigeStatistik();
 }

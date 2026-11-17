@@ -32,6 +32,7 @@ const DATEIEN = [
   "js/gluecksrad.js",
   "js/album.js",
   "js/haustier.js",
+  "js/sprechen.js",
   "js/bestenliste.js",
   "js/sound.js",
   "js/anzeige.js",

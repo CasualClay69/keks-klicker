@@ -212,6 +212,54 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   font-size: 0.42em;
   line-height: 1;
 }
+/* ----- Sprechblase über Maries Kopf ----- */
+.sprechblase {
+  position: absolute;
+  left: -6%;
+  top: -4%;
+  z-index: 5;
+  max-width: min(220px, 75vw);
+  padding: 8px 13px;
+  border: 3px solid var(--rand);
+  border-radius: 18px;
+  background: #fff;
+  color: var(--text);
+  font-weight: bold;
+  font-size: clamp(0.85rem, calc(var(--marie-breite, 300px) * 0.055), 1.15rem);
+  line-height: 1.25;
+  box-shadow: var(--schatten);
+  pointer-events: none;
+  transform-origin: 75% 110%;
+  animation: blaseAuf 0.3s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+/* Spitze der Blase (Rand + weiße Füllung) zeigt nach rechts unten zu Marie */
+.sprechblase::before,
+.sprechblase::after {
+  content: "";
+  position: absolute;
+  right: 22%;
+  border-style: solid;
+  border-color: transparent;
+}
+.sprechblase::before { bottom: -17px; border-width: 14px 6px 0 10px; border-top-color: var(--rand); }
+.sprechblase::after  { bottom: -11px; border-width: 10px 4px 0 7px;  border-top-color: #fff; right: calc(22% + 2px); }
+.sprechblase.weg { animation: blaseWeg 0.25s ease-in forwards; }
+
+/* Marie bewegt beim Sprechen den Mund */
+#marie.spricht .mund-offen { display: inline; animation: sprechen 0.24s steps(1) infinite; }
+
+@keyframes blaseAuf {
+  from { transform: scale(0.3); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+@keyframes blaseWeg {
+  to { transform: scale(0.6); opacity: 0; }
+}
+@keyframes sprechen {
+  0%  { opacity: 0; }
+  50% { opacity: 1; }
+}
+
 @keyframes tierWippen {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-5%); }
@@ -1629,6 +1677,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
   .stickerFeld.super, .stickerFeld.neu, #albumBtn.feiern,
-  #haustier, #haustier.hopst, .tierGross, .tierGross.freut,
+  #haustier, #haustier.hopst, .tierGross, .tierGross.freut, .sprechblase, .sprechblase.weg,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

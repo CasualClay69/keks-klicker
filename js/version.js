@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.31";
-const APP_NEU = "Neu: Ein Haustier für Marie! 🥚 Tippe auf das Ei neben Marie, such dir ein Tier aus und kümmere dich darum.";
+const APP_VERSION = "1.32";
+const APP_NEU = "Neu: Marie spricht! 💬 Sie freut sich, staunt über Sternschnuppen – und sagt Bescheid, wenn ihr langweilig ist.";
