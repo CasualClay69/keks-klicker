@@ -452,12 +452,17 @@ button {
    ===================================================== */
 @media (max-width: 700px) and (orientation: portrait), (max-width: 500px) {
   :root {
+    --bildschirm: 100vh;
     --nav-hoehe: 62px;
     --sheet-hoehe: 62vh;
+    --oben: calc(max(12px, env(safe-area-inset-top)) + 48px);   /* Kamera/Statusleiste + Knopf-Zeile */
+    --unten: 12px;                                              /* Abstand unten im Spielfeld */
   }
   @supports (height: 1dvh) {
-    :root { --sheet-hoehe: 62dvh; }
+    :root { --bildschirm: 100dvh; --sheet-hoehe: 62dvh; }
   }
+  /* Ist ein Menü offen, braucht das Spielfeld unten Platz dafür */
+  body.menue-offen { --unten: calc(var(--sheet-hoehe) + 8px); }
 
   body { flex-direction: column; }
 
@@ -465,21 +470,22 @@ button {
   #spielfeld {
     flex: 1;
     min-height: 0;
-    padding: 12px;
-    /* Oben: Platz für Kamera/Statusleiste + die Zeile mit Ton, Titel, Installieren */
-    padding-top: calc(max(12px, env(safe-area-inset-top)) + 48px);
+    padding: var(--oben) 12px var(--unten);
     transition: padding-bottom 0.3s ease;
   }
-  /* Ist ein Menü offen, schrumpft der Bereich – Marie wird automatisch kleiner */
-  body.menue-offen #spielfeld { padding-bottom: calc(var(--sheet-hoehe) + 8px); }
 
   #herzen { font-size: clamp(2rem, 9vw, 2.8rem); }
+
+  /* Marie so groß wie möglich: freie Höhe = Bildschirm minus Symbolleiste, oben, unten
+     und ~130px für die Texte. Bewusst mit Bildschirm-Einheiten statt cqh gerechnet:
+     Safari aktualisiert cqh nicht, wenn sich nur der Innenabstand ändert. */
   #marie {
-    width: clamp(120px, 75vw, 400px);   /* Fallback für ältere Browser */
+    width: clamp(70px,
+                 min(88vw, calc(var(--bildschirm) - var(--nav-hoehe) - env(safe-area-inset-bottom)
+                                - var(--oben) - var(--unten) - 130px)),
+                 440px);
     border-width: 8px;
-  }
-  @supports (width: 1cqh) {
-    #marie { width: clamp(70px, min(90cqw, 100cqh - 120px), 440px); }
+    transition: transform 0.08s, width 0.3s ease;   /* wächst/schrumpft mit dem Menü */
   }
 
   /* ----- Menü, das von unten hereinfährt ----- */
