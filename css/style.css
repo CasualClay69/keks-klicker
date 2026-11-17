@@ -163,6 +163,29 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   to   { transform: translate(0, 150px); }
 }
 
+/* ----- Hintergrund-Skins aus Emoji-Mustern (Seasons ab 2027, siehe seasons.js) -----
+   anzeige.js setzt --bg-farbe, --bg-hinten, --bg-vorne und data-bg-richtung (fallen / steigen) */
+body[data-hintergrund="emoji"] { background: var(--bg-farbe); }
+body[data-hintergrund="emoji"] #spielfeld::before {
+  --kachel: 70px;
+  background-image: var(--bg-hinten);
+  opacity: 0.6;
+  animation: emojiHintenFallen 10s linear infinite;
+}
+body[data-hintergrund="emoji"] #spielfeld::after {
+  --kachel: 140px;
+  background-image: var(--bg-vorne);
+  opacity: 0.85;
+  animation: emojiVorneFallen 7s linear infinite;
+}
+body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::before { animation-name: emojiHintenSteigen; }
+body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { animation-name: emojiVorneSteigen; }
+
+@keyframes emojiHintenFallen  { from { transform: translate(0, 0); } to { transform: translate(0, 70px); } }
+@keyframes emojiVorneFallen   { from { transform: translate(0, 0); } to { transform: translate(0, 140px); } }
+@keyframes emojiHintenSteigen { from { transform: translate(0, 0); } to { transform: translate(0, -70px); } }
+@keyframes emojiVorneSteigen  { from { transform: translate(0, 0); } to { transform: translate(0, -140px); } }
+
 /* Genau eine Kachel nach rechts oben (Werte = --kachel der jeweiligen Ebene) */
 @keyframes diagonalHinten {
   from { transform: translate(0, 0); }

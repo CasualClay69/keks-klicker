@@ -93,6 +93,20 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
   🎩 Pilgerhut (Stufe 10), 🎻 Erntedank-Walzer (20), 🍂 Herbstlaub-HUD (30), 🦃 Erntedank-Logo (40), 🍁 Blätterregen (50, animiert)
 - Fortschritt und Skins bleiben auch nach dem Season-Ende und beim „Spielstand löschen“ erhalten
 
+### Jahres-Kalender 2027 (Seasons 3–8, in `js/seasons.js`)
+
+| Zeitraum | Season | Hut | Melodie | Hintergrund | Regen |
+|---|---|---|---|---|---|
+| Januar | ⛸️ Winterwunderland | Eis-Diadem | Eisprinzessin-Walzer | Glitzerfrost | Glitzerfrost |
+| Februar | 💝 Valentinstag | Herz-Haarreif | Herzklopfen | Herzballons | Herzchenregen |
+| März–April | 🐰 Ostern | Hasenohren | Hüpf-Häschen | Osterwiese | Eiersuche |
+| Mai–Juni | 🦄 Einhornwiese | Blumenkranz | Einhornwiese | Schmetterlingswiese | Blütenregen |
+| Juli–August | 🏖️ Sommer & Meer | Sonnenhut | Sommerferien | Unterwasserwelt | Sommerregen |
+| Oktober | 🎃 Halloween | Hexenhut | Gespensterchen | Gespensternacht | Süßigkeitenregen |
+
+Jede Season ist ein Datenblock (`registriereSeason({...})`), daraus entstehen automatisch 5 Skins, Season-Pass,
+Logo-Banner und Sticker-Seite. Noch offen: September, November und Dezember 2027.
+
 ### Season 2: Weihnachten 🎅 (1.–31. Dezember 2026)
 
 - Startet automatisch, wenn Season 1 endet; gleiche Regeln (50 Stufen, ~10 Stunden)
@@ -105,7 +119,8 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 |---|---|
 | `index.html` | Seitenstruktur, Marie als SVG-Zeichnung |
 | `js/daten.js` | Herzschenker, Upgrades, Erfolge und alle Balancing-Werte |
-| `js/skins.js` | Skins, Season-Pässe und Musikstücke (Anleitung für neue Skins oben in der Datei) |
+| `js/skins.js` | Skins, Season-Pässe 1–2 und Musikstücke (Anleitung für neue Skins oben in der Datei) |
+| `js/seasons.js` | Jahres-Kalender 2027: Seasons 3–8 als Datenblöcke (Hüte, Melodien, Farben, Sticker, Logos) |
 | `js/hilfen.js` | Zahlen formatieren, Zufall |
 | `js/zustand.js` | Spielstand, Speichern und Laden |
 | `js/logik.js` | Berechnungen und Käufe |

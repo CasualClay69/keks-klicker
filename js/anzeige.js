@@ -356,6 +356,32 @@ function zeigeSkins() {
   }
 }
 
+// Emoji-Muster als Bild-Kachel (SVG) – hinten 70px mit kleinen, vorne 140px mit großen Emojis
+function emojiKachel(emojis, kachel) {
+  const [a, b] = emojis;
+  const inhalt = kachel === 70
+    ? `<text x="6" y="28" font-size="20">${a}</text><text x="40" y="62" font-size="15">${b}</text>`
+    : `<text x="12" y="44" font-size="34">${a}</text><text x="80" y="112" font-size="28">${b}</text>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${kachel}" height="${kachel}" viewBox="0 0 ${kachel} ${kachel}">${inhalt}</svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+
+function setzeHintergrund(skin) {
+  const body = document.body;
+  if (!skin.bg) {
+    body.dataset.hintergrund = skin.wert;
+    delete body.dataset.bgRichtung;
+    return;
+  }
+  // Kacheln nur einmal pro Skin bauen
+  if (!skin.bg.bilder) skin.bg.bilder = { hinten: emojiKachel(skin.bg.hinten, 70), vorne: emojiKachel(skin.bg.vorne, 140) };
+  body.dataset.hintergrund = "emoji";
+  body.dataset.bgRichtung = skin.bg.richtung || "fallen";
+  body.style.setProperty("--bg-farbe", skin.bg.farbe);
+  body.style.setProperty("--bg-hinten", skin.bg.bilder.hinten);
+  body.style.setProperty("--bg-vorne", skin.bg.bilder.vorne);
+}
+
 // Setzt die gewählten Skins im Spiel um (Musik startet main.js neu)
 let hudVariablen = [];    // welche Farben der aktuelle HUD-Skin gesetzt hat
 let logoVariablen = [];   // … und welche der Logo-Skin
@@ -369,8 +395,8 @@ function tauscheVariablen(alteNamen, farben) {
 }
 
 function wendeSkinsAn() {
-  // Hintergrund: per Attribut, das Aussehen steht in style.css
-  document.body.dataset.hintergrund = aktiverSkin("hintergrund").wert;
+  // Hintergrund: per Attribut (Aussehen in style.css) oder als Emoji-Muster (Seasons ab 2027)
+  setzeHintergrund(aktiverSkin("hintergrund"));
 
   // Hut: SVG-Code auf Maries Kopf (am Geburtstag der Partyhut)
   ui.hut.innerHTML = aktuellerHut().svg;

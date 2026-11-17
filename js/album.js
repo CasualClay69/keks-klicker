@@ -57,14 +57,25 @@ const STICKER_CHANCE = {
 // Während einer Season: so oft kommt ein Sticker von der Season-Seite (Season-Stufen: immer)
 const SEASON_STICKER_ANTEIL = 0.35;
 
-// Alle Sticker als flache Liste: { id, seite, emoji, name, seltenheit }
-const ALLE_STICKER = STICKER_SEITEN.flatMap(seite => seite.sticker.map(([emoji, name], i) => ({
-  id: `${seite.id}-${i}`,
-  seite,
-  emoji,
-  name,
-  seltenheit: i < 7 ? "normal" : i < 10 ? "selten" : "super",
-})));
+// Die Sticker einer Seite: { id, seite, emoji, name, seltenheit }
+function stickerDerSeite(seite) {
+  return seite.sticker.map(([emoji, name], i) => ({
+    id: `${seite.id}-${i}`,
+    seite,
+    emoji,
+    name,
+    seltenheit: i < 7 ? "normal" : i < 10 ? "selten" : "super",
+  }));
+}
+
+// Alle Sticker als flache Liste
+const ALLE_STICKER = STICKER_SEITEN.flatMap(stickerDerSeite);
+
+// Für seasons.js: eine weitere Seite nachträglich hinzufügen
+function fuegeStickerSeiteHinzu(seite) {
+  STICKER_SEITEN.push(seite);
+  ALLE_STICKER.push(...stickerDerSeite(seite));
+}
 
 // Die 60 Sticker der 5 Grundseiten (ohne Season-Seiten)
 const GRUND_STICKER = ALLE_STICKER.filter(s => !s.seite.season);
