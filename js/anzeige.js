@@ -445,8 +445,7 @@ function zeigeSeason() {
   setzeText(ui.seasonBtnStufe, String(stand.stufe));
   ui.seasonBtn.style.setProperty("--fortschritt", anteil.toFixed(3));
 
-  // Season-Seite
-  setzeText($("seasonName"), `${pass.icon} ${pass.name}`);
+  // Season-Seite (das Logo wird unten nur beim Wechsel der Season gesetzt)
   setzeText($("seasonZeit"), `⏳ ${formatRestzeit(seasonRestMs(pass))} · bis ${seasonLetzterTag(pass)}`);
   setzeText($("seasonStufe"), String(stand.stufe));
   setzeText($("seasonMax"), String(pass.stufen));
@@ -456,8 +455,12 @@ function zeigeSeason() {
     : `Noch ${format(noetig - stand.xp)} Klicks bis Stufe ${stand.stufe + 1}`);
 
   if (seasonListe.passId !== pass.id) {
-    // Neue Season: ihre Farben für die Season-Seite setzen
+    // Neue Season: ihre Farben und ihr Logo für die Season-Seite setzen
     for (const [name, wert] of Object.entries(pass.design || {})) $("seiteSeason").style.setProperty(name, wert);
+    const titel = $("seasonName");
+    titel.classList.toggle("seasonLogo", Boolean(pass.logo));
+    if (pass.logo) titel.innerHTML = pass.logo;   // eigenes SVG aus skins.js – kein fremder Inhalt
+    else titel.textContent = `${pass.icon} ${pass.name}`;
   }
   if (seasonListe.passId !== pass.id || seasonListe.stufe !== stand.stufe || seasonListe.herz !== herz()) {
     baueSeasonListe(pass, stand);

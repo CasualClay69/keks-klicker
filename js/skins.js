@@ -220,6 +220,78 @@ const SKINS = [
     } },
 ];
 
+// ----- Season-Logos (Banner oben im Season-Pass-Fenster) -----
+const LOGO_SCHRIFT = `font-family="ui-rounded, 'Arial Rounded MT Bold', Nunito, 'Segoe UI', sans-serif"`;
+
+const LOGO_THANKSGIVING = `
+<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season 1: Thanksgiving">
+  <defs>
+    <linearGradient id="s1-band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffc56b"/><stop offset="1" stop-color="#e06a22"/>
+    </linearGradient>
+    <linearGradient id="s1-schrift" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffbe9"/><stop offset="1" stop-color="#ffd27a"/>
+    </linearGradient>
+  </defs>
+  <!-- gefaltete Band-Enden -->
+  <path d="M12 66 H60 V116 H12 L27 91 Z" fill="#a0461c"/>
+  <path d="M348 66 H300 V116 H348 L333 91 Z" fill="#a0461c"/>
+  <path d="M60 116 L46 104 H60 Z" fill="#6e2b0c"/>
+  <path d="M300 116 L314 104 H300 Z" fill="#6e2b0c"/>
+  <!-- Hauptband -->
+  <rect x="42" y="52" width="276" height="70" rx="18" fill="url(#s1-band)" stroke="#8f3d14" stroke-width="4"/>
+  <path d="M62 62 H298" stroke="#fff" stroke-opacity=".45" stroke-width="5" stroke-linecap="round"/>
+  <text x="180" y="105" text-anchor="middle" ${LOGO_SCHRIFT} font-size="35" font-weight="900"
+        fill="url(#s1-schrift)" stroke="#8f3d14" stroke-width="7" stroke-linejoin="round" paint-order="stroke">Thanksgiving</text>
+  <!-- Schild "SEASON 1" -->
+  <rect x="124" y="33" width="112" height="28" rx="14" fill="#fff8ef" stroke="#8f3d14" stroke-width="3"/>
+  <text x="180" y="52.5" text-anchor="middle" ${LOGO_SCHRIFT} font-size="14" font-weight="900" fill="#b4521b" letter-spacing="3">SEASON 1</text>
+  <!-- Deko -->
+  <text x="14" y="50" font-size="34">🍁</text>
+  <text x="66" y="34" font-size="22">🍂</text>
+  <text x="252" y="32" font-size="20">🍂</text>
+  <text x="292" y="48" font-size="44">🦃</text>
+  <text x="4" y="136" font-size="28">🌽</text>
+  <text x="318" y="138" font-size="28">🥧</text>
+</svg>`;
+
+const LOGO_WEIHNACHTEN = `
+<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season 2: Weihnachten">
+  <defs>
+    <linearGradient id="s2-band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff6b6b"/><stop offset="1" stop-color="#c0182b"/>
+    </linearGradient>
+    <linearGradient id="s2-schrift" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffbd6"/><stop offset="1" stop-color="#f5c542"/>
+    </linearGradient>
+  </defs>
+  <!-- tannengrüne Band-Enden -->
+  <path d="M12 66 H60 V116 H12 L27 91 Z" fill="#1f7a45"/>
+  <path d="M348 66 H300 V116 H348 L333 91 Z" fill="#1f7a45"/>
+  <path d="M60 116 L46 104 H60 Z" fill="#11512c"/>
+  <path d="M300 116 L314 104 H300 Z" fill="#11512c"/>
+  <!-- Hauptband -->
+  <rect x="42" y="52" width="276" height="70" rx="18" fill="url(#s2-band)" stroke="#7d1220" stroke-width="4"/>
+  <!-- Schneehaube -->
+  <path d="M44 68 C42 56 52 50 62 51 H298 C308 50 318 56 316 68
+           C308 62 300 72 290 66 C280 74 268 63 258 69 C248 75 236 63 226 69
+           C214 75 204 63 192 69 C180 75 170 63 158 69 C146 75 136 63 124 69
+           C112 75 100 63 90 69 C80 75 70 63 60 69 C54 73 47 72 44 68 Z" fill="#ffffff"/>
+  <text x="180" y="110" text-anchor="middle" ${LOGO_SCHRIFT} font-size="35" font-weight="900"
+        fill="url(#s2-schrift)" stroke="#7d1220" stroke-width="7" stroke-linejoin="round" paint-order="stroke">Weihnachten</text>
+  <!-- Schild "SEASON 2" -->
+  <rect x="124" y="31" width="112" height="28" rx="14" fill="#ffffff" stroke="#1f7a45" stroke-width="3"/>
+  <text x="180" y="50.5" text-anchor="middle" ${LOGO_SCHRIFT} font-size="14" font-weight="900" fill="#1f7a45" letter-spacing="3">SEASON 2</text>
+  <!-- Deko -->
+  <text x="8" y="54" font-size="42">🎄</text>
+  <text x="294" y="48" font-size="40">🎅</text>
+  <text x="80" y="30" font-size="16">❄️</text>
+  <text x="250" y="26" font-size="14">❄️</text>
+  <text x="104" y="16" font-size="11">❄️</text>
+  <text x="4" y="138" font-size="28">⛄</text>
+  <text x="318" y="138" font-size="28">🎁</text>
+</svg>`;
+
 // ----- Season-Pässe -----
 // start/ende in Ortszeit des Geräts. "ende" ist der erste Moment, an dem der Pass NICHT mehr läuft.
 const SEASON_PAESSE = [
@@ -227,6 +299,7 @@ const SEASON_PAESSE = [
     id: "s1",
     name: "Season 1: Thanksgiving",
     icon: "🦃",
+    logo: LOGO_THANKSGIVING,
     start: "2026-11-01T00:00:00",
     ende:  "2026-12-01T00:00:00",   // = bis einschließlich 30. November
     stufen: 50,
@@ -247,6 +320,7 @@ const SEASON_PAESSE = [
     id: "s2",
     name: "Season 2: Weihnachten",
     icon: "🎅",
+    logo: LOGO_WEIHNACHTEN,
     start: "2026-12-01T00:00:00",
     ende:  "2027-01-01T00:00:00",   // = bis einschließlich 31. Dezember
     stufen: 50,

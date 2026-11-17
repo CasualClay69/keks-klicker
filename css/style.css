@@ -702,6 +702,16 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   color: var(--season-text, #5a3317);
 }
 .seasonTitel { font-size: 1.15rem; font-weight: 900; }
+/* Season-Logo (SVG-Banner) statt Text-Titel */
+.seasonLogo svg {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  margin: -6px auto 2px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.15));
+}
+.seasonLogo + .seasonZeit { text-align: center; }
 .seasonZeit  { margin: 2px 0 8px; font-size: 0.8rem; opacity: 0.8; }
 .seasonStufeAnzeige { font-size: 0.95rem; }
 .seasonStufeAnzeige b { font-size: 1.5rem; color: var(--season-akzent, #c2581e); }
