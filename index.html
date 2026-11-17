@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2b1d14">
+  <title>Keks-Klicker</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Reihenfolge ist wichtig: spätere Dateien benutzen Dinge aus früheren.
+       "defer" = erst ausführen, wenn das HTML fertig geladen ist. -->
+  <script src="js/daten.js"   defer></script>
+  <script src="js/hilfen.js"  defer></script>
+  <script src="js/zustand.js" defer></script>
+  <script src="js/logik.js"   defer></script>
+  <script src="js/sound.js"   defer></script>
+  <script src="js/anzeige.js" defer></script>
+  <script src="js/main.js"    defer></script>
+</head>
+<body>
+
+  <!-- Linke Seite: Zähler und Keks -->
+  <main id="spielfeld">
+    <button id="tonBtn" type="button" title="Ton an/aus" aria-label="Ton an/aus">🔊</button>
+    <div id="kekse">0 Kekse</div>
+    <div id="kps">0 pro Sekunde</div>
+    <div id="bonus" aria-live="polite"></div>
+    <button id="keks" type="button" aria-label="Keks anklicken"></button>
+    <button id="goldKeks" type="button" aria-label="Goldener Keks" hidden></button>
+  </main>
+
+  <!-- Rechte Seite: Shop, Erfolge, Statistik -->
+  <aside id="seitenleiste">
+    <nav id="tabs" role="tablist">
+      <button type="button" role="tab" data-seite="seiteShop" aria-selected="true">🛒 Shop</button>
+      <button type="button" role="tab" data-seite="seiteErfolge" aria-selected="false">🏆 Erfolge</button>
+      <button type="button" role="tab" data-seite="seiteStatistik" aria-selected="false">📊 Statistik</button>
+    </nav>
+
+    <section id="seiteShop" class="seite" role="tabpanel">
+      <div id="upgradeBereich" hidden>
+        <h2>⭐ Gebäude-Upgrades</h2>
+        <div id="upgradeListe"></div>
+      </div>
+
+      <h2>Verbesserungen</h2>
+      <div id="klickListe"></div>
+
+      <h2>Produktion</h2>
+      <div id="kaufModus">
+        <button type="button" data-modus="1">x1</button>
+        <button type="button" data-modus="10">x10</button>
+        <button type="button" data-modus="100">x100</button>
+        <button type="button" data-modus="next" title="Kauft genau so viele, bis das nächste Upgrade freigeschaltet wird">⭐ Nächstes</button>
+      </div>
+      <div id="gebaeudeListe"></div>
+    </section>
+
+    <section id="seiteErfolge" class="seite" role="tabpanel" hidden>
+      <p id="erfolgInfo"></p>
+      <div id="erfolgRaster"></div>
+    </section>
+
+    <section id="seiteStatistik" class="seite" role="tabpanel" hidden>
+      <table id="statistik"></table>
+      <button id="reset" type="button">Spielstand löschen</button>
+    </section>
+  </aside>
+
+  <div id="meldungen" aria-live="polite"></div>
+
+</body>
+</html>

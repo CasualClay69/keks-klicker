@@ -1,0 +1,357 @@
+/* =====================================================
+   FARBEN – an einer Stelle, damit man sie leicht ändern kann
+   ===================================================== */
+:root {
+  --hintergrund:   #2b1d14;
+  --spielfeld:     #5a3a22;
+  --panel:         #3d2a1c;
+  --karte:         #5a3d28;
+  --karte-hover:   #6e4b32;
+  --karte-upgrade: #64432a;
+  --rand:          #6b4a30;
+  --akzent:        #c98a45;
+  --text:          #fff3e0;
+  --preis:         #ffd27a;
+  --gold:          #ffd700;
+  --schoko:        #3b2412;
+  --gefahr:        #8b2e2e;
+}
+
+/* =====================================================
+   GRUNDLAYOUT
+   ===================================================== */
+* { box-sizing: border-box; }
+
+/* Die Seite füllt genau den Bildschirm.
+   100dvh = "dynamische" Höhe, berücksichtigt auf dem Handy die Adressleiste */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--hintergrund);
+  color: var(--text);
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;   /* nur die Seitenleiste scrollt */
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  touch-action: manipulation;               /* kein Zoomen bei schnellem Tippen */
+  -webkit-tap-highlight-color: transparent; /* kein blauer Kasten beim Antippen */
+}
+
+[hidden] { display: none !important; }
+
+/* =====================================================
+   SPIELFELD (links)
+   ===================================================== */
+#spielfeld {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle, var(--spielfeld) 0%, var(--hintergrund) 70%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* clamp(min, bevorzugt, max): Größe wächst mit dem Bildschirm mit */
+#kekse { font-size: clamp(1.6rem, 4.5vw, 2.8rem); font-weight: bold; text-align: center; }
+#kps   { font-size: clamp(0.85rem, 2vw, 1.1rem); opacity: 0.8; text-align: center; }
+#bonus {
+  min-height: 1.6em;
+  margin: 8px 0 clamp(8px, 3vh, 22px);
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  font-weight: bold;
+  text-align: center;
+  color: var(--gold);
+  text-shadow: 0 0 8px #ff9800;
+}
+
+#tonBtn {
+  position: absolute; top: 12px; left: 12px;
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: none; border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+/* ----- Der Keks (komplett mit CSS gezeichnet) ----- */
+#keks {
+  width: clamp(140px, 38vmin, 320px);   /* vmin = % der kleineren Bildschirmseite */
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 30% 30%, var(--schoko) 7%, transparent 8%),
+    radial-gradient(circle at 65% 25%, var(--schoko) 6%, transparent 7%),
+    radial-gradient(circle at 50% 55%, var(--schoko) 8%, transparent 9%),
+    radial-gradient(circle at 25% 65%, var(--schoko) 6%, transparent 7%),
+    radial-gradient(circle at 72% 68%, var(--schoko) 7%, transparent 8%),
+    radial-gradient(circle at 45% 82%, var(--schoko) 5%, transparent 6%),
+    radial-gradient(circle at 40% 35%, #e9b872, var(--akzent) 70%, #a86b2e);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.08s;
+}
+#keks:active { transform: scale(0.95); }
+
+/* ----- Goldener Keks ----- */
+#goldKeks {
+  position: absolute;
+  z-index: 5;
+  width: clamp(50px, 9vmin, 75px);
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: radial-gradient(circle at 35% 35%, #fff8c4, var(--gold) 45%, #c99700 80%);
+  box-shadow: 0 0 25px 8px rgba(255, 215, 0, 0.7);
+  animation: goldPuls 1s ease-in-out infinite alternate;
+}
+
+/* ----- Schwebende "+1"-Texte ----- */
+.schwebeText {
+  position: absolute;
+  z-index: 6;
+  font-size: 1.4rem;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 2px 4px #000;
+  animation: hochschweben 1s ease-out forwards;
+}
+.schwebeText.gross { font-size: 1.8rem; color: var(--gold); animation-duration: 2s; }
+
+/* =====================================================
+   SEITENLEISTE (rechts)
+   ===================================================== */
+#seitenleiste {
+  width: clamp(300px, 32vw, 440px);
+  flex-shrink: 0;
+  background: var(--panel);
+  padding: 0 16px 16px;
+  overflow-y: auto;
+}
+#seitenleiste h2 {
+  margin: 8px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--rand);
+  font-size: 1.2rem;
+}
+
+/* ----- Tabs (bleiben beim Scrollen oben) ----- */
+#tabs {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; gap: 6px;
+  padding: 16px 0 12px;
+  background: var(--panel);
+}
+#tabs button {
+  flex: 1;
+  padding: 10px 6px;
+  border: none; border-radius: 6px;
+  background: var(--karte);
+  cursor: pointer;
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  white-space: nowrap;
+}
+#tabs button[aria-selected="true"] { background: var(--akzent); color: var(--hintergrund); font-weight: bold; }
+
+/* ----- Shop-Einträge ----- */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 10px;
+  border: none; border-radius: 8px;
+  background: var(--karte);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, transform 0.08s;
+}
+.item:active { transform: scale(0.98); }
+.item.zuteuer { opacity: 0.45; cursor: not-allowed; }
+.item span { display: block; }
+.item .icon   { position: relative; font-size: 2rem; }
+.item .info   { flex: 1; min-width: 0; }
+.item .name   { font-weight: bold; }
+.item .preis  { font-size: 0.9rem; color: var(--preis); }
+.item .menge  { display: inline; margin-left: 4px; font-size: 0.8rem; color: var(--text); opacity: 0.7; }
+.item .beschr { font-size: 0.75rem; opacity: 0.75; }
+.item .anzahl { font-size: 1.8rem; font-weight: bold; opacity: 0.6; }
+
+.item.upgrade { border-left: 4px solid var(--gold); background: var(--karte-upgrade); }
+.item.upgrade.neu { animation: aufleuchten 0.8s ease-out 3; }
+.medaille { position: absolute; right: -8px; bottom: -4px; font-size: 0.55em; }
+
+/* Hover nur für Geräte mit Maus (auf Touch "kleben" Hover-Effekte sonst) */
+@media (hover: hover) {
+  #keks:hover { transform: scale(1.05); }
+  .item:hover { background: var(--karte-hover); }
+}
+
+/* ----- Kauf-Modus ----- */
+#kaufModus { display: flex; gap: 6px; margin: -4px 0 10px; }
+#kaufModus button {
+  flex: 1;
+  padding: 8px 4px;
+  border: 2px solid var(--rand); border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem; font-weight: bold;
+  white-space: nowrap;
+}
+#kaufModus button[data-modus="next"] { flex: 1.8; }
+#kaufModus button.aktiv { background: var(--rand); border-color: var(--akzent); color: var(--preis); }
+
+/* ----- Erfolge ----- */
+#erfolgInfo { margin: 0 0 10px; font-size: 0.9rem; opacity: 0.8; }
+#erfolgRaster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 8px;
+}
+.erfolg {
+  padding: 8px 4px;
+  border-radius: 8px;
+  background: var(--karte);
+  text-align: center;
+  font-size: 2rem;
+  cursor: help;
+}
+.erfolg small { display: block; margin-top: 4px; font-size: 0.65rem; }
+.erfolg.gesperrt { filter: grayscale(1); opacity: 0.35; }
+
+/* ----- Statistik ----- */
+#statistik { width: 100%; border-collapse: collapse; }
+#statistik td { padding: 8px 4px; border-bottom: 1px solid var(--karte); }
+#statistik td:last-child { text-align: right; font-weight: bold; color: var(--preis); }
+
+#reset {
+  width: 100%;
+  margin-top: 16px;
+  padding: 8px;
+  border: none; border-radius: 6px;
+  background: var(--gefahr);
+  cursor: pointer;
+}
+
+/* ----- Meldungen ----- */
+#meldungen {
+  position: fixed; bottom: 16px; left: 16px; z-index: 10;
+  display: flex; flex-direction: column; gap: 8px;
+  max-width: calc(100% - 32px);
+}
+.meldung {
+  padding: 10px 14px;
+  border-left: 6px solid var(--gold); border-radius: 8px;
+  background: var(--text);
+  color: var(--hintergrund);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  animation: reinfliegen 0.3s ease-out;
+}
+.meldung b { display: block; }
+
+/* =====================================================
+   ANIMATIONEN
+   ===================================================== */
+@keyframes goldPuls {
+  from { transform: scale(0.9) rotate(-10deg); }
+  to   { transform: scale(1.1) rotate(10deg); }
+}
+@keyframes hochschweben {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-80px); }
+}
+@keyframes aufleuchten {
+  from { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.8); }
+  to   { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+}
+@keyframes reinfliegen {
+  from { transform: translateX(-120%); }
+  to   { transform: translateX(0); }
+}
+@keyframes reinfallen {
+  from { transform: translateY(-150%); }
+  to   { transform: translateY(0); }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+/* Tablet: Seitenleiste kompakter */
+@media (max-width: 900px) {
+  #seitenleiste { width: 300px; padding: 0 12px 12px; }
+  .item { padding: 8px; gap: 10px; }
+  .item .icon { font-size: 1.6rem; }
+  .item .anzahl { font-size: 1.4rem; }
+}
+
+/* Handy hochkant: Keks oben, Shop darunter */
+@media (max-width: 700px) and (orientation: portrait), (max-width: 500px) {
+  body { flex-direction: column; }
+  #spielfeld {
+    flex: 0 0 auto;
+    height: 45%;
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top));   /* Platz für die Kamera-Notch */
+  }
+  #keks { width: clamp(120px, 28vh, 240px); }
+  #seitenleiste {
+    flex: 1;
+    width: 100%;
+    border-top: 3px solid var(--rand);
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  #tabs { padding: 10px 0 8px; }
+  #tabs button { font-size: 0.85rem; padding: 10px 4px; }
+
+  /* Meldungen oben mittig (unten ist jetzt der Shop) */
+  #meldungen {
+    top: 12px; bottom: auto; left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+  }
+  .meldung { font-size: 0.9rem; animation-name: reinfallen; }
+}
+
+/* Handy quer: nebeneinander lassen, alles kleiner */
+@media (max-height: 500px) and (orientation: landscape) {
+  #spielfeld { padding: 8px; }
+  #keks { width: clamp(110px, 50vh, 220px); }
+  #kekse { font-size: 1.5rem; }
+  #kps, #bonus { font-size: 0.8rem; }
+  #bonus { margin: 4px 0 8px; }
+  #seitenleiste { width: 280px; }
+  #tabs { padding: 8px 0 6px; }
+}
+
+/* Sehr kleine Handys */
+@media (max-width: 360px) {
+  #tabs button { font-size: 0.75rem; }
+  .item .beschr { display: none; }
+}
+
+/* Große Bildschirme */
+@media (min-width: 1400px) {
+  #erfolgRaster { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
+  .item { padding: 12px; }
+}
+
+/* System-Einstellung "Bewegung reduzieren" respektieren */
+@media (prefers-reduced-motion: reduce) {
+  #goldKeks, .meldung, .item.upgrade.neu { animation: none; }
+}
