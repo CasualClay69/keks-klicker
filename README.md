@@ -40,7 +40,7 @@ Neuen Skin hinzufügen:
    - **HUD:** CSS-Farbvariablen in `farben`
    - **Musik:** Noten in `musik` (Aufbau wie `SPIELUHR`)
 2. Den Season-Pass in `SEASON_PAESSE` eintragen (bzw. die Skin-ID dort ergänzen)
-3. In `sw.js` die `VERSION` erhöhen
+3. In `js/version.js` die Versionsnummer erhöhen
 
 Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 
@@ -76,5 +76,6 @@ Freischalten per Code: `schalteSeasonFrei("<Pass-ID>")`.
 | `js/main.js` | Verbindet alles und startet das Spiel |
 | `css/style.css` | Aussehen (Farben ganz oben als Variablen) |
 | `manifest.webmanifest` | App-Name, Symbole, Farben (PWA) |
-| `sw.js` | Service Worker: Offline-Cache. Bei neuen Dateien `DATEIEN` und `VERSION` anpassen |
+| `js/version.js` | Versionsnummer (wird unter dem Logo angezeigt) – bei jeder Änderung hochzählen |
+| `sw.js` | Service Worker: Offline-Cache, liest die Version aus `js/version.js`. Bei neuen Dateien `DATEIEN` ergänzen |
 | `icons/` | App-Symbole |

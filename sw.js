@@ -7,18 +7,20 @@
 //  2. Gleichzeitig im Hintergrund die neueste Version laden und den Cache aktualisieren
 //  → Änderungen, die du hochlädst, sind beim ÜBERNÄCHSTEN Öffnen da.
 //
-//  Wenn du Dateien hinzufügst oder umbenennst: in DATEIEN eintragen
-//  und VERSION erhöhen, damit der alte Cache gelöscht wird.
+//  Wenn du Dateien hinzufügst oder umbenennst: in DATEIEN eintragen.
+//  Die Versionsnummer steht in js/version.js – dort hochzählen,
+//  damit der alte Cache gelöscht wird.
 // =====================================================
 
-const VERSION = "v15";
-const CACHE = "marie-clicker-" + VERSION;
+importScripts("js/version.js");   // liefert APP_VERSION
+const CACHE = "marie-clicker-v" + APP_VERSION;
 
 const DATEIEN = [
   "./",
   "index.html",
   "manifest.webmanifest",
   "css/style.css",
+  "js/version.js",
   "js/daten.js",
   "js/skins.js",
   "js/hilfen.js",

@@ -15,7 +15,7 @@
 //     • hud:         Farben im Feld "farben" (CSS-Variablen aus style.css :root)
 //     • musik:       Noten im Feld "musik" (wie SPIELUHR unten)
 //  3. Die Skin-ID beim Season-Pass in SEASON_PAESSE eintragen.
-//  4. In sw.js die VERSION erhöhen.
+//  4. In js/version.js die Versionsnummer erhöhen.
 // =====================================================
 
 const SKIN_KATEGORIEN = [

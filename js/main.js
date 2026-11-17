@@ -277,6 +277,7 @@ function richteAppEin() {
 // ----- Start -----
 
 function starte() {
+  $("version").textContent = "v" + APP_VERSION;
   laden();
   ladeSkins();
   wendeSkinsAn();

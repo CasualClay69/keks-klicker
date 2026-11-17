@@ -369,6 +369,18 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   transform: rotate(-3deg);
 }
 
+/* Versionsnummer klein unter dem Logo */
+.logo-version {
+  margin-top: 5px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--text-sanft);
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
 /* Krönchen schief auf dem "M" */
 .logo-krone {
   position: absolute;
