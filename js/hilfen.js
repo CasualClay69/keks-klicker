@@ -5,7 +5,7 @@
 
 // Große Zahlen lesbar machen: 1500000 -> "1,5 Mio."
 function format(zahl) {
-  const stufen = [[1e12, " Bio."], [1e9, " Mrd."], [1e6, " Mio."]];
+  const stufen = [[1e18, " Trill."], [1e15, " Brd."], [1e12, " Bio."], [1e9, " Mrd."], [1e6, " Mio."]];
   for (const [wert, name] of stufen) {
     if (zahl >= wert) {
       return (zahl / wert).toLocaleString("de-DE", { maximumFractionDigits: 2 }) + name;

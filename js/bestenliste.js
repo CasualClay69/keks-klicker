@@ -84,7 +84,7 @@ async function rufeBestenlisteAuf(funktion, parameter) {
 function meinePunkte() {
   const pass = aktiverSeasonPass();
   return {
-    p_herzen_gesamt: Math.floor(spiel.gesamt),
+    p_herzen_gesamt: Math.floor(herzenAllerZeiten()),   // inkl. früherer Durchgänge (Neustart)
     p_hps: Math.round(basisHps() * 10) / 10,
     p_season_stufe: pass ? seasonStand(pass).stufe : 0,
     p_erfolge: spiel.erfolge.length,

@@ -102,6 +102,9 @@ function erstelleErfolg(container, erfolg) {
 const STATISTIK_ZEILEN = [
   ["Herzen aktuell",          () => format(spiel.herzen)],
   ["Insgesamt gesammelt",     () => format(spiel.gesamt)],
+  ["Herzen aller Zeiten",     () => format(herzenAllerZeiten())],
+  ["Glitzersterne",           () => `${glitzersterne()} (+${Math.round(glitzersterne() * NEUSTART.sternBonus * 100)} %)`],
+  ["Neustarts",               () => String(spiel.neustarts || 0)],
   ["Durch Klicks gesammelt",  () => format(spiel.klickHerzen)],
   ["Klicks auf Marie",        () => spiel.klicks.toLocaleString("de-DE")],
   ["Meiste Finger gleichzeitig", () => String(spiel.maxFinger)],
@@ -178,8 +181,18 @@ function zeigeKaufModus() {
 }
 
 function zeigeGebaeude() {
+  // Nur die Herzschenker zeigen, die man hat, plus die nächsten zwei – der Rest kommt nach und nach
+  const sichtbarBis = hoechstesGebaeude() + 2;
+  let versteckt = 0;
+  GEBAEUDE.forEach((g, i) => {
+    elemente.get(g).wurzel.hidden = i > sichtbarBis;
+    if (i > sichtbarBis) versteckt++;
+  });
+  $("gebaeudeHinweis").hidden = versteckt === 0;
+
   for (const g of GEBAEUDE) {
     const teile = elemente.get(g);
+    if (teile.wurzel.hidden) continue;
     const n = anzahl(g);
     const menge = kaufMenge(g);
 
@@ -246,6 +259,7 @@ function aktualisiereAnzeige() {
 
   zeigeHaustier();
   if (!$("tierOverlay").hidden) zeigeTierPflege();
+  zeigeNeustart();
 
   const neueSticker = (spiel.stickerNeu || []).length;   // Zahl am Album: neue, ungesehene Sticker
   ui.albumBadge.hidden = neueSticker === 0;
@@ -764,6 +778,36 @@ function zeigeRadErgebnis(ergebnis) {
   setzeText($("radInfo"), "Glückwunsch! Morgen kannst du wieder drehen.");
   $("radZu").disabled = false;
   konfetti($("radOverlay").querySelector(".geschenkKarte"));
+}
+
+// ----- Neustart mit Bonus -----
+
+function zeigeNeustart() {
+  const sterne = glitzersterne();
+  const prozent = Math.round(sterne * NEUSTART.sternBonus * 100);
+  setzeText($("neustartSterne"), sterne
+    ? `⭐ ${sterne} Glitzersterne · +${prozent} % Herzen für immer`
+    : "⭐ Noch keine Glitzersterne");
+
+  const fehlend = GEBAEUDE.filter(g => anzahl(g) < 1).length;
+  const neu = neueSterne();
+  const knopf = $("neustartBtn");
+  let info;
+  if (fehlend > 0) {
+    info = `Wenn du jeden Herzschenker mindestens einmal hast (bis zum 👑 Herzkönigreich), kannst du neu anfangen `
+         + `und bekommst Glitzersterne. Jeder ⭐ gibt für immer +${NEUSTART.sternBonus * 100} % Herzen. Noch ${fehlend} Herzschenker fehlen.`;
+    setzeText(knopf, "🔒 Noch nicht möglich");
+  } else if (neu === 0) {
+    info = "Sammle noch mehr Herzen – dann gibt es beim Neustart neue Glitzersterne!";
+    setzeText(knopf, "🔒 Noch keine neuen Sterne");
+  } else {
+    info = `Neustart jetzt: +${neu} Glitzersterne ⭐ (dann ${sterne + neu} = +${Math.round((sterne + neu) * NEUSTART.sternBonus * 100)} % Herzen für immer). `
+         + "Herzen, Herzschenker, Verbesserungen und Upgrades fangen wieder bei 0 an. "
+         + "Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben!";
+    setzeText(knopf, `🌟 Neustart: +${neu} ⭐`);
+  }
+  setzeText($("neustartInfo"), info);
+  knopf.disabled = !neustartMoeglich();
 }
 
 // ----- Herzregen-Minispiel -----

@@ -6,10 +6,13 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 
 - Marie anklicken, Herzen sammeln (sie blinzelt und freut sich über jeden Klick)
 - Multitouch: auf dem Handy zählt jeder Finger einzeln
-- 7 Herzschenker – von der besten Freundin bis zum Regenbogen – mit je 4 Upgrade-Stufen
+- 12 Herzschenker – von der besten Freundin bis zum 👑 Herzkönigreich – mit je 4 Upgrade-Stufen
+  (im Shop sieht man immer nur die eigenen plus die nächsten zwei)
+- Neustart mit Bonus 🌟: Wer alle Herzschenker hat, kann neu anfangen und bekommt Glitzersterne
+  (je +10 % Herzen für immer). Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben (`js/neustart.js`)
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
-- 30 Erfolge (je +1 % Herzen)
+- 34 Erfolge (je +1 % Herzen)
 - Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;
   in den Seasons passend zum Thema (🍂 Blätterregen, ❄️ Schneegestöber – siehe `regen` in `SEASON_PAESSE`)
 - Geburtstag 🎂 (jedes Jahr am 3. Februar): Konfetti-Regen, Partyhut, „Happy Birthday“ als Musik und ein großes

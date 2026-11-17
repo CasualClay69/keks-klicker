@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.34";
-const APP_NEU = "Neu: Herzregen! 💖 Ab und zu fallen Herzen vom Himmel – fang so viele, wie du kannst! (Im November: Blätterregen 🍂)";
+const APP_VERSION = "1.35";
+const APP_NEU = "Neu: 5 weitere Herzschenker bis zum 👑 Herzkönigreich – und danach ein Neustart mit Glitzersternen ⭐!";

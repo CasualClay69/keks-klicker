@@ -75,7 +75,8 @@ function gebaeudeFaktor(gebaeude) {
 // haustierFaktor(): ein sattes Haustier gibt +1 % pro Level (siehe haustier.js)
 function hpsProStueck(gebaeude) {
   const tier = typeof haustierFaktor === "function" ? haustierFaktor() : 1;
-  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier;
+  const sterne = typeof sternFaktor === "function" ? sternFaktor() : 1;   // Glitzersterne (neustart.js)
+  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier * sterne;
 }
 
 // Herzen pro Sekunde insgesamt, ohne Sternschnuppen-Bonus
@@ -89,7 +90,8 @@ function herzenProSekunde() {
 
 function herzenProKlick() {
   const basis = 1 + KLICK_ITEMS.reduce((summe, k) => summe + anzahl(k) * k.proKlick, 0);
-  return basis * aktuellerBonus().klickFaktor;
+  const sterne = typeof sternFaktor === "function" ? sternFaktor() : 1;   // Glitzersterne (neustart.js)
+  return basis * sterne * aktuellerBonus().klickFaktor;
 }
 
 // ----- Aktionen (verändern den Spielstand) -----

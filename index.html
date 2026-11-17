@@ -28,6 +28,7 @@
   <script src="js/hilfen.js"  defer></script>
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
+  <script src="js/neustart.js" defer></script>
   <script src="js/sicherung.js" defer></script>
   <script src="js/aufgaben.js" defer></script>
   <script src="js/geschenk.js" defer></script>
@@ -208,6 +209,14 @@
         <button type="button" data-modus="next" title="Kauft genau so viele, bis das nächste Upgrade freigeschaltet wird">✨ Nächstes</button>
       </div>
       <div id="gebaeudeListe"></div>
+      <p id="gebaeudeHinweis" class="seitenInfo gebaeudeHinweis" hidden>❓ Weitere Herzschenker warten auf dich …</p>
+
+      <h2>🌟 Neustart mit Bonus</h2>
+      <div class="neustartKarte">
+        <div id="neustartSterne" class="neustartSterne"></div>
+        <p id="neustartInfo" class="neustartInfo"></p>
+        <button id="neustartBtn" type="button" class="knopf haupt">🌟 Neustart mit Bonus</button>
+      </div>
     </section>
 
     <section id="seiteSkins" class="seite" role="tabpanel" hidden>

@@ -34,6 +34,11 @@ const GEBAEUDE = [
   { id: "einhorn",    name: "Einhorn",        mehrzahl: "Einhörner",         icon: "🦄", basisPreis: 130000,   hps: 260  },
   { id: "schloss",    name: "Feenschloss",    mehrzahl: "Feenschlösser",     icon: "🏰", basisPreis: 1400000,  hps: 1400 },
   { id: "regenbogen", name: "Regenbogen",     mehrzahl: "Regenbögen",        icon: "🌈", basisPreis: 20000000, hps: 7800 },
+  { id: "karussell",  name: "Karussell",      mehrzahl: "Karussells",        icon: "🎠", basisPreis: 200e6,    hps: 50000 },
+  { id: "mondpalast", name: "Mondpalast",     mehrzahl: "Mondpaläste",       icon: "🌙", basisPreis: 1.8e9,    hps: 320000 },
+  { id: "planet",     name: "Glitzerplanet",  mehrzahl: "Glitzerplaneten",   icon: "🪐", basisPreis: 15e9,     hps: 2e6 },
+  { id: "galaxie",    name: "Herzgalaxie",    mehrzahl: "Herzgalaxien",      icon: "🌌", basisPreis: 120e9,    hps: 12e6 },
+  { id: "koenigreich", name: "Herzkönigreich", mehrzahl: "Herzkönigreiche",  icon: "👑", basisPreis: 1e12,     hps: 75e6 },
 ];
 
 // Verbesserungen für mehr Herzen pro Klick
@@ -105,5 +110,7 @@ const ERFOLGE = [
   { id: "tier1",      icon: "🐾", name: "Tierfreund",        beschr: "Adoptiere ein Haustier für Marie",         bedingung: s => Boolean(s.haustier) },
   { id: "tierGross",  icon: "🎉", name: "Groß geworden",     beschr: "Dein Haustier ist ausgewachsen (Level 10)", bedingung: s => Boolean(s.haustier) && s.haustier.level >= 10 },
   { id: "regen40",    icon: "🧺", name: "Fang-Profi",        beschr: "Fange 40 Punkte in einem Herzregen",        bedingung: s => (s.regenBest || 0) >= 40 },
+  { id: "neustart1",  icon: "🌟", name: "Neuanfang",         beschr: "Mache einen Neustart mit Bonus",            bedingung: s => (s.neustarts || 0) >= 1 },
+  { id: "sterne25",   icon: "💫", name: "Sternenhimmel",     beschr: "Sammle 25 Glitzersterne",                   bedingung: s => (s.sterne || 0) >= 25 },
   { id: "zeit30",    icon: "🫖", name: "Teeparty",          beschr: "Spiele 30 Minuten",                        bedingung: s => s.spielzeit >= 1800 },
 ];

@@ -62,6 +62,28 @@ function klickAufMarie(position) {
   aktualisiereAnzeige();
 }
 
+// ----- Neustart mit Bonus -----
+
+function richteNeustartEin() {
+  $("neustartBtn").addEventListener("click", () => {
+    const neu = neueSterne();
+    if (!neustartMoeglich()) return;
+    const frage = `🌟 Neustart mit Bonus?\n\n`
+      + `Du bekommst ${neu} Glitzersterne – jeder gibt für immer +${NEUSTART.sternBonus * 100} % Herzen.\n\n`
+      + `Deine Herzen, Herzschenker, Verbesserungen und Upgrades fangen wieder bei 0 an.\n`
+      + `Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben.`;
+    if (!confirm(frage)) return;
+
+    macheNeustart();
+    sound.erfolg();
+    setTimeout(() => sound.stern(), 400);
+    meldung(`🌟 Neustart! +${neu} Glitzersterne`, `Jetzt +${Math.round(glitzersterne() * NEUSTART.sternBonus * 100)} % Herzen für immer. Viel Spaß!`);
+    konfetti(ui.spielfeld);
+    sag("erfolg", { wichtig: true });
+    zeigeAlles();
+  });
+}
+
 // ----- Herzregen-Minispiel -----
 
 let regenTimer = null;
@@ -951,6 +973,7 @@ function starte() {
   richteGluecksradEin();
   richteHaustierEin();
   richteGeburtstagEin();
+  richteNeustartEin();
   richteBestenlisteEin();
   richteAppEin();
   richteUpdateEin();

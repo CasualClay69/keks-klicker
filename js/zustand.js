@@ -25,6 +25,9 @@ function neuerSpielstand() {
     geburtstagJahr: null, // Jahr, in dem das Geburtstagsgeschenk geöffnet wurde (siehe geburtstag.js)
     regenBest: 0,      // bester Herzregen (Punkte)
     regenAnzahl: 0,    // so viele Herzregen gab es schon
+    sterne: 0,         // Glitzersterne aus "Neustart mit Bonus" (siehe neustart.js)
+    gesamtFrueher: 0,  // Herzen aus früheren Durchgängen
+    neustarts: 0,
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie
