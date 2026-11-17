@@ -66,11 +66,53 @@ button {
   position: relative;
   overflow: hidden;
   container-type: size;   /* Kinder können ihre Größe hieran ausrichten (cqw/cqh) */
+  isolation: isolate;     /* eigene Ebenen-Ordnung: Herzchen bleiben HINTER dem Inhalt */
+}
 
-  /* Weißer Schimmer hinter Marie + Herzchen-Muster */
-  background:
-    radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 55%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath transform='translate(4 4)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23ffc9e0'/%3E%3Cpath transform='translate(36 34) scale(.8)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23e3d0ff'/%3E%3C/svg%3E");
+/* =====================================================
+   PARALLAX-HINTERGRUND
+   Zwei Herzchen-Ebenen ziehen diagonal nach rechts oben.
+   Hinten: klein, blass, langsam – vorne: groß, kräftig, schnell.
+   Unterschiedliche Geschwindigkeiten = Tiefeneffekt.
+
+   Trick für die Endlos-Schleife: Die Ebene ist auf jeder Seite um genau
+   eine Kachel größer als das Spielfeld und verschiebt sich um genau eine
+   Kachel. Danach sieht sie exakt so aus wie am Anfang -> nahtlos.
+   ===================================================== */
+#spielfeld::before,
+#spielfeld::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--kachel));
+  z-index: -1;
+  pointer-events: none;
+  background-size: var(--kachel) var(--kachel);
+  will-change: transform;   /* läuft auf der Grafikkarte -> flüssig */
+}
+
+/* Hintere Ebene */
+#spielfeld::before {
+  --kachel: 60px;
+  animation: diagonalHinten 7s linear infinite;   /* 60px in 7s ≈ 9px pro Sekunde */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath transform='translate(6 8) scale(.7)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23e6d6ff'/%3E%3Cpath transform='translate(34 34) scale(.55)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23ffdcec'/%3E%3Ccircle cx='46' cy='14' r='1.8' fill='%23ffffff'/%3E%3Ccircle cx='14' cy='46' r='1.3' fill='%23ffffff'/%3E%3C/svg%3E");
+}
+
+/* Vordere Ebene */
+#spielfeld::after {
+  --kachel: 130px;
+  animation: diagonalVorne 6s linear infinite;    /* 130px in 6s ≈ 22px pro Sekunde -> mehr als doppelt so schnell */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='130' viewBox='0 0 130 130'%3E%3Cpath transform='translate(12 14) scale(1.5)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23ffbfdb'/%3E%3Cpath transform='translate(76 74) scale(1.1)' d='M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z' fill='%23dcc4ff'/%3E%3C/svg%3E");
+  opacity: 0.85;
+}
+
+/* Genau eine Kachel nach rechts oben (Werte = --kachel der jeweiligen Ebene) */
+@keyframes diagonalHinten {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(60px, -60px); }
+}
+@keyframes diagonalVorne {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(130px, -130px); }
 }
 
 /* Vertikal zentrieren mit "auto"-Rändern: Wird es zu eng, rutscht der Inhalt
@@ -148,7 +190,11 @@ button {
   overflow: hidden;
   cursor: pointer;
   background: radial-gradient(circle at 50% 40%, #fff 0%, #ffd1e6 60%, #e6ccff 100%);
-  box-shadow: 0 10px 30px rgba(214, 51, 132, 0.3), 0 0 0 10px rgba(255, 95, 162, 0.15);
+  /* Rosa Ring + weißer Schimmer (hebt Marie vom bewegten Hintergrund ab) + Schatten */
+  box-shadow:
+    0 0 0 10px rgba(255, 95, 162, 0.15),
+    0 0 60px 30px rgba(255, 255, 255, 0.75),
+    0 10px 30px rgba(214, 51, 132, 0.3);
   transition: transform 0.08s;
 }
 /* Marie bekommt nur so viel Platz, wie nach den Texten übrig ist (cqh = % der Spielfeld-Höhe) */
@@ -579,5 +625,6 @@ button {
 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
-  #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu { animation: none; }
+  #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
+  #spielfeld::before, #spielfeld::after { animation: none; }
 }
