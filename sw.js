@@ -1,14 +1,14 @@
 ﻿"use strict";
 // =====================================================
-//  SERVICE WORKER â€“ macht das Spiel offline spielbar
+//  SERVICE WORKER – macht das Spiel offline spielbar
 //
 //  Strategie "stale-while-revalidate":
-//  1. Datei sofort aus dem Speicher (Cache) liefern â†’ startet blitzschnell, auch offline
+//  1. Datei sofort aus dem Speicher (Cache) liefern → startet blitzschnell, auch offline
 //  2. Gleichzeitig im Hintergrund die neueste Version laden und den Cache aktualisieren
-//  â†’ Ã„nderungen, die du hochlÃ¤dst, sind beim ÃœBERNÃ„CHSTEN Ã–ffnen da.
+//  → Änderungen, die du hochlädst, sind beim ÜBERNÄCHSTEN Öffnen da.
 //
-//  Wenn du Dateien hinzufÃ¼gst oder umbenennst: in DATEIEN eintragen
-//  und VERSION erhÃ¶hen, damit der alte Cache gelÃ¶scht wird.
+//  Wenn du Dateien hinzufügst oder umbenennst: in DATEIEN eintragen
+//  und VERSION erhöhen, damit der alte Cache gelöscht wird.
 // =====================================================
 
 const VERSION = "v4";
@@ -43,7 +43,7 @@ self.addEventListener("install", ereignis => {
   );
 });
 
-// Aktivierung: Caches Ã¤lterer Versionen lÃ¶schen
+// Aktivierung: Caches älterer Versionen löschen
 self.addEventListener("activate", ereignis => {
   ereignis.waitUntil(
     caches.keys()
