@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.26";
-const APP_NEU = "Ab jetzt sagt dir ein Fenster Bescheid, wenn es eine neue Version gibt.";
+const APP_VERSION = "1.27";
+const APP_NEU = "Neu: das Glücksrad 🎡 – einmal am Tag drehen und tolle Preise gewinnen!";

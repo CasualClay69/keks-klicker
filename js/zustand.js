@@ -18,6 +18,7 @@ function neuerSpielstand() {
     aufgaben: null,    // Tagesaufgaben (siehe aufgaben.js)
     aufgabenGesamt: 0, // insgesamt erledigte Tagesaufgaben
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
+    gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
     musikAn: true,     // Hintergrund-Melodie

@@ -20,6 +20,8 @@ const ui = {
   musikBtn:       $("musikBtn"),
   aufgabenBtn:    $("aufgabenBtn"),
   aufgabenBadge:  $("aufgabenBadge"),
+  radBtn:         $("radBtn"),
+  radBadge:       $("radBadge"),
   installBtn:     $("installBtn"),
   seasonBtn:      $("seasonBtn"),
   seasonBtnIcon:  $("seasonBtnIcon"),
@@ -106,6 +108,7 @@ const STATISTIK_ZEILEN = [
   ["Sternschnuppen gefangen", () => String(spiel.sternKlicks)],
   ["Tagesaufgaben erledigt",  () => String(spiel.aufgabenGesamt || 0)],
   ["Längste Geschenk-Serie",  () => `${(spiel.geschenk && spiel.geschenk.beste) || 0} Tage`],
+  ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
   ["Spielzeit",               () => formatZeit(spiel.spielzeit)],
 ];
@@ -232,6 +235,7 @@ function aktualisiereAnzeige() {
   zeigeUpgrades();
   zeigeSeason();
   zeigeAufgaben();
+  ui.radBadge.hidden = !gluecksradBereit();   // "!" am Glücksrad, solange heute noch gedreht werden kann
 }
 
 // Wird 1× pro Sekunde aufgerufen
@@ -659,6 +663,86 @@ function konfetti(behaelter) {
 
 function versteckeGeschenkFenster() {
   $("geschenkOverlay").hidden = true;
+}
+
+// ----- Glücksrad -----
+
+// Das Rad als SVG zeichnen: 8 Tortenstücke mit Symbol und Beschriftung
+function baueGluecksrad() {
+  const n = GLUECKSRAD_FELDER.length;
+  const mitte = 150, radius = 146;
+  const punkt = winkel => {   // Winkel in Grad, 0 = oben, im Uhrzeigersinn
+    const rad = (winkel - 90) * Math.PI / 180;
+    return `${(mitte + radius * Math.cos(rad)).toFixed(2)} ${(mitte + radius * Math.sin(rad)).toFixed(2)}`;
+  };
+  const pass = aktiverSeasonPass();
+  let svg = "";
+  GLUECKSRAD_FELDER.forEach((feld, i) => {
+    const von = (i / n) * 360, bis = ((i + 1) / n) * 360, mittelWinkel = (i + 0.5) / n * 360;
+    const icon = feld.typ === "season" && pass ? pass.icon : feld.icon;
+    svg += `<path d="M${mitte} ${mitte} L${punkt(von)} A${radius} ${radius} 0 0 1 ${punkt(bis)} Z"
+                  fill="${feld.farbe}" stroke="#fff" stroke-width="3"/>
+            <g transform="rotate(${mittelWinkel} ${mitte} ${mitte})">
+              <text x="${mitte}" y="58" text-anchor="middle" font-size="30">${icon}</text>
+              <text x="${mitte}" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b2a4f">${feld.kurz}</text>
+            </g>`;
+  });
+  svg += `<circle cx="${mitte}" cy="${mitte}" r="${radius}" fill="none" stroke="#ff5fa2" stroke-width="6"/>`;
+  $("radScheibe").innerHTML = svg;
+}
+
+// Fenster öffnen: Rad auf Anfang, Knopf je nachdem, ob heute schon gedreht wurde
+function zeigeRadFenster() {
+  baueGluecksrad();
+  const scheibe = $("radScheibe");
+  scheibe.style.transition = "none";
+  scheibe.style.transform = "rotate(0deg)";
+  void scheibe.offsetWidth;          // ohne Animation zurückdrehen
+  scheibe.style.transition = "";
+
+  const bereit = gluecksradBereit();
+  const knopf = $("radDrehen");
+  knopf.disabled = !bereit;
+  setzeText(knopf, bereit ? "Drehen!" : "⏳");
+  const ms = msBisMitternacht();
+  setzeText($("radInfo"), bereit
+    ? "Einmal am Tag drehen und gewinnen!"
+    : `Du hast heute schon gedreht! Nächster Versuch in ${Math.floor(ms / 3600000)} Std. ${Math.floor((ms % 3600000) / 60000)} Min.`);
+  $("radErgebnis").hidden = true;
+  $("radZu").disabled = false;
+  $("radOverlay").hidden = false;
+}
+
+// Rad so drehen, dass Feld "index" oben unter dem Zeiger landet. Gibt die Dauer in ms zurück.
+function dreheRadScheibe(index) {
+  const feldWinkel = 360 / GLUECKSRAD_FELDER.length;
+  const mitteDesFelds = (index + 0.5) * feldWinkel;
+  const wackeln = (Math.random() - 0.5) * (feldWinkel - 14);   // nicht immer genau in der Mitte
+  const drehung = 360 * 6 - mitteDesFelds + wackeln;           // 6 volle Runden + Ziel
+  $("radScheibe").style.transform = `rotate(${drehung}deg)`;
+  $("radDrehen").disabled = true;
+  $("radZu").disabled = true;
+  return 4200;
+}
+
+function gewinnText(ergebnis) {
+  const pass = aktiverSeasonPass();
+  const teile = [];
+  if (ergebnis.feld.typ === "jackpot") teile.push("💎 JACKPOT! 💎");
+  if (ergebnis.herzen) teile.push(`+${format(ergebnis.herzen)} ${herz()}`);
+  if (ergebnis.seasonPunkte) teile.push(`+${ergebnis.seasonPunkte} ${pass.icon}`);
+  if (ergebnis.feld.effekt) teile.push(`${ergebnis.feld.effekt.name}!\n${ergebnis.feld.effekt.text} für ${ergebnis.feld.effekt.dauerSek} Sekunden`);
+  if (ergebnis.feld.typ === "stern") teile.push("🌟 Eine Sternschnuppe!\nSchnell fangen!");
+  return teile.join("\n");
+}
+
+function zeigeRadErgebnis(ergebnis) {
+  setzeText($("radGewinn"), gewinnText(ergebnis));
+  $("radErgebnis").hidden = false;
+  setzeText($("radDrehen"), ergebnis.feld.icon);
+  setzeText($("radInfo"), "Glückwunsch! Morgen kannst du wieder drehen.");
+  $("radZu").disabled = false;
+  konfetti($("radOverlay").querySelector(".geschenkKarte"));
 }
 
 // ----- Bestenliste -----

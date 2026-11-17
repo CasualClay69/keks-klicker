@@ -379,9 +379,10 @@ function richteSicherungEin() {
 
 // ----- Tägliches Geschenk -----
 
-// Wartet heute ein Geschenk und ist das Fenster noch nicht offen? -> zeigen
+// Wartet heute ein Geschenk und ist gerade kein anderes Fenster offen? -> zeigen
 function pruefeGeschenk() {
-  if (geschenkWartet() && $("geschenkOverlay").hidden) zeigeGeschenkFenster();
+  const fensterOffen = [...document.querySelectorAll(".overlay")].some(el => !el.hidden);
+  if (geschenkWartet() && !fensterOffen) zeigeGeschenkFenster();
 }
 
 function richteGeschenkEin() {
@@ -398,6 +399,55 @@ function richteGeschenkEin() {
     versteckeGeschenkFenster();
     sound.klick();
   });
+}
+
+// ----- Glücksrad -----
+
+let radErgebnis = null;   // Gewinn der letzten Drehung (für die Sternschnuppe nach dem Schließen)
+
+// Tick-Geräusche, die immer langsamer werden – wie bei einem echten Glücksrad
+function radTicken(dauerMs) {
+  let zeit = 0, abstand = 50;
+  while (zeit < dauerMs - 300) {
+    setTimeout(() => spieleTon(1200, 0.03, "square", 0.04), zeit);
+    zeit += abstand;
+    abstand *= 1.09;
+  }
+}
+
+function schliesseRad() {
+  $("radOverlay").hidden = true;
+  // Sternschnuppe gewonnen? Erst nach dem Schließen erscheinen lassen, damit man sie sieht
+  if (radErgebnis && radErgebnis.feld.typ === "stern") {
+    clearTimeout(sternTimer);
+    sternErscheint();
+  }
+  radErgebnis = null;
+}
+
+function richteGluecksradEin() {
+  ui.radBtn.addEventListener("click", () => {
+    sound.klick();
+    zeigeRadFenster();
+  });
+
+  $("radDrehen").addEventListener("click", () => {
+    const ergebnis = dreheGluecksrad();
+    if (!ergebnis) return;
+    radErgebnis = ergebnis;
+    const dauer = dreheRadScheibe(ergebnis.index);
+    radTicken(dauer);
+    setTimeout(() => {
+      sound.stern();
+      if (ergebnis.feld.typ === "jackpot") setTimeout(() => sound.erfolg(), 300);
+      zeigeRadErgebnis(ergebnis);
+      for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+      aktualisiereAnzeige();
+    }, dauer + 150);
+  });
+
+  $("radFertig").addEventListener("click", schliesseRad);
+  $("radZu").addEventListener("click", schliesseRad);
 }
 
 // ----- Online-Bestenliste -----
@@ -602,6 +652,7 @@ function starte() {
   verbindeEreignisse();
   richteSicherungEin();
   richteGeschenkEin();
+  richteGluecksradEin();
   richteBestenlisteEin();
   richteAppEin();
   richteUpdateEin();

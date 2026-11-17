@@ -31,6 +31,7 @@
   <script src="js/sicherung.js" defer></script>
   <script src="js/aufgaben.js" defer></script>
   <script src="js/geschenk.js" defer></script>
+  <script src="js/gluecksrad.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -55,6 +56,9 @@
       <span class="funkeln f3" aria-hidden="true">✦</span>
     </h1>
     <button id="installBtn" type="button" title="Als App installieren" hidden>📲<span class="lang"> Installieren</span></button>
+
+    <!-- Glücksrad: einmal am Tag. "!" = heute noch nicht gedreht -->
+    <button id="radBtn" type="button" title="Glücksrad" aria-label="Glücksrad öffnen">🎡<b id="radBadge" hidden>!</b></button>
 
     <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
     <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
@@ -288,6 +292,24 @@
       <div class="knopfReihe">
         <button id="updateJetzt" type="button" class="knopf haupt">🔄 Jetzt aktualisieren</button>
         <button id="updateSpaeter" type="button" class="knopf">Später</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Glücksrad -->
+  <div id="radOverlay" class="overlay" hidden>
+    <div class="geschenkKarte radKarte" role="dialog" aria-modal="true" aria-labelledby="radTitel">
+      <button id="radZu" type="button" class="overlayZu" aria-label="Schließen">✕</button>
+      <h2 id="radTitel">🎡 Glücksrad</h2>
+      <p id="radInfo" class="geschenkSerie">Einmal am Tag drehen und gewinnen!</p>
+      <div class="radRahmen">
+        <div class="radZeiger" aria-hidden="true">▼</div>
+        <svg id="radScheibe" viewBox="0 0 300 300" aria-hidden="true"></svg>
+        <button id="radDrehen" type="button" class="radMitte">Drehen!</button>
+      </div>
+      <div id="radErgebnis" class="geschenkInhalt" hidden>
+        <div id="radGewinn" class="geschenkBetrag"></div>
+        <button id="radFertig" type="button" class="knopf haupt">Super! 💖</button>
       </div>
     </div>
   </div>

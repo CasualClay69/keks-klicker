@@ -368,6 +368,62 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   to   { transform: scale(1);    opacity: 1; }
 }
 
+/* ----- Glücksrad-Fenster ----- */
+.overlayZu {
+  position: absolute;
+  top: 10px; right: 10px;
+  z-index: 3;
+  width: 36px; height: 36px;
+  border: 2px solid var(--rand);
+  border-radius: 50%;
+  background: var(--karte);
+  cursor: pointer;
+}
+.overlayZu:disabled { opacity: 0.3; cursor: default; }
+
+.radRahmen {
+  position: relative;
+  width: min(72vw, 280px);
+  aspect-ratio: 1;
+  margin: 18px auto 10px;
+}
+#radScheibe {
+  display: block;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 8px 22px rgba(214, 51, 132, 0.3);
+  /* Langes, weiches Auslaufen wie bei einem echten Glücksrad */
+  transition: transform 4.2s cubic-bezier(0.15, 0.75, 0.15, 1);
+}
+.radZeiger {
+  position: absolute;
+  top: -20px; left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--akzent-dunkel);
+  text-shadow: 0 2px 0 #fff, 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+.radMitte {
+  position: absolute;
+  top: 50%; left: 50%;
+  z-index: 2;
+  width: 30%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--akzent);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.radMitte:active:not(:disabled) { transform: translate(-50%, -50%) scale(0.94); }
+.radMitte:disabled { background: var(--rand); color: var(--text-sanft); cursor: default; font-size: 1.6rem; }
+#radGewinn { white-space: pre-line; }
+
 /* ----- Neue Version verfügbar ----- */
 .updateOverlay { z-index: 60; }   /* über dem Geschenk-Fenster */
 .updateIcon {
@@ -436,8 +492,37 @@ body[data-hintergrund="schnee"] #spielfeld::after {
 .blLeer { padding: 12px; text-align: center; color: var(--text-sanft); }
 /* Ausgeschaltet: blass und durchgestrichen */
 #musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
+/* Glücksrad-Knopf rechts, unter dem Season-Symbol */
+#radBtn {
+  position: absolute;
+  top: calc(max(12px, env(safe-area-inset-top)) + 66px);
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 7;
+  width: 54px; height: 54px;
+  padding: 0;
+  border: 2px solid var(--rand);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 1.7rem;
+  cursor: pointer;
+  box-shadow: var(--schatten);
+}
+#radBadge {
+  position: absolute;
+  right: -4px; top: -4px;
+  min-width: 22px; height: 22px;
+  border: 2px solid #fff;
+  border-radius: 11px;
+  background: #f5a623;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 18px;
+  text-align: center;
+  animation: badgeHuepfen 1.2s ease-in-out infinite;
+}
+
 #installBtn {
-  top: calc(max(12px, env(safe-area-inset-top)) + 64px);   /* unter dem Season-Symbol */
+  top: calc(max(12px, env(safe-area-inset-top)) + 130px);   /* unter Season und Glücksrad */
   right: 12px;
   border-color: var(--akzent);
   background: var(--akzent);
@@ -1261,6 +1346,7 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
   #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
   #seasonBtn    { width: 64px; height: 64px; }
+  #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #seasonBtnIcon { font-size: 2rem; }
 
   #marie {
@@ -1330,6 +1416,6 @@ body[data-hintergrund="schnee"] #spielfeld::after {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
-  .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon,
+  .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }
