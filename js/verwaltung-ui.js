@@ -67,7 +67,7 @@ function zeigeAdminReiter(reiter) {
   const inhalt = $("adminInhalt");
   inhalt.textContent = "";
   ({ ereignisse: adminEreignisse, codes: adminCodesZeigen, nachricht: adminNachrichtZeigen,
-     umfrage: adminUmfrageZeigen, liste: adminListeZeigen })[reiter](inhalt);
+     umfrage: adminUmfrageZeigen, ziel: adminZielZeigen, liste: adminListeZeigen })[reiter](inhalt);
 }
 
 // Statuszeile unten im Admin-Bereich
@@ -275,6 +275,63 @@ function adminUmfrageZeigen(inhalt) {
   ladeAktuell();
 }
 
+// ----- 🎯 Familienziel -----
+
+function adminZielZeigen(inhalt) {
+  inhalt.append(el("p", "seitenInfo",
+    "Alle in der Bestenliste sammeln zusammen. Gezählt wird ab jetzt. Ist das Ziel erreicht, holt sich jedes Gerät die Belohnung einmal ab (in der Bestenliste). Ein neues Ziel ersetzt das alte."));
+  const aktuell = el("div", "adminAktuell", "⏳ …");
+  const ladeAktuell = async () => {
+    try {
+      const z = await holeFamilienziel();
+      aktuell.textContent = "";
+      if (!z) { aktuell.textContent = "Gerade kein Familienziel."; return; }
+      const prozent = Math.min(100, Math.floor(z.summe / z.ziel * 100));
+      aktuell.append(el("b", "", `🎯 ${z.titel}`),
+        el("div", "", `${format(z.summe)} / ${format(z.ziel)} (${prozent} %)${z.erreicht_am ? " · ✓ erreicht" : ""}`),
+        el("small", "", `Belohnung: ${codeBelohnungText(z.art, z.menge)}`),
+        knopf("⏹️ Familienziel beenden", () => adminVersuche(inhalt, async () => {
+          await adminFamilienzielBeenden();
+          adminStatus(inhalt, "✓ Beendet.");
+          await ladeAktuell();
+        })));
+    } catch (e) { aktuell.textContent = "⚠️ " + e.message; }
+  };
+
+  let ziel = 1e12;
+  const groessen = el("div", "adminAuswahl");
+  for (const g of FAMILIENZIEL_GROESSEN) {
+    const k = knopf(format(g), () => { ziel = g; for (const x of groessen.children) x.classList.toggle("aktiv", x === k); }, "adminChip");
+    k.classList.toggle("aktiv", g === ziel);
+    groessen.append(k);
+  }
+  let belohnung = VERWALTUNG.codeBelohnungen[1];
+  const belohnungen = el("div", "adminAuswahl");
+  for (const b of VERWALTUNG.codeBelohnungen) {
+    const k = knopf(b.text, () => { belohnung = b; for (const x of belohnungen.children) x.classList.toggle("aktiv", x === k); }, "adminChip");
+    k.classList.toggle("aktiv", b === belohnung);
+    belohnungen.append(k);
+  }
+  const titel = el("input");
+  titel.type = "text"; titel.maxLength = 60; titel.placeholder = "z.B. Zusammen zur Billion! (optional)";
+  const titelFeld = el("label", "feld", "Titel");
+  titelFeld.append(titel);
+  const reihe = el("div", "knopfReihe");
+  reihe.append(knopf("🎯 Familienziel starten", () => adminVersuche(inhalt, async () => {
+    if (!confirm(`Neues Familienziel: ${format(ziel)} Herzen?
+Ein laufendes Ziel wird dabei beendet.`)) { adminStatus(inhalt, ""); return; }
+    await adminFamilienziel(titel.value.trim() || `Zusammen ${format(ziel)} Herzen!`, ziel, belohnung.art, belohnung.menge);
+    sound.erfolg();
+    titel.value = "";
+    adminStatus(inhalt, "✓ Gestartet!");
+    await ladeAktuell();
+  }), "knopf haupt"));
+
+  inhalt.append(aktuell, el("div", "feld", "Wie viele Herzen zusammen?"), groessen,
+                el("div", "feld", "Belohnung für alle"), belohnungen, titelFeld, reihe);
+  ladeAktuell();
+}
+
 // ----- 🏅 Bestenliste moderieren -----
 
 function adminListeZeigen(inhalt) {
@@ -394,6 +451,82 @@ async function beimCodeEinloesen() {
 }
 
 // =====================================================
+//  FAMILIENZIEL (Karte oben in der Bestenliste)
+// =====================================================
+
+function zeigeFamilienziel(z) {
+  const box = $("familienziel");
+  box.hidden = !z;
+  if (!z) return;
+  box.textContent = "";
+  const erreicht = Boolean(z.erreicht_am);
+  box.classList.toggle("erreicht", erreicht);
+  const prozent = Math.min(100, z.summe / z.ziel * 100);
+  const balken = el("div", "fzBalken");
+  const fuellung = el("div");
+  fuellung.style.width = prozent.toFixed(1) + "%";
+  balken.append(fuellung);
+
+  box.append(
+    el("div", "fzTitel", `${erreicht ? "🎉" : "🎯"} ${inWaehrung(z.titel)}`),
+    balken,
+    el("div", "fzZahl", inWaehrung(`Gemeinsam: ${format(z.summe)} von ${format(z.ziel)} ${herz()} (${Math.floor(prozent)} %)`)),
+    el("span", "fzKlein", erreicht ? "Geschafft! Alle bekommen eine Belohnung." : `Belohnung für alle: ${codeBelohnungText(z.art, z.menge)}`),
+  );
+  const beitraege = el("div", "fzBeitraege");
+  for (const b of z.beitraege) {
+    if (b.beitrag <= 0) continue;
+    const istDu = mitglied && b.spieler_id === mitglied.spielerId;
+    beitraege.append(el("span", istDu ? "du" : "", `${b.name}${istDu ? " (du)" : ""}: ${format(b.beitrag)}`));
+  }
+  if (beitraege.children.length) box.append(beitraege);
+
+  if (erreicht && mitglied) {
+    const abgeholt = familienzielAbgeholt(z);
+    const k = knopf(abgeholt ? "✓ Belohnung abgeholt" : "🎁 Belohnung abholen", () => beimFamilienBelohnung(z), "knopf haupt");
+    k.disabled = abgeholt;
+    box.append(k);
+  }
+}
+
+function beimFamilienBelohnung(z) {
+  const e = holeFamilienBelohnung(z);
+  if (!e) return;
+  sound.stern();
+  setTimeout(() => sound.erfolg(), 350);
+  konfetti($("spielfeld"));
+  const teile = [];
+  if (e.herzen) teile.push(`+${format(e.herzen)} ${herz()}`);
+  if (e.seasonPunkte) teile.push(`+${format(e.seasonPunkte)} Season-Punkte`);
+  if (e.sticker.length) teile.push(`${e.sticker.length} Sticker: ${e.sticker.map(s => s.sticker.emoji).join(" ")}`);
+  meldung("🎉 Familienziel geschafft!", teile.join(" · "));
+  for (const s of e.sticker) if (s.seiteFertig) meldeSticker(s);
+  for (const stufe of e.stufen) meldeSeasonStufe(stufe);
+  pruefeErfolgeUndStatistik();
+  speichern();
+  aktualisiereAnzeige();
+  zeigeFamilienziel(z);
+}
+
+// Wird mit der Bestenliste aufgerufen (main.js)
+async function ladeFamilienziel() {
+  if (!verwaltungMoeglich()) return;
+  try { zeigeFamilienziel(await holeFamilienziel()); } catch (e) { /* ohne Familienziel-Tabellen: Karte bleibt weg */ }
+}
+
+// Kurz nach dem Start: Ziel erreicht und Belohnung noch nicht abgeholt? Dann Bescheid sagen.
+async function pruefeFamilienziel() {
+  if (!verwaltungMoeglich() || !mitglied) return;
+  try {
+    const z = await holeFamilienziel();
+    if (familienzielAbholbar(z)) {
+      sound.erfolg();
+      meldung(`🎉 Familienziel geschafft: ${z.titel}`, "Alle zusammen haben es geschafft! Hol dir deine Belohnung in der Bestenliste 🏅");
+    }
+  } catch (e) { /* offline */ }
+}
+
+// =====================================================
 //  EINRICHTEN (aus main.js)
 // =====================================================
 
@@ -440,6 +573,8 @@ function richteVerwaltungEin() {
 
   $("codeEinloesen").addEventListener("click", beimCodeEinloesen);
   $("codeEingabe").addEventListener("keydown", e => { if (e.key === "Enter") beimCodeEinloesen(); });
+
+  setTimeout(pruefeFamilienziel, 12000);
 
   // Neuigkeiten: kurz nach dem Start, beim Zurückkommen und alle 30 Minuten
   setTimeout(pruefeNeuigkeiten, 6000);

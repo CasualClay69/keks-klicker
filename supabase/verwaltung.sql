@@ -1,5 +1,5 @@
 -- =====================================================
---  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen
+--  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Familienziel
 --
 --  Einmal im Supabase-Dashboard unter "SQL Editor" einfügen und auf "Run" klicken.
 --  Kann gefahrlos mehrmals ausgeführt werden. Braucht vorher supabase/bestenliste.sql.
@@ -350,6 +350,116 @@ $$;
 
 
 -- =====================================================
+--  FAMILIENZIEL: alle in der Bestenliste sammeln zusammen auf ein großes Ziel
+--  Beim Start merkt sich die Datenbank für jeden Spieler den Stand (bl_ziel_basis).
+--  Fortschritt = Summe aller Herzen, die seitdem dazugekommen sind.
+--  Wer später dazukommt, zählt ab seinem ersten Erscheinen.
+-- =====================================================
+
+create table if not exists public.bl_familienziel (
+  id          bigint generated always as identity primary key,
+  titel       text not null,
+  ziel        double precision not null,
+  art         text not null,                 -- Belohnung wie bei den Codes: herzen | sticker | season
+  menge       double precision not null,
+  start       timestamptz not null default now(),
+  erreicht_am timestamptz,
+  aktiv       boolean not null default true
+);
+
+create table if not exists public.bl_ziel_basis (
+  ziel_id    bigint not null references public.bl_familienziel(id) on delete cascade,
+  spieler_id uuid not null,
+  basis      double precision not null,
+  primary key (ziel_id, spieler_id)
+);
+
+alter table public.bl_familienziel enable row level security;
+alter table public.bl_ziel_basis   enable row level security;
+revoke all on public.bl_familienziel, public.bl_ziel_basis from anon, authenticated;
+
+create or replace function public.admin_familienziel(p_pin text, p_titel text, p_ziel double precision, p_art text, p_menge double precision)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  f text := admin_fehler(p_pin);
+  v_id bigint;
+begin
+  if f is not null then return json_build_object('fehler', f); end if;
+  if not (p_ziel >= 1000 and p_ziel <= 1e18) or p_art not in ('herzen', 'sticker', 'season')
+     or not (p_menge > 0 and p_menge <= 100000) then
+    return json_build_object('fehler', 'Ungültiges Ziel oder ungültige Belohnung.');
+  end if;
+  update bl_familienziel set aktiv = false where aktiv;
+  insert into bl_familienziel (titel, ziel, art, menge)
+  values (left(coalesce(nullif(trim(p_titel), ''), 'Unser Familienziel'), 60), p_ziel, p_art, p_menge)
+  returning id into v_id;
+  -- Startstand aller Spieler merken
+  insert into bl_ziel_basis (ziel_id, spieler_id, basis)
+  select v_id, spieler_id, herzen_gesamt from bestenliste where gruppe = 'marie-clicker';
+  return json_build_object('ok', true, 'id', v_id);
+end;
+$$;
+
+create or replace function public.admin_familienziel_beenden(p_pin text)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare f text := admin_fehler(p_pin);
+begin
+  if f is not null then return json_build_object('fehler', f); end if;
+  update bl_familienziel set aktiv = false where aktiv;
+  return json_build_object('ok', true);
+end;
+$$;
+
+-- Das aktuelle Familienziel mit Summe und Beiträgen (für alle).
+-- Trägt dabei neue Spieler mit ihrem jetzigen Stand ein und merkt sich, wann das Ziel erreicht wurde.
+create or replace function public.hole_familienziel()
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  z bl_familienziel;
+  v_summe double precision;
+begin
+  select * into z from bl_familienziel where aktiv order by id desc limit 1;
+  if not found then return null; end if;
+
+  insert into bl_ziel_basis (ziel_id, spieler_id, basis)
+  select z.id, spieler_id, herzen_gesamt from bestenliste where gruppe = 'marie-clicker'
+  on conflict do nothing;
+
+  select coalesce(sum(greatest(0, b.herzen_gesamt - zb.basis)), 0) into v_summe
+  from bestenliste b join bl_ziel_basis zb on zb.spieler_id = b.spieler_id and zb.ziel_id = z.id
+  where b.gruppe = 'marie-clicker';
+
+  if v_summe >= z.ziel and z.erreicht_am is null then
+    update bl_familienziel set erreicht_am = now() where id = z.id;
+    z.erreicht_am := now();
+  end if;
+
+  return json_build_object(
+    'id', z.id, 'titel', z.titel, 'ziel', z.ziel, 'art', z.art, 'menge', z.menge,
+    'start', z.start, 'erreicht_am', z.erreicht_am, 'summe', v_summe,
+    'beitraege', coalesce((
+      select json_agg(json_build_object('spieler_id', b.spieler_id, 'name', b.name,
+                                        'beitrag', greatest(0, b.herzen_gesamt - zb.basis))
+                      order by greatest(0, b.herzen_gesamt - zb.basis) desc)
+      from bestenliste b join bl_ziel_basis zb on zb.spieler_id = b.spieler_id and zb.ziel_id = z.id
+      where b.gruppe = 'marie-clicker'), '[]'::json));
+end;
+$$;
+
+
+-- =====================================================
 --  RECHTE: Besucher dürfen nur diese Funktionen aufrufen
 -- =====================================================
 revoke all on function public.admin_anmelden(text) from public;
@@ -364,6 +474,9 @@ revoke all on function public.hole_umfrage(uuid) from public;
 revoke all on function public.stimme_ab(bigint, uuid, integer) from public;
 revoke all on function public.admin_eintrag_loeschen(text, uuid) from public;
 revoke all on function public.admin_eintrag_umbenennen(text, uuid, text) from public;
+revoke all on function public.admin_familienziel(text, text, double precision, text, double precision) from public;
+revoke all on function public.admin_familienziel_beenden(text) from public;
+revoke all on function public.hole_familienziel() from public;
 
 grant execute on function public.admin_anmelden(text) to anon, authenticated;
 grant execute on function public.admin_code_erstellen(text, text, double precision, text) to anon, authenticated;
@@ -377,3 +490,6 @@ grant execute on function public.hole_umfrage(uuid) to anon, authenticated;
 grant execute on function public.stimme_ab(bigint, uuid, integer) to anon, authenticated;
 grant execute on function public.admin_eintrag_loeschen(text, uuid) to anon, authenticated;
 grant execute on function public.admin_eintrag_umbenennen(text, uuid, text) to anon, authenticated;
+grant execute on function public.admin_familienziel(text, text, double precision, text, double precision) to anon, authenticated;
+grant execute on function public.admin_familienziel_beenden(text) to anon, authenticated;
+grant execute on function public.hole_familienziel() to anon, authenticated;

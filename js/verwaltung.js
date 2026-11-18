@@ -96,29 +96,59 @@ function merkeNachrichtGesehen(id) {
   try { localStorage.setItem(VERWALTUNG.gesehenSchluessel, String(id)); } catch (e) { /* egal */ }
 }
 
-// Code einlösen und Belohnung gutschreiben.
-// Rückgabe: { text, herzen, sticker: [Ergebnisse von gibSticker], stufen: [Season-Stufen] }
-async function loeseCodeEin(code) {
-  const wer = (typeof mitglied !== "undefined" && mitglied) ? mitglied.name : figurName();
-  const b = await rufeBestenlisteAuf("loese_code", { p_code: String(code), p_wer: wer });
-  const ergebnis = { text: b.text || "", herzen: 0, sticker: [], stufen: [], seasonPunkte: 0 };
-  if (b.art === "herzen") {
-    const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
-    ergebnis.herzen = rundeHuebsch(Math.max(1000, basisHps() * 3600 * b.menge + proKlick * 500 * b.menge));
+// Eine Belohnung gutschreiben (für Codes und das Familienziel).
+// art: herzen (Stunden Produktion) | sticker (Anzahl) | season (Punkte)
+// Rückgabe: { herzen, sticker: [Ergebnisse von gibSticker], stufen: [Season-Stufen], seasonPunkte }
+function wendeBelohnungAn(art, menge, stickerQuelle = "code") {
+  const ergebnis = { herzen: 0, sticker: [], stufen: [], seasonPunkte: 0 };
+  const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
+  if (art === "herzen") {
+    ergebnis.herzen = rundeHuebsch(Math.max(1000, basisHps() * 3600 * menge + proKlick * 500 * menge));
     herzenDazu(ergebnis.herzen);
-  } else if (b.art === "sticker") {
-    for (let i = 0; i < b.menge; i++) ergebnis.sticker.push(gibSticker("code"));
-  } else if (b.art === "season") {
+  } else if (art === "sticker") {
+    for (let i = 0; i < menge; i++) ergebnis.sticker.push(gibSticker(stickerQuelle));
+  } else if (art === "season") {
     if (aktiverSeasonPass()) {
-      ergebnis.seasonPunkte = b.menge;
-      ergebnis.stufen = seasonKlick(b.menge);
+      ergebnis.seasonPunkte = menge;
+      ergebnis.stufen = seasonKlick(menge);
     } else {
       // gerade keine Season -> stattdessen 2 Stunden Produktion
-      const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
       ergebnis.herzen = rundeHuebsch(Math.max(1000, basisHps() * 7200 + proKlick * 1000));
       herzenDazu(ergebnis.herzen);
     }
   }
   speichern();
   return ergebnis;
+}
+
+// Code einlösen und Belohnung gutschreiben. Rückgabe wie wendeBelohnungAn, dazu text
+async function loeseCodeEin(code) {
+  const wer = (typeof mitglied !== "undefined" && mitglied) ? mitglied.name : figurName();
+  const b = await rufeBestenlisteAuf("loese_code", { p_code: String(code), p_wer: wer });
+  return { text: b.text || "", ...wendeBelohnungAn(b.art, b.menge) };
+}
+
+// ----- Familienziel -----
+
+const holeFamilienziel = () => rufeBestenlisteAuf("hole_familienziel", {});
+const adminFamilienziel = (titel, ziel, art, menge) =>
+  adminAufruf("admin_familienziel", { p_titel: titel, p_ziel: ziel, p_art: art, p_menge: menge });
+const adminFamilienzielBeenden = () => adminAufruf("admin_familienziel_beenden");
+
+// Mögliche Zielgrößen im Admin-Menü
+const FAMILIENZIEL_GROESSEN = [1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
+
+function familienzielAbgeholt(z) {
+  return (spiel.familienziele || []).includes(z.id);
+}
+
+// Darf dieses Gerät die Belohnung abholen? (Ziel erreicht, in der Bestenliste dabei, noch nicht abgeholt)
+function familienzielAbholbar(z) {
+  return Boolean(z && z.erreicht_am && mitglied && !familienzielAbgeholt(z));
+}
+
+function holeFamilienBelohnung(z) {
+  if (!familienzielAbholbar(z)) return null;
+  spiel.familienziele = [...(spiel.familienziele || []), z.id];
+  return wendeBelohnungAn(z.art, z.menge, "familie");
 }

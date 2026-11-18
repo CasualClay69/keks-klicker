@@ -1100,6 +1100,7 @@ async function aktualisiereBestenliste() {
     await sendePunkte();
     bestenlisteDaten = await holeBestenliste();
     zeigeBestenlisteEintraege(bestenlisteDaten, bestenlisteAnsicht);
+    ladeFamilienziel();   // Karte "Familienziel" oben (verwaltung-ui.js)
     feiereWochenSieg(bestenlisteDaten);
     setzeBestenlisteStatus(`Aktualisiert um ${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`);
   } catch (fehler) {
