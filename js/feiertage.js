@@ -2,6 +2,7 @@
 // =====================================================
 //  FEIERTAGS-EVENTS – wie der Geburtstag, nur kürzer
 //  • Nikolaus (6.12.):        Weihnachtsmütze, goldene Sterne, Geschenk im Stiefel
+//  • Weihnachten (24.–26.12.): Weihnachtsmütze, Lichterketten und Schnee, Geschenk unterm Baum
 //  • Silvester (31.12./1.1.): Partyhut, Feuerwerk, Glücksbringer
 //  • Erster Schnee:           Schneefall, Geschenk vom Schneemann – löst der Admin aus
 //                             (Admin-Menü), dann schneit es an dem Tag auf allen Geräten
@@ -17,6 +18,10 @@ const FEIERTAGE = [
     titel: "Der Nikolaus war da! 🎅", text: "Er hat dir etwas in den Stiefel gesteckt – tippe drauf!",
     box: "🥾", deko: "⭐🎅🍫🥾⭐", hut: "hut-weihnachtsmuetze", effekt: "sterne",
     andenken: "zimmer-nikolausstiefel", stunden: 2 },
+  { id: "weihnachten", name: "Weihnachten", icon: "🎄", tage: [[24, 12], [25, 12], [26, 12]],
+    titel: "Frohe Weihnachten! 🎄", text: "Unterm Baum liegt ein Geschenk für dich – tippe drauf!",
+    box: "🎁", deko: "🎄⭐🎁⭐🎄", hut: "hut-weihnachtsmuetze", effekt: "lichter",
+    andenken: "zimmer-weihnachtsengel", stunden: 4 },
   { id: "silvester", name: "Silvester", icon: "🎆", tage: [[31, 12], [1, 1]],
     titel: "Guten Rutsch! 🎆", text: "Ein Glücksbringer für das neue Jahr – tippe drauf!",
     box: "🍀", deko: "🎆🥂🍀🐷🎆", hut: "hut-partyhut", effekt: "feuerwerk",
@@ -35,6 +40,7 @@ const FEIERTAG = {
 // Andenken fürs Zimmer (nur als Feiertags-Geschenk zu bekommen)
 ZIMMER_TEILE.push(
   { id: "zimmer-nikolausstiefel", platz: "regal",     name: "Nikolausstiefel",     icon: "🥾", preis: null, feiertag: "nikolaus" },
+  { id: "zimmer-weihnachtsengel", platz: "regal",    name: "Weihnachtsengel",     icon: "👼", preis: null, feiertag: "weihnachten" },
   { id: "zimmer-gluecksschwein",  platz: "spielzeug", name: "Glücksschwein",       icon: "🐷", preis: null, feiertag: "silvester" },
   { id: "zimmer-schneebild",      platz: "wandbild",  name: "Schneeflocken-Bild",  icon: "❄️", preis: null, feiertag: "schnee" },
 );

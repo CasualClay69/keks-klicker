@@ -1407,6 +1407,20 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 .feiertagEffekt .flocke { color: #fff; text-shadow: 0 0 4px rgba(120, 160, 220, 0.9); opacity: 0.9; }
 .feiertagEffekt .goldstern { opacity: 0.8; filter: drop-shadow(0 0 4px #ffd23f); }
+/* Weihnachten: Lichterketten */
+.lichterkette { position: absolute; left: 0; right: 0; height: 30px; }
+.lichterkette .birne {
+  position: absolute; width: 9px; height: 13px; margin-left: -4px;
+  border-radius: 50% 50% 45% 45%;
+  background: var(--farbe);
+  box-shadow: 0 0 8px 2px var(--farbe);
+  animation: birneBlinken 1.5s ease-in-out infinite alternate;
+}
+.lichterkette .birne::before {   /* Fassung */
+  content: ""; position: absolute; left: 2px; top: -4px; width: 5px; height: 5px;
+  border-radius: 1px; background: #3b5a3b;
+}
+@keyframes birneBlinken { from { opacity: 0.45; box-shadow: 0 0 2px 0 var(--farbe); } to { opacity: 1; box-shadow: 0 0 10px 3px var(--farbe); } }
 .feuerwerk { position: absolute; width: 0; height: 0; }
 .feuerwerk i {
   position: absolute; left: -5px; top: -5px;
@@ -2468,7 +2482,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
+  .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,

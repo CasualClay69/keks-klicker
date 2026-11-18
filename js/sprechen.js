@@ -32,6 +32,7 @@ const SPRUECHE = {
   regenbogen:    ["Ein Regenbogen! 🌈", "Heute zählt alles doppelt! ✨", "So viele Farben! 🌈"],
   sternennacht:  ["Guck mal, Sternschnuppen! 🌠", "Ich wünsche mir was! ✨", "So viele Sterne! 🌟"],
   stickerglueck: ["Heute ist mein Glückstag! 🍀", "Sticker, Sticker, Sticker! 📒", "Ich hab Glück! 🍀"],
+  weihnachten:   ["Frohe Weihnachten! 🎄", "Schau mal, die Lichter! ✨", "Ich hab dich lieb! 💕", "Was liegt wohl unterm Baum? 🎁"],
   nikolaus:      ["Der Nikolaus war da! 🎅", "Schau mal in den Stiefel! 🥾", "Ich war ganz brav! 😇"],
   silvester:     ["Guten Rutsch! 🎆", "Ein frohes neues Jahr! 🥂", "Wow, Feuerwerk! 🎇"],
   schnee:        ["Es schneit! ❄️", "Juhu, Schnee! ⛄", "Lass uns einen Schneemann bauen! ☃️"],

@@ -33,6 +33,37 @@ function zeigeFeiertagEffekt(f) {
     }
   }
 
+  // Weihnachten: zwei blinkende Lichterketten oben und leiser Schnee
+  if (art === "lichter") {
+    const farben = ["#ff4d5e", "#ffd23f", "#3fd16b", "#4fa8ff", "#ff8a3d", "#c77dff"];
+    for (const [oben, anzahl, bogen] of [[2, 18, 14], [26, 14, 10]]) {
+      const kette = document.createElement("div");
+      kette.className = "lichterkette";
+      kette.style.top = `${oben}%`;
+      for (let i = 0; i < anzahl; i++) {
+        const x = i / (anzahl - 1);
+        const birne = document.createElement("i");
+        birne.className = "birne";
+        birne.style.left = `${3 + x * 94}%`;
+        birne.style.top = `${Math.sin(x * Math.PI * 2) * bogen * 0.5 + bogen * Math.sin(x * Math.PI) * 0.6}px`;
+        birne.style.setProperty("--farbe", farben[i % farben.length]);
+        birne.style.animationDelay = `${(i % 3) * 0.5}s`;
+        kette.append(birne);
+      }
+      feld.append(kette);
+    }
+    for (let i = 0; i < 22; i++) {
+      const flocke = document.createElement("i");
+      flocke.className = "flocke";
+      flocke.textContent = i % 3 ? "•" : "❄";
+      flocke.style.left = `${Math.random() * 100}%`;
+      flocke.style.fontSize = `${9 + Math.random() * 10}px`;
+      flocke.style.animationDuration = `${8 + Math.random() * 7}s, ${2 + Math.random() * 2}s`;
+      flocke.style.animationDelay = `${-Math.random() * 15}s, 0s`;
+      feld.append(flocke);
+    }
+  }
+
   if (art === "feuerwerk") {
     const farben = ["#ff2d7a", "#ffc400", "#2f8cff", "#1fc46a", "#9b4dff", "#ff7a1a"];
     const knall = () => {

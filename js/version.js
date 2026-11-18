@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.65";
-const APP_NEU = "Neu: Der Adventskalender! Ab 1. Dezember öffnest du jeden Tag ein Türchen – und an Heiligabend wartet etwas ganz Großes. 🎄";
+const APP_VERSION = "1.66";
+const APP_NEU = "Neu: Weihnachten! Vom 24. bis 26. Dezember leuchten Lichterketten, es schneit – und unterm Baum liegt ein Geschenk für dich. 🎄";
