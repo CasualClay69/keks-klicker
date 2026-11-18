@@ -46,7 +46,7 @@ function herz() {
   return waehrung().icon || aktiverSkin("hud").symbole.herz || "💖";
 }
 
-// Zu jedem Datenobjekt (Herzschenker, Upgrade, Erfolg …) merken wir uns seine HTML-Teile
+// Zu jedem Datenobjekt (Helfer, Upgrade, Erfolg …) merken wir uns seine HTML-Teile
 const elemente = new Map();
 
 // Text nur ändern, wenn er anders ist (spart dem Browser Arbeit)
@@ -117,7 +117,7 @@ const STATISTIK_ZEILEN = [
   ["Meiste Finger gleichzeitig", () => String(spiel.maxFinger)],
   ["Herzen pro Klick",        () => format(herzenProKlick())],
   ["Herzen pro Sekunde",      () => formatKomma(herzenProSekunde())],
-  ["Herzschenker",            () => String(anzahlGebaeude())],
+  ["Helfer",            () => String(anzahlGebaeude())],
   ["Upgrades",                () => `${spiel.upgrades.length} / ${UPGRADES.length}`],
   ["Sternschnuppen gefangen", () => String(spiel.sternKlicks)],
   ["Tagesaufgaben erledigt",  () => String(spiel.aufgabenGesamt || 0)],
@@ -192,7 +192,7 @@ function zeigeKaufModus() {
 }
 
 function zeigeGebaeude() {
-  // Nur die Herzschenker zeigen, die man hat, plus die nächsten zwei – der Rest kommt nach und nach
+  // Nur die Helfer zeigen, die man hat, plus die nächsten zwei – der Rest kommt nach und nach
   const sichtbarBis = hoechstesGebaeude() + 2;
   let versteckt = 0;
   GEBAEUDE.forEach((g, i) => {
@@ -200,6 +200,15 @@ function zeigeGebaeude() {
     if (i > sichtbarBis) versteckt++;
   });
   $("gebaeudeHinweis").hidden = versteckt === 0;
+
+  // Meilenstein leistbar? -> goldener Rand am Helfer und ⭐ am Shop-Symbol (Handy)
+  let meilensteine = 0;
+  for (const g of GEBAEUDE) {
+    const leistbar = !elemente.get(g).wurzel.hidden && meilensteinLeistbar(g);
+    elemente.get(g).wurzel.classList.toggle("meilenstein", leistbar);
+    if (leistbar) meilensteine++;
+  }
+  $("meilensteinBadge").hidden = meilensteine === 0;
 
   for (const g of GEBAEUDE) {
     const teile = elemente.get(g);
@@ -1055,7 +1064,7 @@ function formatDauer(sekunden) {
 }
 
 function zeigeOfflineFenster(ergebnis) {
-  setzeText($("offlineZeit"), `Du warst ${formatDauer(ergebnis.sekunden)} weg. In der Zeit haben deine Herzschenker fleißig gesammelt:`);
+  setzeText($("offlineZeit"), `Du warst ${formatDauer(ergebnis.sekunden)} weg. In der Zeit haben deine Helfer fleißig gesammelt:`);
   setzeText($("offlineBetrag"), `+${format(ergebnis.herzen)} ${herz()}`);
   setzeText($("offlineHinweis"), ergebnis.gekappt
     ? `💡 Dein Herzkorb fasst höchstens ${KONFIG.offline.maxStunden} Stunden – komm öfter vorbei, dann geht nichts verloren!`
@@ -1077,15 +1086,15 @@ function zeigeNeustart() {
   const knopf = $("neustartBtn");
   let info;
   if (fehlend > 0) {
-    info = `Wenn du jeden Herzschenker mindestens einmal hast (bis zum 👑 Herzkönigreich), kannst du neu anfangen `
-         + `und bekommst Glitzersterne. Jeder ⭐ gibt für immer +${NEUSTART.sternBonus * 100} % Herzen. Noch ${fehlend} Herzschenker fehlen.`;
+    info = `Wenn du jeden Helfer mindestens einmal hast (bis zum 👑 Herzkönigreich), kannst du neu anfangen `
+         + `und bekommst Glitzersterne. Jeder ⭐ gibt für immer +${NEUSTART.sternBonus * 100} % Herzen. Noch ${fehlend} Helfer fehlen.`;
     setzeText(knopf, "🔒 Noch nicht möglich");
   } else if (neu === 0) {
     info = "Sammle noch mehr Herzen – dann gibt es beim Neustart neue Glitzersterne!";
     setzeText(knopf, "🔒 Noch keine neuen Sterne");
   } else {
     info = `Neustart jetzt: +${neu} Glitzersterne ⭐ (dann ${sterne + neu} = +${Math.round((sterne + neu) * NEUSTART.sternBonus * 100)} % Herzen für immer). `
-         + "Herzen, Herzschenker, Verbesserungen und Upgrades fangen wieder bei 0 an. "
+         + "Herzen, Helfer, Verbesserungen und Upgrades fangen wieder bei 0 an. "
          + "Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben!";
     setzeText(knopf, `🌟 Neustart: +${neu} ⭐`);
   }

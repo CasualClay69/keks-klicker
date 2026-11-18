@@ -1292,6 +1292,9 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   100% { transform: translate(var(--dx), calc(var(--dy) + 25px)) scale(0.3); opacity: 0; }
 }
 
+/* Helfer, bei dem der nächste Meilenstein bezahlbar ist: goldener Rand */
+.item.meilenstein { border-color: #f5c542; box-shadow: 0 0 0 2px rgba(245, 197, 66, 0.45), var(--schatten); }
+
 /* ----- Minispiele ----- */
 .spieleKopf { background: linear-gradient(135deg, #e9f6ff, #ffe6f2); color: #3b2a5a; }
 .spieleListe { display: grid; gap: 10px; }
@@ -2196,6 +2199,14 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
     line-height: 14px;
     text-align: center;
   }
+  /* ⭐ = ein Meilenstein ist bezahlbar (links vom Symbol, die Zahl rechts zählt die Upgrades) */
+  .badge.meilensteinBadge {
+    left: auto; right: calc(50% + 8px);
+    padding: 0;
+    background: #f5c542;
+    font-size: 0.6rem;
+    animation: badgeHuepfen 1.2s ease-in-out infinite;
+  }
 
   /* Meldungen oben mittig (unten ist die Symbolleiste) */
   #meldungen {
@@ -2302,7 +2313,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
-  .stickerFeld.super, .stickerFeld.neu, #albumBtn.feiern, .blZeile.sieger,
+  .stickerFeld.super, .stickerFeld.neu, #albumBtn.feiern, .blZeile.sieger, .badge.meilensteinBadge,
   .haustierKnopf, .haustierKnopf.hopst, .tierGross, .tierGross.freut, .sprechblase, .sprechblase.weg,
   .konfettiRegen i,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }

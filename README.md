@@ -6,9 +6,9 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 
 - Marie anklicken, Herzen sammeln (sie blinzelt und freut sich über jeden Klick)
 - Multitouch: auf dem Handy zählt jeder Finger einzeln
-- 12 Herzschenker – von der besten Freundin bis zum 👑 Herzkönigreich – mit je 4 Upgrade-Stufen
+- 12 Helfer – von der besten Freundin bis zum 👑 Herzkönigreich – mit je 4 Upgrade-Stufen
   (im Shop sieht man immer nur die eigenen plus die nächsten zwei)
-- Neustart mit Bonus 🌟: Wer alle Herzschenker hat, kann neu anfangen und bekommt Glitzersterne
+- Neustart mit Bonus 🌟: Wer alle Helfer hat, kann neu anfangen und bekommt Glitzersterne
   (je +10 % Herzen für immer). Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben (`js/neustart.js`)
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
@@ -29,7 +29,7 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   Jede bringt ~1 Std. Produktion, Season-Punkte und einen Sticker; alle 3 zusammen einen exklusiven Sticker
   der Album-Seite „🏆 Wochen-Schätze“ (12 Stück, gibt es nur so). Nicht abgeholte Belohnungen kommen in der neuen Woche automatisch
 - 48 Erfolge (je +1 % Herzen)
-- Offline-Fortschritt 🌙: Die Herzschenker sammeln weiter, während die App zu ist (bis zu 8 Stunden,
+- Offline-Fortschritt 🌙: Die Helfer sammeln weiter, während die App zu ist (bis zu 8 Stunden,
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute
 - Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;
   in den Seasons passend zum Thema (🍂 Blätterregen, ❄️ Schneegestöber – siehe `regen` in `SEASON_PAESSE`)
@@ -154,7 +154,7 @@ Logo-Banner und Sticker-Seite. Noch offen: September, November und Dezember 2027
 | Datei | Inhalt |
 |---|---|
 | `index.html` | Seitenstruktur, Marie als SVG-Zeichnung |
-| `js/daten.js` | Herzschenker, Upgrades, Erfolge und alle Balancing-Werte |
+| `js/daten.js` | Helfer, Upgrades, Erfolge und alle Balancing-Werte |
 | `js/skins.js` | Skins, Season-Pässe 1–2 und Musikstücke (Anleitung für neue Skins oben in der Datei) |
 | `js/seasons.js` | Jahres-Kalender 2027: Seasons 3–8 als Datenblöcke (Hüte, Melodien, Farben, Sticker, Logos) |
 | `js/hilfen.js` | Zahlen formatieren, Zufall |

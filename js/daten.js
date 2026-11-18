@@ -16,7 +16,7 @@ const KONFIG = {
   kaufModi: ["1", "10", "100", "next"],
 
   offline: {
-    maxStunden: 8,       // so lange sammeln die Herzschenker, während die App zu ist
+    maxStunden: 8,       // so lange sammeln die Helfer, während die App zu ist
     anteil: 1,           // 1 = volle Produktion
     abSekunden: 120,     // erst ab 2 Minuten Abwesenheit gibt es das Willkommen-Fenster
   },
@@ -101,7 +101,7 @@ const ERFOLGE = [
   { id: "stern1",    icon: "🌠", name: "Wunsch frei",       beschr: "Fange eine Sternschnuppe",                 bedingung: s => s.sternKlicks >= 1 },
   { id: "stern10",   icon: "💫", name: "Sternensammlerin",  beschr: "Fange 10 Sternschnuppen",                  bedingung: s => s.sternKlicks >= 10 },
   { id: "alle",      icon: "🎁", name: "Von allem etwas",   beschr: "Besitze jede Sorte mindestens einmal",     bedingung: () => GEBAEUDE.every(g => anzahl(g) >= 1) },
-  { id: "geb50",     icon: "🌸", name: "Traumwelt",         beschr: "Besitze insgesamt 50 Herzschenker",        bedingung: () => anzahlGebaeude() >= 50 },
+  { id: "geb50",     icon: "🌸", name: "Traumwelt",         beschr: "Besitze insgesamt 50 Helfer",        bedingung: () => anzahlGebaeude() >= 50 },
   { id: "upg1",      icon: "🎀", name: "Erste Schleife",    beschr: "Kaufe dein erstes Upgrade",                bedingung: s => s.upgrades.length >= 1 },
   { id: "upg10",     icon: "💄", name: "Stylistin",         beschr: "Kaufe 10 Upgrades",                        bedingung: s => s.upgrades.length >= 10 },
   { id: "upgAlle",   icon: "👑", name: "Prinzessin",        beschr: "Kaufe alle Upgrades",                      bedingung: s => s.upgrades.length >= UPGRADES.length },

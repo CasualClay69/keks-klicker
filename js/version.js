@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.59";
-const APP_NEU = "Neu: Feiertage! Der Nikolaus kommt am 6.12., an Silvester gibt es ein Feuerwerk, und beim ersten Schnee schneit es auch im Spiel. 🎅🎆❄️ Danke an Selina für die Season-Idee :)";
+const APP_VERSION = "1.60";
+const APP_NEU = "Neu: Die Herzschenker heißen jetzt Helfer – und ein ⭐ am Shop zeigt, wenn du dir einen Meilenstein leisten kannst. Danke an Selina für die Season-Idee :)";

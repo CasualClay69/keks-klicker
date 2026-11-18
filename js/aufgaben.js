@@ -74,7 +74,7 @@ function aufgabeText(a) {
       const g = GEBAEUDE.find(x => x.id === a.param);
       return `Kaufe ${a.ziel} ${a.ziel === 1 ? g.name : g.mehrzahl}`;
     }
-    case "kaufeIrgendwas": return `Kaufe ${a.ziel} Herzschenker`;
+    case "kaufeIrgendwas": return `Kaufe ${a.ziel} Helfer`;
     case "stern":          return a.ziel === 1 ? "Fange eine Sternschnuppe" : `Fange ${a.ziel} Sternschnuppen`;
     case "herzen":         return `Sammle ${format(a.ziel)} Herzen`;
     case "upgrade":        return "Kaufe ein Upgrade";

@@ -34,6 +34,14 @@ function naechsteStufe(gebaeude) {
   return UPGRADE_STUFEN.find(stufe => stufe.ab > anzahl(gebaeude));
 }
 
+// Kann man sich den nächsten Meilenstein (nächste Upgrade-Stufe) dieser Sorte gerade leisten?
+// Nur bei Sorten, die man schon hat – sonst würde jeder billige erste Kauf zählen.
+function meilensteinLeistbar(gebaeude) {
+  const stufe = naechsteStufe(gebaeude);
+  const n = anzahl(gebaeude);
+  return n > 0 && Boolean(stufe) && spiel.herzen >= preis(gebaeude, stufe.ab - n);
+}
+
 // Wie viele Stück ein Klick im Shop kauft (0 = im Modus "next" nichts mehr zu erreichen)
 function kaufMenge(item) {
   if (!istGebaeude(item)) return 1;                 // Klick-Items immer einzeln
@@ -109,7 +117,7 @@ function produziere(sekunden) {
   spiel.spielzeit += sekunden;
 }
 
-// Offline-Fortschritt: Was haben die Herzschenker in "sekunden" Abwesenheit gesammelt?
+// Offline-Fortschritt: Was haben die Helfer in "sekunden" Abwesenheit gesammelt?
 // Höchstens KONFIG.offline.maxStunden. Ohne Sternschnuppen-Bonus, zählt nicht als Spielzeit.
 // Rückgabe: { sekunden (gesamt weg), gezaehlt (angerechnet), herzen, gekappt }
 function berechneOffline(sekunden) {

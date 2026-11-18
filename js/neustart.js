@@ -1,10 +1,10 @@
 "use strict";
 // =====================================================
 //  NEUSTART MIT BONUS ("Prestige")
-//  Wer jeden Herzschenker mindestens einmal hat, kann neu anfangen und bekommt
+//  Wer jeden Helfer mindestens einmal hat, kann neu anfangen und bekommt
 //  dafür Glitzersterne ⭐. Jeder Stern gibt für immer +10 % Herzen (Produktion und Klicks).
 //
-//  Zurückgesetzt: Herzen, Herzschenker, Verbesserungen, Upgrades.
+//  Zurückgesetzt: Herzen, Helfer, Verbesserungen, Upgrades.
 //  Bleibt: Erfolge, Skins, Sticker, Haustier, Season-Pass, Tagesaufgaben, Statistik.
 //
 //  Gespeichert: spiel.sterne, spiel.gesamtFrueher (Herzen früherer Durchgänge), spiel.neustarts
@@ -39,12 +39,12 @@ function neueSterne() {
   return Math.max(0, moeglicheSterne() - glitzersterne());
 }
 
-function alleHerzschenkerGekauft() {
+function alleHelferGekauft() {
   return GEBAEUDE.every(g => anzahl(g) >= 1);
 }
 
 function neustartMoeglich() {
-  return alleHerzschenkerGekauft() && neueSterne() > 0;
+  return alleHelferGekauft() && neueSterne() > 0;
 }
 
 // Neustart durchführen. Rückgabe: Anzahl neuer Sterne oder null

@@ -70,7 +70,7 @@ function richteNeustartEin() {
     if (!neustartMoeglich()) return;
     const frage = `🌟 Neustart mit Bonus?\n\n`
       + `Du bekommst ${neu} Glitzersterne – jeder gibt für immer +${NEUSTART.sternBonus * 100} % Herzen.\n\n`
-      + `Deine Herzen, Herzschenker, Verbesserungen und Upgrades fangen wieder bei 0 an.\n`
+      + `Deine Herzen, Helfer, Verbesserungen und Upgrades fangen wieder bei 0 an.\n`
       + `Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben.`;
     if (!confirm(frage)) return;
 
