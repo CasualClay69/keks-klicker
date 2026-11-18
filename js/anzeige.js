@@ -125,7 +125,7 @@ const STATISTIK_ZEILEN = [
   ["Glücksrad gedreht",       () => `${(spiel.gluecksrad && spiel.gluecksrad.gesamt) || 0}-mal`],
   ["Sticker gesammelt",       () => `${anzahlVerschiedeneSticker(sichtbareSticker())} / ${sichtbareSticker().length}`],
   ["Zimmer-Teile",            () => `${anzahlZimmerTeile()} / ${anzahlZimmerTeileGesamt()} (+${Math.round((zimmerFaktor() - 1) * 100)} %)`],
-  ["Haustier",                () => haustier() ? `${haustier().name} (Level ${haustier().level})` : "noch keins"],
+  ["Haustiere",               () => alleHaustiere().length ? alleHaustiere().map(t => `${t.name} (Level ${t.level})`).join(", ") : "noch keins"],
   ["Minispiele gespielt",     () => String((spiel.minispiele && spiel.minispiele.anzahl) || 0)],
   ["Bester Herzregen",        () => `${spiel.regenBest || 0} Punkte`],
   ["Erfolge",                 () => `${spiel.erfolge.length} / ${ERFOLGE.length}`],
@@ -459,6 +459,116 @@ function wendeSkinsAn() {
     setzeText(el, symbole[el.dataset.symbol] || el.dataset.standard);
   }
   zeigeSeite(aktuelleSeite);   // Menü-Titel mit neuem Symbol
+}
+
+// ----- Skins: Reiter "Figur & Spiel" / "Tiere" -----
+
+let skinReiter = "skins";
+let tierReiterNr = 1;   // welches Tier der Reiter "Tiere" gerade zeigt
+
+function zeigeSkinReiter(reiter) {
+  skinReiter = reiter;
+  for (const btn of $("skinReiter").children) btn.classList.toggle("aktiv", btn.dataset.reiter === reiter);
+  $("skinBereich").hidden = reiter !== "skins";
+  $("tierBereich").hidden = reiter !== "tiere";
+  $("skinInfo").hidden = reiter !== "skins";
+}
+
+// aktionen = { art(t, art), zubehoer(t, z), adoptieren(nr) } – ohne Angabe: die vom letzten Mal
+let tierBereichAktionen = null;
+function zeigeTierBereich(aktionen = tierBereichAktionen) {
+  tierBereichAktionen = aktionen;
+  if (!aktionen) return;
+  const bereich = $("tierBereich");
+  bereich.textContent = "";
+  if (!haustier(tierReiterNr)) tierReiterNr = 1;
+  const t = haustier(tierReiterNr);
+
+  // Welches Tier? (Tier 2 erst ab Level 50 des ersten)
+  const wahl = document.createElement("div");
+  wahl.className = "albumSeitenwahl tierWahl";
+  for (const nr of [1, 2]) {
+    const tn = haustier(nr);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.classList.toggle("aktiv", nr === tierReiterNr && Boolean(tn));
+    const bild = span("tierBild");
+    if (tn) zeichneTier(bild, tn); else bild.textContent = nr === 2 && !zweitesTierFrei() ? "🔒" : "🥚";
+    const text = tn ? tn.name : nr === 1 ? "Adoptieren" : zweitesTierFrei() ? "Adoptieren" : `ab Level ${TIER.zweitesTierAb}`;
+    btn.append(bild, Object.assign(document.createElement("small"), { textContent: text }));
+    btn.addEventListener("click", () => {
+      if (tn) { tierReiterNr = nr; zeigeTierBereich(aktionen); }
+      else aktionen.adoptieren(nr);
+    });
+    wahl.append(btn);
+  }
+  bereich.append(wahl);
+
+  if (!t) {
+    const hinweis = Object.assign(document.createElement("p"), { className: "seitenInfo",
+      textContent: `🥚 Adoptiere zuerst ein Haustier – tippe oben auf „Adoptieren“ oder auf das Ei neben ${figurName()}.` });
+    bereich.append(hinweis);
+    return;
+  }
+
+  // Vorschau
+  const vorschau = document.createElement("div");
+  vorschau.className = "tierVorschau";
+  const gross = span("tierVorschauBild");
+  zeichneTier(gross, t);
+  vorschau.append(gross, span("tierVorschauName", `${t.name} · Level ${t.level}`));
+  bereich.append(vorschau);
+
+  const raster = (titel, karten) => {
+    const h = document.createElement("h2");
+    h.textContent = titel;
+    const r = document.createElement("div");
+    r.className = "skinRaster";
+    r.append(...karten);
+    bereich.append(h, r);
+  };
+  const karte = ({ icon, html, name, status, aktiv, gesperrt, zuTeuer, beimKlick }) => {
+    const k = document.createElement("button");
+    k.type = "button";
+    k.className = "skinKarte tierKarte";
+    k.classList.toggle("aktiv", Boolean(aktiv));
+    k.classList.toggle("gesperrt", Boolean(gesperrt));
+    k.classList.toggle("zuTeuer", Boolean(zuTeuer));
+    const i = span("skinIcon", html ? "" : icon);
+    if (html) i.innerHTML = html;
+    k.append(i, span("skinName", name), span("skinStatus", status));
+    k.addEventListener("click", beimKlick);
+    return k;
+  };
+
+  // Tierart
+  raster("🐾 Tierart", HAUSTIER_ARTEN.map(art => {
+    const frei = tierArtFrei(art);
+    const aktiv = t.art === art.id;
+    return karte({
+      icon: art.emoji, html: art.svg, name: art.name, aktiv, gesperrt: !frei,
+      status: aktiv ? "✓ Ausgewählt" : frei ? "Auswählen" : `🔒 Season-Stufe ${TIER.seasonStufeTier}`,
+      beimKlick: () => aktionen.art(t, art),
+    });
+  }));
+
+  // Zubehör: Halsband, Schleife, Körbchen
+  for (const typ of ZUBEHOER_TYPEN) {
+    raster(`${typ.icon} ${typ.name}`, TIER_ZUBEHOER.filter(z => z.typ === typ.id).map(z => {
+      const besitzt = zubehoerBesitzt(z);
+      const aktiv = tierTraegt(t, typ.id) === z;
+      const status = aktiv ? "✓ Angelegt" : besitzt ? "Anlegen"
+        : z.season ? `🔒 Season-Stufe ${TIER.seasonStufeZubehoer}` : `${herz()} ${format(z.preis)}`;
+      return karte({
+        html: z.svg, name: z.name, status, aktiv,
+        gesperrt: !besitzt && z.season, zuTeuer: !besitzt && !z.season && spiel.herzen < z.preis,
+        beimKlick: () => aktionen.zubehoer(t, z),
+      });
+    }));
+  }
+  const info = Object.assign(document.createElement("p"), { className: "seitenInfo",
+    textContent: "💡 Tippe angelegtes Zubehör nochmal an, um es abzulegen. Neue Tiere und besonderes Zubehör gibt es im Season-Pass." });
+  bereich.append(info);
 }
 
 // ----- Season-Pass -----
@@ -1065,7 +1175,9 @@ function baueZimmer(beimTippen) {
   figur.id = "zimmerFigur";
   const tier = span("zimmerTier");
   tier.id = "zimmerTier";
-  zimmer.append(figur, tier);
+  const tier2 = span("zimmerTier zweites");
+  tier2.id = "zimmerTier2";
+  zimmer.append(figur, tier, tier2);
 
   // Schriftgröße der Teile wächst mit der Zimmerbreite
   if (typeof ResizeObserver === "function") {
@@ -1102,10 +1214,12 @@ function zeigeZimmer(beimTeilWaehlen) {
 
   // Figur und Haustier
   $("zimmerFigur").innerHTML = zimmerFigurHtml();
-  const t = haustier();
-  const tierEl = $("zimmerTier");
-  tierEl.hidden = !t;
-  if (t) setzeTierBild(tierEl, tierArt(t), TIER_STUFEN.indexOf(tierStufe(t)));
+  for (const nr of [1, 2]) {
+    const t = haustier(nr);
+    const tierEl = $(nr === 1 ? "zimmerTier" : "zimmerTier2");
+    tierEl.hidden = !t;
+    if (t) zeichneTier(tierEl, t);
+  }
 
   setzeText($("zimmerInfo"),
     `🏠 ${anzahlZimmerTeile()} von ${anzahlZimmerTeileGesamt()} Teilen · Gemütlichkeit: +${Math.round((zimmerFaktor() - 1) * 100)} % Herzen`);
@@ -1156,42 +1270,76 @@ function setzeTierBild(el, art, stufenIndex = 0) {
   el.dataset.bild = schluessel;
   if (!art) el.textContent = "🥚";
   else if (art.svg) el.innerHTML = art.svg;     // eigenes SVG aus haustier.js
-  else el.textContent = art.stufen[stufenIndex];
+  else el.textContent = art.emoji;
 }
 
-// Das Tier neben Marie: Bild, Größe, Gedankenblase
+// Ein Tier MIT Zubehör zeichnen (Körbchen dahinter, Halsband und Schleife darauf).
+// Ohne Tier: das Ei. Wird nur neu gezeichnet, wenn sich etwas geändert hat.
+function zeichneTier(el, t) {
+  const art = t && tierArt(t);
+  const traegt = typ => tierTraegt(t, typ);
+  const schluessel = t ? [art.id, ...ZUBEHOER_TYPEN.map(z => (traegt(z.id) || {}).id || "-")].join("|") : "ei";
+  if (el.dataset.bild === schluessel) return;
+  el.dataset.bild = schluessel;
+  el.textContent = "";
+  if (!t) { el.textContent = "🥚"; return; }
+
+  const figur = span("tierFigur");
+  const a = art.anker;
+  figur.style.cssText = `--hals-y:${a.halsY}%;--hals-b:${a.halsB}%;--kopf-x:${a.kopfX}%;--kopf-y:${a.kopfY}%`;
+  const teil = (klasse, html) => { const s = span(klasse); s.innerHTML = html; return s; };
+  if (traegt("koerbchen")) figur.append(teil("tz koerbchen", traegt("koerbchen").svg));
+  const koerper = span("tierKoerper", art.svg ? "" : art.emoji);
+  if (art.svg) koerper.innerHTML = art.svg;
+  figur.append(koerper);
+  if (traegt("halsband")) figur.append(teil("tz halsband", traegt("halsband").svg));
+  if (traegt("schleife")) figur.append(teil("tz schleife", traegt("schleife").svg));
+  el.append(figur);
+}
+
+// Die Tiere neben Marie: Bild mit Zubehör, Größe, Gedankenblase.
+// Tier 2 (links) erscheint erst, wenn Tier 1 Level 50 hat – zuerst als Ei.
 function zeigeHaustier() {
-  const t = haustier();
-  const el = ui.haustier;
-  el.classList.toggle("ei", !t);
-  const stufe = tierStufe(t);
-  setzeTierBild($("haustierEmoji"), tierArt(t), TIER_STUFEN.indexOf(stufe));
-  el.style.setProperty("--tier-groesse", t ? stufe.groesse : 1);
-  el.setAttribute("aria-label", t ? `${t.name} – Haustier pflegen` : "Ei – Haustier adoptieren");
+  for (const nr of [1, 2]) {
+    const t = haustier(nr);
+    const el = nr === 1 ? ui.haustier : $("haustier2");
+    if (nr === 2) el.hidden = !t && !zweitesTierFrei();
+    if (el.hidden) continue;
+    el.classList.toggle("ei", !t);
+    const stufe = tierStufe(t);
+    zeichneTier($(nr === 1 ? "haustierEmoji" : "haustier2Emoji"), t);
+    el.style.setProperty("--tier-groesse", t ? stufe.groesse : 1);
+    el.setAttribute("aria-label", t ? `${t.name} – Haustier pflegen` : "Ei – Haustier adoptieren");
 
-  const laune = tierLaune(t);
-  const blase = $("haustierBlase");
-  const zeichen = !t ? "❓" : laune === "schlaeft" ? "💤" : laune === "hungrig" ? tierArt(t).leckerli.icon : "";
-  blase.hidden = !zeichen;
-  setzeText(blase, zeichen);
-  el.classList.toggle("schlaeft", laune === "schlaeft");
+    const laune = tierLaune(t);
+    const blase = $(nr === 1 ? "haustierBlase" : "haustier2Blase");
+    const zeichen = !t ? "❓" : laune === "schlaeft" ? "💤" : laune === "hungrig" ? tierArt(t).leckerli.icon : "";
+    blase.hidden = !zeichen;
+    setzeText(blase, zeichen);
+    el.classList.toggle("schlaeft", laune === "schlaeft");
+  }
 }
 
-// Klick auf Marie: das Tier hüpft mit
+// Klick auf Marie: die Tiere hüpfen mit
 function haustierHopst() {
-  if (!haustier()) return;
-  ui.haustier.classList.remove("hopst");
-  void ui.haustier.offsetWidth;
-  ui.haustier.classList.add("hopst");
+  for (const [t, el] of [[haustier(1), ui.haustier], [haustier(2), $("haustier2")]]) {
+    if (!t) continue;
+    el.classList.remove("hopst");
+    void el.offsetWidth;
+    el.classList.add("hopst");
+  }
 }
 
 let tierAuswahl = HAUSTIER_ARTEN[0];
+let fensterTierNr = 1;   // welches Tier das Fenster gerade zeigt (1 oder 2)
 
 // Fenster: Adoption (noch kein Tier) oder Pflege
-function zeigeTierFenster() {
-  const t = haustier();
+function zeigeTierFenster(nr = fensterTierNr) {
+  fensterTierNr = nr;
+  const t = haustier(nr);
   $("tierAdoption").hidden = Boolean(t);
   $("tierPflege").hidden = !t;
+  setzeText($("tierAdoptionTitel"), nr === 2 ? "🥚 Ein zweites Haustier!" : `🥚 Ein Haustier für ${figurName()}!`);
   if (!t) baueTierAuswahl();
   else zeigeTierPflege();
   $("tierOverlay").hidden = false;
@@ -1200,7 +1348,8 @@ function zeigeTierFenster() {
 function baueTierAuswahl() {
   const auswahl = $("tierAuswahl");
   auswahl.textContent = "";
-  for (const art of HAUSTIER_ARTEN) {
+  if (!tierArtFrei(tierAuswahl)) tierAuswahl = HAUSTIER_ARTEN[0];
+  for (const art of HAUSTIER_ARTEN.filter(tierArtFrei)) {
     const knopf = document.createElement("button");
     knopf.type = "button";
     knopf.classList.toggle("aktiv", art === tierAuswahl);
@@ -1219,12 +1368,12 @@ function baueTierAuswahl() {
 }
 
 function zeigeTierPflege() {
-  const t = haustier();
+  const t = haustier(fensterTierNr);
   if (!t) return;
   const art = tierArt(t);
   const stufe = tierStufe(t);
   const gross = $("tierGross");
-  setzeTierBild(gross, art, TIER_STUFEN.indexOf(stufe));
+  zeichneTier(gross, t);
   gross.style.setProperty("--tier-groesse", stufe.groesse);
 
   setzeText($("tierNameTitel"), `${t.name} · ${art.name}`);
@@ -1254,7 +1403,7 @@ function zeigeTierPflege() {
     setzeText(knopf, satt ? `${art[sorte].icon} Satt!` : `${art[sorte].icon} ${art[sorte].name} · ${herz()} ${format(preis)}`);
     knopf.disabled = satt || spiel.herzen < preis;
   }
-  const uebrig = streichelnUebrig();
+  const uebrig = streichelnUebrig(t);
   setzeText($("tierStreicheln"), uebrig > 0 ? `🤗 Streicheln (noch ${uebrig}× heute)` : "🤗 Genug gestreichelt für heute – morgen wieder!");
   $("tierStreicheln").disabled = uebrig <= 0;
 }
@@ -1451,6 +1600,7 @@ function zeigeSeite(seiteId) {
   if (seiteId === "seiteBestenliste") titel = "🏅 Bestenliste";
   if (seiteId === "seiteAlbum") titel = "📒 Sticker-Album";
   if (seiteId === "seiteSpiele") titel = "🎮 Minispiele";
+  if (seiteId === "seiteSkins" && skinReiter === "tiere") zeigeTierBereich();   // Preise und neue Tiere auffrischen
   if (seiteId === "seiteZimmer") titel = `🏠 ${figurName()}s Zimmer`;
   setzeText(ui.sheetTitel, titel);
   zeigeUntenNav();

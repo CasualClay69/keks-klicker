@@ -224,7 +224,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 
 /* ----- Haustier unten rechts an Marie -----
    --marie-breite setzt anzeige.js (ResizeObserver), damit das Tier mit Marie mitwächst/-schrumpft */
-#haustier {
+.haustierKnopf {
   position: absolute;
   right: -8%;
   bottom: -4%;
@@ -240,11 +240,23 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
-#haustierEmoji { display: block; }
-#haustierEmoji svg, .tierBild svg { display: block; width: 1.15em; height: 1.15em; }
-#haustier.ei { animation: geschenkWackeln 1.6s ease-in-out infinite; }
-#haustier.hopst { animation: tierHops 0.35s ease-out; }
-#haustier.schlaeft #haustierEmoji { filter: grayscale(0.5); opacity: 0.75; }
+/* Das zweite Tier sitzt links von Marie */
+#haustier2 { right: auto; left: -8%; }
+.haustierBild { display: block; }
+.haustierBild > svg, .tierBild > svg { display: block; width: 1.15em; height: 1.15em; }
+.haustierKnopf.ei { animation: geschenkWackeln 1.6s ease-in-out infinite; }
+.haustierKnopf.hopst { animation: tierHops 0.35s ease-out; }
+.haustierKnopf.schlaeft .haustierBild { filter: grayscale(0.5); opacity: 0.75; }
+
+/* Ein Tier mit Zubehör (zeichneTier in anzeige.js). Positionen kommen pro Tierart aus "anker". */
+.tierFigur { position: relative; display: inline-block; width: 1.15em; height: 1.15em; line-height: 1; vertical-align: bottom; }
+.tierKoerper { position: absolute; inset: 0; display: grid; place-items: center; font-size: 1em; }
+.tierKoerper svg { display: block; width: 100%; height: 100%; }
+.tz { position: absolute; pointer-events: none; }
+.tz svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tz.halsband { left: 50%; top: var(--hals-y, 70%); width: var(--hals-b, 46%); transform: translate(-50%, -50%); }
+.tz.schleife { left: var(--kopf-x, 70%); top: var(--kopf-y, 6%); width: 36%; transform: translate(-50%, -30%) rotate(14deg); }
+.tz.koerbchen { left: 50%; bottom: -16%; width: 135%; transform: translateX(-50%); }
 .haustierBlase {
   position: absolute;
   top: -0.55em; left: -0.35em;
@@ -634,7 +646,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.18));
   animation: tierWippen 2.4s ease-in-out infinite;
 }
-.tierGross svg { display: block; width: 1.15em; height: 1.15em; margin: 0 auto; }
+.tierGross > svg { display: block; width: 1.15em; height: 1.15em; margin: 0 auto; }
 .tierGross.freut { animation: tierHops 0.4s ease-out; }
 .tierKarte h2 { margin: 2px 0; }
 .tierWerte { margin: 6px 0 4px; text-align: left; font-size: 0.85rem; }
@@ -1152,10 +1164,26 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   font-size: 0.9em;
   pointer-events: none;
 }
-.zimmerTier svg { width: 100%; height: 100%; }
+.zimmerTier > svg { width: 100%; height: 100%; }
+.zimmerTier.zweites { left: 12%; }
 .zimmerInfo { margin: 4px 0 10px; font-weight: bold; text-align: center; color: var(--akzent-dunkel); }
 .zimmerKarte.zuTeuer .skinStatus { opacity: 0.55; }
 .zimmerKarte .skinStatus { white-space: nowrap; }
+
+/* ----- Skins: Reiter und Tiere ----- */
+.skinReiter { margin-bottom: 10px; }
+.tierWahl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tierWahl .tierBild { display: block; font-size: 2rem; line-height: 1.15; }
+.tierVorschau {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 8px 0 4px; padding: 18px 10px 12px;
+  border: 2px solid var(--rand); border-radius: 18px;
+  background: radial-gradient(circle at 50% 70%, #fff, var(--karte-hover));
+}
+.tierVorschauBild { font-size: 5rem; line-height: 1; }
+.tierVorschauName { margin-top: 10px; font-weight: 900; color: var(--akzent-dunkel); }
+.tierKarte .skinIcon svg { display: block; width: 3.6rem; height: 2.4rem; margin: 0 auto; }
+.tierKarte.zuTeuer .skinStatus { opacity: 0.55; }
 
 /* ----- Minispiele ----- */
 .spieleKopf { background: linear-gradient(135deg, #e9f6ff, #ffe6f2); color: #3b2a5a; }
@@ -1280,7 +1308,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   font-size: 58px;
   line-height: 1;
 }
-.fangTier svg { width: 100%; height: 100%; }
+.fangTier > svg { width: 100%; height: 100%; }
 .fangTier.happs { animation: happs 0.25s; }
 .fangTier.autsch { animation: falschWackeln 0.4s; filter: hue-rotate(-30deg) saturate(2); }
 @keyframes happs { 50% { scale: 1.18; } }
@@ -2158,7 +2186,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
   .stickerFeld.super, .stickerFeld.neu, #albumBtn.feiern, .blZeile.sieger,
-  #haustier, #haustier.hopst, .tierGross, .tierGross.freut, .sprechblase, .sprechblase.weg,
+  .haustierKnopf, .haustierKnopf.hopst, .tierGross, .tierGross.freut, .sprechblase, .sprechblase.weg,
   .konfettiRegen i,
   body[data-hintergrund] #spielfeld::before, body[data-hintergrund] #spielfeld::after { animation: none; }
 }

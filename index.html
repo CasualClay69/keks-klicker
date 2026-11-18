@@ -186,9 +186,14 @@
     <div id="sprechblase" class="sprechblase" aria-live="polite" hidden></div>
 
     <!-- Haustier: sitzt unten rechts an Marie. Ohne Haustier liegt hier ein Ei zum Adoptieren -->
-    <button id="haustier" type="button" aria-label="Haustier">
-      <span id="haustierEmoji">🥚</span>
+    <button id="haustier" class="haustierKnopf" type="button" aria-label="Haustier">
+      <span id="haustierEmoji" class="haustierBild">🥚</span>
       <span id="haustierBlase" class="haustierBlase" hidden></span>
+    </button>
+    <!-- Zweites Haustier (ab Level 50 des ersten) – links von Marie -->
+    <button id="haustier2" class="haustierKnopf" type="button" aria-label="Zweites Haustier" hidden>
+      <span id="haustier2Emoji" class="haustierBild">🥚</span>
+      <span id="haustier2Blase" class="haustierBlase" hidden></span>
     </button>
     </div>
 
@@ -238,8 +243,13 @@
     </section>
 
     <section id="seiteSkins" class="seite" role="tabpanel" hidden>
-      <p class="seitenInfo">Wähle aus, wie <span class="figurName">Marie</span> und dein Spiel aussehen und klingen. Neue Skins kommen mit den Season-Pässen!</p>
+      <div id="skinReiter" class="blAnsicht skinReiter">
+        <button type="button" data-reiter="skins" class="aktiv">🎨 Figur &amp; Spiel</button>
+        <button type="button" data-reiter="tiere">🐾 Tiere</button>
+      </div>
+      <p id="skinInfo" class="seitenInfo">Wähle aus, wie <span class="figurName">Marie</span> und dein Spiel aussehen und klingen. Neue Skins kommen mit den Season-Pässen!</p>
       <div id="skinBereich"></div>
+      <div id="tierBereich" hidden></div>
     </section>
 
     <section id="seiteAufgaben" class="seite" role="tabpanel" hidden>
@@ -447,7 +457,7 @@
       <button id="tierZu" type="button" class="overlayZu" aria-label="Schließen">✕</button>
 
       <div id="tierAdoption" hidden>
-        <h2>🥚 Ein Haustier für <span class="figurName">Marie</span>!</h2>
+        <h2 id="tierAdoptionTitel">🥚 Ein Haustier für <span class="figurName">Marie</span>!</h2>
         <p class="geschenkSerie">Such dir ein kleines Tier aus. Es bleibt bei <span class="figurName">Marie</span>, freut sich über Futter und wächst mit dir!</p>
         <div id="tierAuswahl" class="tierAuswahl"></div>
         <label class="feld">Wie soll es heißen?

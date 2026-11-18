@@ -524,14 +524,17 @@ function seasonHerzen(n, hps = basisHps(), proKlick = herzenProKlick() / aktuell
   return rundeHuebsch(Math.max(50 * n * n, wert));
 }
 
-// Eine Season-Belohnung nach ID: ein Skin oder ein Zimmer-Teil (zimmer.js)
+// Eine Season-Belohnung nach ID: ein Skin, ein Zimmer-Teil (zimmer.js) oder Tier/Tier-Zubehör (haustier.js)
 function belohnungNachId(id) {
-  return SKINS.find(s => s.id === id) || ZIMMER_TEILE.find(t => t.id === id);
+  return SKINS.find(s => s.id === id) || ZIMMER_TEILE.find(t => t.id === id) || tierBelohnung(id);
 }
 
-// Wie heißt die Art der Belohnung? z.B. "Kleider" oder "Zimmer"
+// Wie heißt die Art der Belohnung? z.B. "Kleider", "Fürs Zimmer" oder "Neues Haustier"
 function belohnungsArt(teil) {
-  return teil.platz ? "Fürs Zimmer" : SKIN_KATEGORIEN.find(k => k.id === teil.kategorie).name;
+  if (teil.platz) return "Fürs Zimmer";
+  if (teil.tierTyp === "art") return "Neues Haustier";
+  if (teil.tierTyp) return "Tier-Zubehör";
+  return SKIN_KATEGORIEN.find(k => k.id === teil.kategorie).name;
 }
 
 // Was gibt es auf Stufe n?  { typ: "skin", skin } | { typ: "zimmer", teil } | { typ: "herzen", menge }

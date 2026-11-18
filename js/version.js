@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.51";
-const APP_NEU = "Repariert: Auch schnelles Füttern zoomt nicht mehr ins Bild. Danke an Selina für die Season-Idee :)";
+const APP_VERSION = "1.52";
+const APP_NEU = "Neu: Halsbänder, Schleifen und Körbchen für dein Haustier, neue Season-Tiere im Pass und ab Level 50 ein zweites Haustier! 🐾 Danke an Selina für die Season-Idee :)";

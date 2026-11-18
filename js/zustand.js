@@ -32,6 +32,8 @@ function neuerSpielstand() {
     zuletztAktiv: 0,   // Zeitpunkt (ms), zu dem das Spiel zuletzt lief – für den Offline-Fortschritt
     zimmer: { besitz: [], platz: {} },
     minispiele: null,
+    haustier2: null,   // zweites Haustier (ab Level 50 des ersten, siehe haustier.js)
+    tierZubehoer: [],  // gekauftes Tier-Zubehör
     bestenliste: null, // Anmeldung für die Online-Bestenliste (Kopie, siehe bestenliste.js)  // Minispiele: Rekorde und wie oft heute gespielt (siehe minispiele.js)   // Maries Zimmer (siehe zimmer.js)
     offlineMax: 0,     // längste Abwesenheit in Sekunden (für den Erfolg "Über Nacht")
     kaufModus: "1",    // siehe KONFIG.kaufModi

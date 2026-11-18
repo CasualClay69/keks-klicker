@@ -25,7 +25,7 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Minispiele 🎮 (`js/minispiele.js` Regeln, `js/spielhalle.js` Spiele): Sticker-Memory mit den eigenen Stickern,
   „Finde Marie/Hannah“ zwischen Doppelgängerinnen (5 Runden auf Zeit) und Leckerli-Fangen mit dem Haustier
   (macht es satt). Belohnung wie beim Herzregen, pro Spiel 5-mal am Tag voll, danach 20 %
-- 42 Erfolge (je +1 % Herzen)
+- 45 Erfolge (je +1 % Herzen)
 - Offline-Fortschritt 🌙: Die Herzschenker sammeln weiter, während die App zu ist (bis zu 8 Stunden,
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute
 - Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;
@@ -34,8 +34,12 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   Geschenk mit Partyhut und Melodie als dauerhaften Skins (Daten in `GEBURTSTAG.termine` in `js/geburtstag.js`)
 - Marie spricht 💬: Sprechblasen beim Klicken, bei Sternschnuppen, Erfolgen, Begrüßung nach Tageszeit
   und „Mir ist langweilig…“, wenn 45 Sekunden niemand klickt (Sprüche in `js/sprechen.js`)
-- Haustier 🐾: Kätzchen (grau-weiß, selbst gezeichnet), Häschen, Hündchen oder Einhorn-Baby – füttern, streicheln,
-  wächst von Baby über Kind zu Groß; satt gibt es +1 % Herzen pro Level (bis +20 %), hungrig schläft es nur
+- Haustiere 🐾: Kätzchen (grau-weiß, selbst gezeichnet), Häschen, Hündchen oder Einhorn-Baby – füttern, streicheln,
+  wächst von Baby über Kind und Groß bis Prächtig (Level 50); satt gibt es +1 % Herzen pro Level, hungrig schläft es nur.
+  Ab Level 50 darf ein zweites Tier einziehen (links neben der Figur).
+  Zubehör: Halsbänder, Schleifen, Körbchen (mit Herzen kaufen). Unter Skins → Reiter „🐾 Tiere“ Tierart und Zubehör wählen.
+  Season-Pass: Stufe 5 = Zubehör zum Thema, Stufe 33 = neue Tierart (Truthahn, Rentier, Pinguin, Kuschelbär, Küken,
+  Igel, Schildkröte, Fledermaus)
 - Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten,
   dazu pro Season eine eigene Sticker-Seite, die nur während der Season sammelbar ist (🦃 Thanksgiving, 🎅 Weihnachten)
 - Glücksrad 🎡: einmal am Tag drehen – Herzen, Boni, Sternschnuppe, Season-Punkte oder Jackpot
@@ -148,7 +152,7 @@ Logo-Banner und Sticker-Seite. Noch offen: September, November und Dezember 2027
 | `js/geschenk.js` | Tägliches Geschenk mit Serie (`GESCHENK_FAKTOREN`, `GESCHENK_SEASON_PUNKTE`) |
 | `js/gluecksrad.js` | Glücksrad: Felder, Gewinnchancen (`GLUECKSRAD_FELDER`) |
 | `js/album.js` | Sticker-Album: Seiten und Sticker (`STICKER_SEITEN`), Seltenheiten, Chancen (`STICKER_CHANCE`) |
-| `js/haustier.js` | Haustier: Arten (`HAUSTIER_ARTEN`, inkl. Katzen-SVG), Stufen, Hunger, Futter, Erfahrung |
+| `js/haustier.js` | Haustiere: Arten (`HAUSTIER_ARTEN`, inkl. Katzen-SVG und Season-Tiere), Zubehör (`TIER_ZUBEHOER`), Stufen, Hunger, Futter, Erfahrung, zweites Tier |
 | `js/bestenliste.js` | Online-Bestenliste (Supabase-Verbindung) |
 | `supabase/bestenliste.sql` | Datenbank-Tabelle und -Funktionen für die Bestenliste |
 | `js/sound.js` | Klänge und Musik-Abspieler (Web Audio API) |

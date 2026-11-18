@@ -267,7 +267,7 @@ function spieleFangen(fertig) {
 
   const tierEl = document.createElement("div");
   tierEl.className = "fangTier";
-  setzeTierBild(tierEl, art, TIER_STUFEN.indexOf(tierStufe(t)));
+  zeichneTier(tierEl, t);   // mit Zubehör
   flaeche.append(tierEl);
 
   let tierX = 0.5, zielX = 0.5;     // 0 = ganz links, 1 = ganz rechts

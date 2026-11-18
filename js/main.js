@@ -244,8 +244,14 @@ function pruefeMarieSpricht() {
 
 // ----- Haustier -----
 
-function meldeTierWachstum(ergebnis) {
-  const t = haustier();
+function meldeTierWachstum(ergebnis, t = haustier()) {
+  if (t === haustier(1) && ergebnis.aufgestiegen && t.level >= TIER.zweitesTierAb && t.level - ergebnis.aufgestiegen < TIER.zweitesTierAb) {
+    sound.erfolg();
+    konfetti($("spielfeld"));
+    meldung(`🏆 ${t.name} hat Level ${TIER.zweitesTierAb}!`, `Jetzt darf ein zweites Haustier einziehen – tippe auf das Ei links neben ${figurName()}!`);
+    zeigeHaustier();
+    return;
+  }
   if (ergebnis.gewachsen) {
     sound.erfolg();
     meldung(`🎉 ${t.name} ist gewachsen!`, `Jetzt: ${ergebnis.gewachsen.name} – und noch ein bisschen größer!`);
@@ -258,7 +264,11 @@ function meldeTierWachstum(ergebnis) {
 function richteHaustierEin() {
   ui.haustier.addEventListener("click", () => {
     sound.klick();
-    zeigeTierFenster();
+    zeigeTierFenster(1);
+  });
+  $("haustier2").addEventListener("click", () => {
+    sound.klick();
+    zeigeTierFenster(2);
   });
   // Fenster zu – wurde gefüttert, freut sich Marie mit ("Lecker, oder, Mimi?")
   let gefuettert = false;
@@ -269,16 +279,21 @@ function richteHaustierEin() {
   });
 
   $("tierAdoptieren").addEventListener("click", () => {
-    if (!adoptiere(tierAuswahl.id, $("tierName").value)) return;
+    if (!adoptiere(tierAuswahl.id, $("tierName").value, fensterTierNr)) return;
     sound.erfolg();
-    meldung(`💕 Willkommen, ${haustier().name}!`, `Dein ${tierAuswahl.name} wohnt jetzt bei ${figurName()}. Vergiss nicht, es zu füttern!`);
+    meldung(`💕 Willkommen, ${haustier(fensterTierNr).name}!`, `Dein ${tierAuswahl.name} wohnt jetzt bei ${figurName()}. Vergiss nicht, es zu füttern!`);
+    $("tierName").value = "";
     speichern();
     zeigeTierFenster();
+    zeigeHaustier();
+    pruefeErfolgeUndStatistik();
     aktualisiereAnzeige();
+    if (!$("tierBereich").hidden) zeigeTierBereich();
   });
 
   const fuettern = sorte => {
-    const ergebnis = fuettere(sorte);
+    const t = haustier(fensterTierNr);
+    const ergebnis = fuettere(sorte, t);
     if (!ergebnis.ok) {
       sound.fehler();
       if (ergebnis.grund === "herzen") meldung("💖 Nicht genug Herzen", "Sammle noch ein paar Herzen und versuch es dann nochmal.");
@@ -287,21 +302,21 @@ function richteHaustierEin() {
     sound.kauf();
     tierFreutSich();
     gefuettert = true;
-    const t = haustier();
     const r = $("tierGross").getBoundingClientRect();
     zeigeSchwebeText({ x: r.left + r.width / 2, y: r.top }, `${tierArt(t)[sorte].icon} Mmmh!`);
-    meldeTierWachstum(ergebnis);
+    meldeTierWachstum(ergebnis, t);
     aktualisiereAnzeige();
   };
   $("tierLeckerli").addEventListener("click", () => fuettern("leckerli"));
   $("tierFestmahl").addEventListener("click", () => fuettern("festmahl"));
 
   const streicheln = () => {
-    const ergebnis = streichle();
+    const t = haustier(fensterTierNr);
+    const ergebnis = streichle(t);
     if (!ergebnis.ok) return;
     spieleTon(900 + Math.random() * 200, 0.15, "sine", 0.1, 1300);   // zufriedenes "Schnurr-Pling"
     tierFreutSich();
-    meldeTierWachstum(ergebnis);
+    meldeTierWachstum(ergebnis, t);
     zeigeTierPflege();
   };
   $("tierStreicheln").addEventListener("click", streicheln);
@@ -384,7 +399,11 @@ function meldeSeasonStufe({ pass, stufe, belohnung }) {
     zeigeZimmerFallsOffen();
   } else {
     const s = belohnung.skin;
-    meldung(`${pass.icon} Stufe ${stufe}: Neuer Skin! ${s.icon}`, `„${s.name}“ – jetzt unter Skins auswählbar`);
+    if (s.tierTyp) {
+      meldung(`${pass.icon} Stufe ${stufe}: ${s.tierTyp === "art" ? "Neues Haustier" : "Tier-Zubehör"}! ${s.icon}`, `„${s.name}“ – jetzt unter Skins → 🐾 Tiere`);
+    } else {
+      meldung(`${pass.icon} Stufe ${stufe}: Neuer Skin! ${s.icon}`, `„${s.name}“ – jetzt unter Skins auswählbar`);
+    }
     zeigeSkins();
   }
   meldeSticker(versucheSticker("season"));   // jede Season-Stufe bringt einen Sticker
@@ -659,6 +678,68 @@ function tick() {
   spiel.zuletztAktiv = jetzt;
   aktualisiereAnzeige();
   pruefeZimmerPreise();
+}
+
+// ----- Skins: Reiter "Tiere" -----
+
+const TIER_AKTIONEN = {
+  art(t, art) {
+    if (!waehleTierArt(t, art)) {
+      sound.fehler();
+      meldung("🔒 Noch gesperrt", `„${art.name}“ gibt es im ${seasonName(art.season)} auf Stufe ${TIER.seasonStufeTier}.`);
+      return;
+    }
+    sound.kauf();
+    speichern();
+    zeigeHaustier();
+    zeigeTierBereich();
+  },
+  zubehoer(t, z) {
+    const ergebnis = waehleZubehoer(t, z);
+    if (ergebnis === "gesperrt") {
+      sound.fehler();
+      meldung("🔒 Season-Belohnung", `„${z.name}“ gibt es im ${seasonName(z.season)} auf Stufe ${TIER.seasonStufeZubehoer}.`);
+      return;
+    }
+    if (ergebnis === "zuTeuer") {
+      sound.fehler();
+      meldung("💖 Noch nicht genug Herzen", `„${z.name}“ kostet ${format(z.preis)} ${herz()}.`);
+      return;
+    }
+    if (ergebnis === "gekauft") {
+      sound.kauf();
+      setTimeout(() => sound.erfolg(), 250);
+      meldung(`${z.icon} ${z.name}`, `${t.name} sieht toll aus!`);
+    } else {
+      sound.klick();
+    }
+    pruefeErfolgeUndStatistik();
+    speichern();
+    zeigeHaustier();
+    zeigeTierBereich();
+    aktualisiereAnzeige();
+  },
+  adoptieren(nr) {
+    if (nr === 2 && !zweitesTierFrei()) {
+      sound.fehler();
+      const t = haustier(1);
+      meldung("🔒 Noch nicht", t ? `Ein zweites Tier darf einziehen, wenn ${t.name} Level ${TIER.zweitesTierAb} hat (jetzt: Level ${t.level}).`
+                                 : "Adoptiere zuerst dein erstes Haustier.");
+      return;
+    }
+    sound.klick();
+    zeigeTierFenster(nr);
+  },
+};
+
+function richteSkinReiterEin() {
+  for (const btn of $("skinReiter").children) {
+    btn.addEventListener("click", () => {
+      sound.klick();
+      zeigeSkinReiter(btn.dataset.reiter);
+      if (btn.dataset.reiter === "tiere") zeigeTierBereich(TIER_AKTIONEN);
+    });
+  }
 }
 
 // ----- Minispiele -----
@@ -1206,6 +1287,7 @@ function starte() {
   richteGluecksradEin();
   richteHaustierEin();
   baueZimmer(beimZimmerPlatz);
+  richteSkinReiterEin();
   richteGeburtstagEin();
   richteNeustartEin();
   richteOfflineEin();
@@ -1227,7 +1309,7 @@ function starte() {
   pruefeGeschenk();       // erstes Öffnen heute? -> Geschenk zeigen (wartet, bis das Geburtstagsfenster zu ist)
 
   for (const skin of nachgeliefert) {
-    meldung(`🎁 Neu: ${skin.icon} ${skin.name}`, `Für deine schon erreichte Season-Stufe – jetzt ${skin.platz ? "im Zimmer (🏠)" : "unter Skins"} auswählbar`);
+    meldung(`🎁 Neu: ${skin.icon} ${skin.name}`, `Für deine schon erreichte Season-Stufe – jetzt ${skin.platz ? "im Zimmer (🏠)" : skin.tierTyp ? "unter Skins → 🐾 Tiere" : "unter Skins"} auswählbar`);
   }
 
   setInterval(tick, KONFIG.tickMs);
