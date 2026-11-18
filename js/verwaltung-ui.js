@@ -125,6 +125,14 @@ function adminEreignisse(inhalt) {
   for (const w of WUNDER) {
     ereignis(`${w.icon} ${w.name} (Test)`, () => { wunderTest = w.id; pruefeWunder(); sag(w.id, { wichtig: true }); });
   }
+  ereignis("🎄 Adventskalender ansehen (Test)", () => {
+    const tag = Number(prompt("So tun, als wäre heute der … Dezember (1–24)? Es wird nichts gutgeschrieben.", "6"));
+    if (!(tag >= 1 && tag <= 31)) return;
+    adventTestTag = Math.floor(tag);
+    adventTestOffen = [];
+    pruefeAdvent();
+    meldung("🎄 Test-Kalender", `Tippe links auf 🎄 – heute ist der ${adventTestTag}. Dezember. Neu laden beendet den Test.`);
+  });
   ereignis("🎒 Ausflüge sofort beenden (Test)", () => {
     for (const t of alleHaustiere()) if (t.ausflug) t.ausflug.ende = Date.now();
     meldung("🎒 Gleich zurück!", "Alle Haustiere kommen jetzt vom Ausflug heim.");

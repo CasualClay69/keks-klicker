@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.64";
-const APP_NEU = "Neu: Haustier-Ausflüge! Schick dein Tier für 1 bis 8 Stunden auf Entdeckungstour – es bringt Herzen, Sticker und manchmal ein Mitbringsel fürs Zimmer mit.";
+const APP_VERSION = "1.65";
+const APP_NEU = "Neu: Der Adventskalender! Ab 1. Dezember öffnest du jeden Tag ein Türchen – und an Heiligabend wartet etwas ganz Großes. 🎄";

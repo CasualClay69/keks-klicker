@@ -856,7 +856,9 @@ function beimZimmerTeil(teil) {
   if (ergebnis === "gesperrt") {
     sound.fehler();
     const ziel = teil.ausflug && ausflugZiel(teil.ausflug);
-    meldung("🔒 Besonderes Teil", ziel
+    meldung("🔒 Besonderes Teil", teil.advent
+      ? `„${teil.name}“ steckt hinter Türchen ${teil.advent} im Adventskalender.`
+      : ziel
       ? `„${teil.name}“ bringt dein Haustier manchmal von einem Ausflug ${ziel.wohin} mit. Tippe auf dein Haustier!`
       : teil.feiertag
       ? `„${teil.name}“ gibt es als Geschenk zu ${FEIERTAGE.find(f => f.id === teil.feiertag).name}.`
@@ -927,6 +929,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeFeiertag();       // Nikolaus, Silvester, erster Schnee (feiertage-ui.js)
   pruefeWunder();         // geheime Ereignisse: Regenbogen-Tag usw. (wunder-ui.js)
   pruefeAusfluege();      // Haustier vom Ausflug zurück? (ausfluege-ui.js)
+  pruefeAdvent();         // Adventskalender-Knopf im Dezember (advent-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1396,6 +1399,7 @@ function starte() {
   richteGeburtstagEin();
   richteWunderEin();
   richteAusfluegeEin();
+  richteAdventEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();

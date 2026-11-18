@@ -25,6 +25,7 @@ function neuerSpielstand() {
     wunderGesehen: "", // geheime Ereignisse: "Tag:id", wenn das Fenster schon kam (siehe wunder.js)
     wunderErlebt: {},
     ausfluegeGesamt: 0, // beendete Haustier-Ausflüge (siehe ausfluege.js)
+    advent: null,      // Adventskalender: { jahr, offen: [Tage] } (siehe advent.js)
     stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)

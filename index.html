@@ -44,6 +44,7 @@
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
   <script src="js/feiertage.js" defer></script>
+  <script src="js/advent.js" defer></script>
   <script src="js/wunder.js" defer></script>
   <script src="js/herzregen.js" defer></script>
   <script src="js/minispiele.js" defer></script>
@@ -55,6 +56,7 @@
   <script src="js/spielhalle.js" defer></script>
   <script src="js/verwaltung-ui.js" defer></script>
   <script src="js/feiertage-ui.js" defer></script>
+  <script src="js/advent-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
   <script src="js/stickerpost-ui.js" defer></script>
@@ -69,6 +71,8 @@
     <button id="aufgabenBtn" type="button" title="Tagesaufgaben" aria-label="Tagesaufgaben öffnen">📋<b id="aufgabenBadge" hidden></b></button>
     <button id="bestenlisteBtn" type="button" title="Bestenliste" aria-label="Bestenliste öffnen" hidden>🏅</button>
     <button id="spieleBtn" type="button" title="Minispiele" aria-label="Minispiele öffnen">🎮</button>
+    <!-- Adventskalender: nur im Dezember. "!" = ein Türchen wartet (advent-ui.js) -->
+    <button id="adventBtn" type="button" title="Adventskalender" aria-label="Adventskalender öffnen" hidden>🎄<b id="adventBadge" hidden>!</b></button>
     <h1 id="titel" aria-label="Marie Clicker">
       <span class="logo-krone" aria-hidden="true">👑</span>
       <span class="logo-deko" aria-hidden="true"></span>
@@ -631,6 +635,19 @@
           <p id="ausflugRest" class="ausflugRest"></p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Adventskalender (advent-ui.js) -->
+  <div id="adventOverlay" class="overlay" hidden>
+    <div class="spielKarte adventKarte" role="dialog" aria-modal="true" aria-labelledby="adventTitel">
+      <div class="spielKopf">
+        <h2 id="adventTitel">🎄 Adventskalender</h2>
+        <button id="adventZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <p id="adventInfo" class="adventInfo"></p>
+      <div id="adventRaster" class="adventRaster"></div>
+      <div id="adventInhalt" class="adventInhalt" aria-live="polite" hidden></div>
     </div>
   </div>
 

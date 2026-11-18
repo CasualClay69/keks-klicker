@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.65", datum: "2026-11-18", neu: ["Adventskalender vom 1. bis 24. Dezember: jeden Tag ein Türchen mit Herzen und Weihnachts-Stickern", "Hinter manchen Türchen: Weihnachts-Sachen fürs Zimmer – und an Heiligabend ein prächtiger Christbaum", "Verpasste Türchen kann man bis Silvester nachholen", "Neuer Erfolg „Adventskind“"] },
   { v: "1.64", datum: "2026-11-18", neu: ["Haustier-Ausflüge: Schick dein Tier für 1 bis 8 Stunden auf Entdeckungstour – auch wenn das Spiel zu ist", "Es bringt Herzen, Sticker und Erfahrung mit – und manchmal ein Mitbringsel fürs Zimmer", "Neuer Erfolg „Weltenbummler“"] },
   { v: "1.63", datum: "2026-11-18", neu: ["Psst … ab jetzt passiert manchmal etwas ganz Besonderes. Halte die Augen offen! 🌈", "Ein neuer, geheimer Erfolg"] },
   { v: "1.62", datum: "2026-11-18", neu: ["Sticker-Post: In der Bestenliste auf 🎁 tippen und doppelte Sticker an andere verschicken", "Neuer Erfolg „Gute Freundin“: Verschicke 5 Sticker"] },

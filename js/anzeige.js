@@ -1342,6 +1342,7 @@ function zeigeZimmer(beimTeilWaehlen) {
     if (steht === teil) status = "✓ Im Zimmer";
     else if (besitzt) status = "Hinstellen";
     else if (teil.preis === null && teil.ausflug) status = "🔒 Ausflugs-Mitbringsel";
+    else if (teil.preis === null && teil.advent) status = `🔒 Adventstürchen ${teil.advent}`;
     else if (teil.preis === null && teil.feiertag) status = `🔒 ${FEIERTAGE.find(f => f.id === teil.feiertag).name}-Geschenk`;
     else if (teil.preis === null) status = `🔒 Season-Stufe ${Object.entries(SEASON_PAESSE.find(p => p.id === teil.season).skinBelohnungen).find(([, id]) => id === teil.id)[0]}`;
     else status = `${herz()} ${format(teil.preis)}`;
