@@ -77,7 +77,7 @@ Unter **📊 Statistik → 💾 Spielstand sichern**:
 - Eine gemeinsame Liste für alle Spieler: Spitzname eingeben, „Mitmachen“ – fertig
   (intern immer die Gruppe `BESTENLISTE.gruppe` = `marie-clicker`)
 - Gespeichert werden nur Spitzname, Herzen insgesamt, Herzen/Sek., Season-Stufe und Anzahl Erfolge
-- Admin-Menü 🛠️ (versteckt: 7× schnell auf die Versionsnummer tippen, dann PIN): Ereignisse auslösen, Belohnungs-Codes
+- Admin-Menü 🛠️ (versteckt: Logo 3 Sekunden gedrückt halten, 7× auf die Versionsnummer tippen oder Adresse mit #admin öffnen, dann PIN): Ereignisse auslösen, Belohnungs-Codes
   erstellen (Kinder lösen sie unter Statistik ein), Nachricht an alle, Umfragen, Bestenliste moderieren.
   Datenbank: `supabase/verwaltung.sql` einmal ausführen, danach die PIN separat setzen:
   `select public.admin_pin_setzen('…');` – die PIN gehört NIE in eine Datei im Repository

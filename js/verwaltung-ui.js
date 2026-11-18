@@ -1,7 +1,8 @@
 "use strict";
 // =====================================================
 //  VERWALTUNG – Bildschirm
-//  • Admin-Menü: versteckt – 7× schnell auf die Versionsnummer unter dem Logo tippen,
+//  • Admin-Menü: versteckt – Logo 3 Sekunden gedrückt halten, 7× auf die Versionsnummer tippen
+//    oder die Adresse mit #admin am Ende öffnen,
 //    dann PIN eingeben (die prüft die Datenbank, siehe supabase/verwaltung.sql)
 //  • Für alle: Nachricht an alle, Umfrage, Code einlösen (Statistik-Seite)
 //  Daten und Datenbank-Aufrufe: verwaltung.js
@@ -400,7 +401,25 @@ function richteVerwaltungEin() {
   if (!verwaltungMoeglich()) return;   // ohne Internet-Adresse (z.B. file://) keine Datenbank
   $("codeBereich").hidden = false;
 
-  // Versteckter Zugang: 7× schnell auf die Versionsnummer tippen
+  // Versteckter Zugang, drei Wege:
+  // 1) Logo 3 Sekunden gedrückt halten (das Logo wird dabei langsam kleiner)
+  const titel = $("titel");
+  let druckTimer = null;
+  const loslassen = () => { clearTimeout(druckTimer); titel.classList.remove("gedrueckt"); };
+  for (const teil of titel.querySelectorAll(".logo-marie, .logo-clicker")) {
+    teil.addEventListener("pointerdown", () => {
+      loslassen();
+      titel.classList.add("gedrueckt");
+      druckTimer = setTimeout(() => {
+        loslassen();
+        if (navigator.vibrate) navigator.vibrate(60);
+        oeffneAdmin();
+      }, 3000);
+    });
+    for (const ende of ["pointerup", "pointerleave", "pointercancel"]) teil.addEventListener(ende, loslassen);
+    teil.addEventListener("contextmenu", e => e.preventDefault());   // kein Menü bei langem Drücken
+  }
+  // 2) 7× schnell auf die Versionsnummer tippen
   let tipps = 0, letzterTipp = 0;
   $("version").addEventListener("click", () => {
     const jetzt = Date.now();
@@ -408,6 +427,14 @@ function richteVerwaltungEin() {
     letzterTipp = jetzt;
     if (tipps >= 7) { tipps = 0; oeffneAdmin(); }
   });
+  // 3) Adresse mit #admin am Ende öffnen (gut als Lesezeichen)
+  const perAdresse = () => {
+    if (location.hash !== "#admin") return;
+    history.replaceState(null, "", location.pathname + location.search);
+    oeffneAdmin();
+  };
+  perAdresse();
+  window.addEventListener("hashchange", perAdresse);
 
   $("adminZu").addEventListener("click", schliesseAdmin);
   $("adminAnmelden").addEventListener("click", beimAdminAnmelden);

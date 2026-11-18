@@ -1503,6 +1503,16 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 
 /* Versionsnummer klein unter dem Logo */
+/* Logo und Versionsnummer nehmen Berührungen an (Admin-Zugang: lange drücken bzw. 7× tippen),
+   der Rest von #titel bleibt durchlässig */
+.logo-marie, .logo-clicker, .logo-version {
+  pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.logo-marie, .logo-clicker { transition: scale 2.6s linear; }
+#titel.gedrueckt .logo-marie, #titel.gedrueckt .logo-clicker { scale: 0.85; }
 .logo-version {
   margin-top: 5px;
   padding: 1px 7px;
