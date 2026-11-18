@@ -67,6 +67,12 @@ button {
   font: inherit;
   color: inherit;
 }
+/* Ausgeschaltete Knöpfe bekommen vom Browser keine Fingertipps – dann greift auch der
+   Doppeltipp-Schutz nicht und schnelles Tippen (z.B. beim Füttern, bis das Tier satt ist)
+   würde zoomen. Darum geht der Tipp durch den Knopf hindurch auf die Fläche dahinter. */
+button:disabled {
+  pointer-events: none;
+}
 
 [hidden] { display: none !important; }
 
@@ -1764,6 +1770,8 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 .knopf.haupt { border-color: var(--akzent); background: var(--akzent); color: #fff; }
 .knopf:active { transform: scale(0.97); }
+/* Ausgeschaltet (z.B. Tier ist satt, zu wenig Herzen): blass, damit man sieht, dass es gerade nicht geht */
+.knopf:disabled { opacity: 0.45; filter: grayscale(0.5); }
 
 .sicherungInfo {
   margin: 4px 0;
