@@ -749,10 +749,101 @@ function baueAufgabenKarten() {
   aufgabenKarten = { tag: spiel.aufgaben.tag, karten };
 }
 
+// ----- Wochen-Missionen (gleiche Karten wie die Tagesaufgaben) -----
+
+let wochenKarten = { woche: null, karten: [] };
+let wochenAbholAktion = () => {};   // setzt main.js
+
+function setzeWochenAbholAktion(aktion) {
+  wochenAbholAktion = aktion;
+}
+
+function wochenBelohnungText(istBonus) {
+  const b = wochenBelohnung(istBonus);
+  const pass = aktiverSeasonPass();
+  let text = `🎁 +${format(b.herzen)} ${herz()}`;
+  if (b.seasonPunkte) text += ` · +${format(b.seasonPunkte)} ${pass.icon}`;
+  return text + (istBonus ? " · 🏆 Wochen-Schatz" : " · 📒 Sticker");
+}
+
+function baueWochenKarten() {
+  const liste = $("wochenListe");
+  liste.textContent = "";
+  const karten = [];
+  const w = spiel.wochenmissionen;
+  const eintraege = w.liste.map((m, i) => ({ index: i, mission: m }));
+  eintraege.push({ index: "bonus", mission: null });
+
+  for (const { index, mission } of eintraege) {
+    const karte = document.createElement("div");
+    karte.className = "aufgabe woche" + (mission ? "" : " bonus");
+    const fuellung = document.createElement("div");
+    fuellung.className = "aufgabeFuellung";
+    const balken = document.createElement("div");
+    balken.className = "aufgabeBalken";
+    balken.append(fuellung);
+    const zahl = span("aufgabeZahl");
+    const belohnung = span("aufgabeBelohnung");
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.className = "abholen";
+    knopf.addEventListener("click", () => wochenAbholAktion(index));
+    const zeile = document.createElement("div");
+    zeile.className = "aufgabeZeile";
+    zeile.append(zahl, belohnung, knopf);
+    karte.append(
+      span("aufgabeIcon", mission ? wochenIcon(mission) : "🏆"),
+      span("aufgabeText", mission ? wochenText(mission) : "Bonus: Schaffe alle 3 – für einen exklusiven Wochen-Schatz!"),
+      balken, zeile,
+    );
+    liste.append(karte);
+    karten.push({ index, mission, karte, fuellung, zahl, belohnung, knopf });
+  }
+  wochenKarten = { woche: w.woche, liste: w.liste, karten };
+}
+
+function zeigeWochenMissionen() {
+  const w = spiel.wochenmissionen;
+  if (!w) return;
+  if (wochenKarten.woche !== w.woche || wochenKarten.liste !== w.liste) baueWochenKarten();
+  if ($("seiteAufgaben").hidden) return;
+
+  const ms = msBisWochenende();
+  const tage = Math.floor(ms / 86400000);
+  const stunden = Math.floor((ms % 86400000) / 3600000);
+  setzeText($("wochenZeit"), `⏳ Neue Missionen in ${tage > 0 ? `${tage} ${tage === 1 ? "Tag" : "Tagen"} ` : ""}${stunden} Std.`);
+
+  const alleAbgeholt = w.liste.every(m => m.abgeholt);
+  for (const k of wochenKarten.karten) {
+    let anteil, zahl, fertig, abgeholt;
+    if (k.mission) {
+      const m = k.mission;
+      anteil = m.fortschritt / m.ziel;
+      zahl = wochenFortschrittText(m);
+      fertig = m.erledigt;
+      abgeholt = m.abgeholt;
+    } else {
+      const geschafft = w.liste.filter(m => m.abgeholt).length;
+      anteil = geschafft / w.liste.length;
+      zahl = `${geschafft} / ${w.liste.length}`;
+      fertig = alleAbgeholt;
+      abgeholt = w.bonusAbgeholt;
+    }
+    k.fuellung.style.width = (Math.min(1, anteil) * 100).toFixed(1) + "%";
+    setzeText(k.zahl, zahl);
+    setzeText(k.belohnung, abgeholt ? "" : wochenBelohnungText(!k.mission));
+    setzeText(k.knopf, abgeholt ? "✓ Abgeholt" : fertig ? "🎁 Abholen" : "Noch nicht");
+    k.knopf.disabled = !fertig || abgeholt;
+    k.karte.classList.toggle("fertig", fertig && !abgeholt);
+    k.karte.classList.toggle("abgeholt", abgeholt);
+  }
+}
+
 // 10× pro Sekunde: Zahl am Symbol, und – wenn die Seite offen ist – Fortschritt der Karten
 function zeigeAufgaben() {
+  zeigeWochenMissionen();
   if (!spiel.aufgaben) return;
-  const abholbar = anzahlAbholbar();
+  const abholbar = anzahlAbholbar() + anzahlWochenAbholbar();
   ui.aufgabenBadge.hidden = abholbar === 0;
   setzeText(ui.aufgabenBadge, String(abholbar));
 
@@ -1596,7 +1687,7 @@ function zeigeSeite(seiteId) {
     const pass = aktiverSeasonPass();
     titel = `${pass ? pass.icon : "🎟️"} Season-Pass`;
   }
-  if (seiteId === "seiteAufgaben") titel = "📋 Tagesaufgaben";
+  if (seiteId === "seiteAufgaben") titel = "📋 Aufgaben";
   if (seiteId === "seiteBestenliste") titel = "🏅 Bestenliste";
   if (seiteId === "seiteAlbum") titel = "📒 Sticker-Album";
   if (seiteId === "seiteSpiele") titel = "🎮 Minispiele";

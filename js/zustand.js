@@ -17,6 +17,8 @@ function neuerSpielstand() {
     upgrades: [],      // IDs gekaufter Upgrades
     aufgaben: null,    // Tagesaufgaben (siehe aufgaben.js)
     aufgabenGesamt: 0, // insgesamt erledigte Tagesaufgaben
+    wochenmissionen: null, // die 3 Wochen-Missionen (siehe wochenmissionen.js)
+    wochenBoni: 0,     // wie oft alle 3 Wochen-Missionen geschafft
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)
     sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)

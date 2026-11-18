@@ -25,7 +25,10 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Minispiele 🎮 (`js/minispiele.js` Regeln, `js/spielhalle.js` Spiele): Sticker-Memory mit den eigenen Stickern,
   „Finde Marie/Hannah“ zwischen Doppelgängerinnen (5 Runden auf Zeit) und Leckerli-Fangen mit dem Haustier
   (macht es satt). Belohnung wie beim Herzregen, pro Spiel 5-mal am Tag voll, danach 20 %
-- 45 Erfolge (je +1 % Herzen)
+- Wochen-Missionen 🗓️ (`js/wochenmissionen.js`): jede Woche 3 größere Aufgaben (unter 📋, unter den Tagesaufgaben).
+  Jede bringt ~1 Std. Produktion, Season-Punkte und einen Sticker; alle 3 zusammen einen exklusiven Sticker
+  der Album-Seite „🏆 Wochen-Schätze“ (12 Stück, gibt es nur so). Nicht abgeholte Belohnungen kommen in der neuen Woche automatisch
+- 47 Erfolge (je +1 % Herzen)
 - Offline-Fortschritt 🌙: Die Herzschenker sammeln weiter, während die App zu ist (bis zu 8 Stunden,
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute
 - Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;

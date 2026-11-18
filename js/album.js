@@ -31,6 +31,12 @@ const STICKER_SEITEN = [
     ["🧚", "Fee"], ["🐉", "Drache"], ["🏰", "Schloss"],
     ["🦄", "Einhorn"], ["👸", "Prinzessin"] ] },
 
+  // ───── Exklusiv: nur als Bonus der Wochen-Missionen (wochenmissionen.js), alle super-selten ─────
+  { id: "wochenschaetze", exklusiv: true, name: "Wochen-Schätze", icon: "🏆", farbe: "#fff4cc", sticker: [
+    ["🏆", "Pokal"], ["🥇", "Goldmedaille"], ["💎", "Diamant"], ["🪅", "Piñata"], ["🎠", "Karussell"], ["🌠", "Sternschnuppe"],
+    ["🧜‍♀️", "Meerjungfrau"], ["🪐", "Planet"], ["🦚", "Pfau"], ["🎡", "Riesenrad"],
+    ["🧸", "Goldener Teddy"], ["💫", "Sternenstaub"] ] },
+
   // ───── Season-Seiten: erscheinen erst, wenn ihre Season beginnt, und sind nur dann sammelbar ─────
   { id: "s1-thanksgiving", season: "s1", name: "Thanksgiving", icon: "🦃", farbe: "#ffe9d2", sticker: [
     ["🍂", "Herbstblatt"], ["🍁", "Ahornblatt"], ["🎃", "Kürbis"], ["🌽", "Maiskolben"], ["🍎", "Apfel"], ["🥧", "Kuchen"], ["🌰", "Kastanie"],
@@ -64,7 +70,7 @@ function stickerDerSeite(seite) {
     seite,
     emoji,
     name,
-    seltenheit: i < 7 ? "normal" : i < 10 ? "selten" : "super",
+    seltenheit: seite.exklusiv ? "super" : i < 7 ? "normal" : i < 10 ? "selten" : "super",
   }));
 }
 
@@ -77,8 +83,8 @@ function fuegeStickerSeiteHinzu(seite) {
   ALLE_STICKER.push(...stickerDerSeite(seite));
 }
 
-// Die 60 Sticker der 5 Grundseiten (ohne Season-Seiten)
-const GRUND_STICKER = ALLE_STICKER.filter(s => !s.seite.season);
+// Die 60 Sticker der 5 Grundseiten (ohne Season-Seiten und ohne exklusive Wochen-Schätze)
+const GRUND_STICKER = ALLE_STICKER.filter(s => !s.seite.season && !s.seite.exklusiv);
 
 function stickerAnzahl(sticker) {
   return (spiel.sticker && spiel.sticker[sticker.id]) || 0;
@@ -140,20 +146,27 @@ function versucheSticker(quelle) {
 }
 
 // Gibt einen zufälligen Sticker. Rückgabe: { sticker, neu, herzen, seiteFertig, seitenHerzen }
-function gibSticker(quelle = "klick") {
+// eigenerVorrat: nur aus dieser Liste, fehlende zuerst (z.B. die exklusiven Wochen-Schätze)
+function gibSticker(quelle = "klick", eigenerVorrat = null) {
   if (!spiel.sticker) spiel.sticker = {};
   if (!spiel.stickerNeu) spiel.stickerNeu = [];
 
-  // Aus welchem Vorrat? Während einer Season manchmal (bei Season-Stufen immer) von der Season-Seite
-  const seasonSeite = aktuelleSeasonSeite();
-  const vonSeason = seasonSeite && (quelle === "season" || Math.random() < SEASON_STICKER_ANTEIL);
-  const vorrat = vonSeason ? ALLE_STICKER.filter(s => s.seite === seasonSeite) : GRUND_STICKER;
+  let sticker;
+  if (eigenerVorrat) {
+    const fehlend = eigenerVorrat.filter(s => stickerAnzahl(s) === 0);
+    sticker = zufallAus(fehlend.length ? fehlend : eigenerVorrat);
+  } else {
+    // Aus welchem Vorrat? Während einer Season manchmal (bei Season-Stufen immer) von der Season-Seite
+    const seasonSeite = aktuelleSeasonSeite();
+    const vonSeason = seasonSeite && (quelle === "season" || Math.random() < SEASON_STICKER_ANTEIL);
+    const vorrat = vonSeason ? ALLE_STICKER.filter(s => s.seite === seasonSeite) : GRUND_STICKER;
 
-  const stufe = zufallGewichtet(SELTENHEITEN);
-  const kandidaten = vorrat.filter(s => s.seltenheit === stufe.id);
-  // Zur Hälfte bevorzugt einen fehlenden Sticker – damit das Vollmachen nicht ewig dauert
-  const fehlend = kandidaten.filter(s => stickerAnzahl(s) === 0);
-  const sticker = fehlend.length && Math.random() < 0.5 ? zufallAus(fehlend) : zufallAus(kandidaten);
+    const stufe = zufallGewichtet(SELTENHEITEN);
+    const kandidaten = vorrat.filter(s => s.seltenheit === stufe.id);
+    // Zur Hälfte bevorzugt einen fehlenden Sticker – damit das Vollmachen nicht ewig dauert
+    const fehlend = kandidaten.filter(s => stickerAnzahl(s) === 0);
+    sticker = fehlend.length && Math.random() < 0.5 ? zufallAus(fehlend) : zufallAus(kandidaten);
+  }
 
   const neu = stickerAnzahl(sticker) === 0;
   spiel.sticker[sticker.id] = stickerAnzahl(sticker) + 1;

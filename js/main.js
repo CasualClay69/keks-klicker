@@ -361,6 +361,43 @@ function meldeAufgaben(fertige) {
   }
 }
 
+// ----- Wochen-Missionen -----
+
+function meldeWochenMissionen(fertige) {
+  for (const m of fertige) {
+    sound.erfolg();
+    aufgabenSymbolFeiern();
+    meldung(`🗓️ Wochen-Mission geschafft! ${wochenIcon(m)}`, `${wochenText(m)} – tippe auf 📋 und hol dir deine Belohnung!`);
+  }
+}
+
+function meldeWochenBelohnung(ergebnis, nachgeholt = false) {
+  const pass = aktiverSeasonPass();
+  const season = ergebnis.seasonPunkte ? ` · +${format(ergebnis.seasonPunkte)} ${pass.icon}` : "";
+  const titel = ergebnis.istBonus ? "🏆 Wochen-Bonus!" : "🗓️ Wochen-Belohnung!";
+  meldung(nachgeholt ? `${titel} (von letzter Woche)` : titel, `+${format(ergebnis.herzen)} ${herz()}${season}`);
+  if (ergebnis.istBonus && ergebnis.sticker) {
+    const s = ergebnis.sticker.sticker;
+    meldung(`🏆 Exklusiver Wochen-Schatz: ${s.emoji} ${s.name}!`, ergebnis.sticker.neu ? "Schau ins Album – Seite „Wochen-Schätze“!" : "Den hattest du schon – dafür gibt es Herzen.");
+    albumSymbolFeiern();
+    if (ergebnis.sticker.seiteFertig) meldeSticker(ergebnis.sticker);
+  } else if (ergebnis.sticker) {
+    meldeSticker(ergebnis.sticker);
+  }
+  for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+}
+
+function beimWochenAbholen(index) {
+  const ergebnis = holeWochenMissionAb(index);
+  if (!ergebnis) return;
+  sound.stern();
+  if (ergebnis.istBonus) { setTimeout(() => sound.erfolg(), 350); konfetti($("spielfeld")); }
+  meldeWochenBelohnung(ergebnis);
+  pruefeErfolgeUndStatistik();
+  speichern();
+  aktualisiereAnzeige();
+}
+
 // "Abholen"-Knopf (index 0..2 oder "bonus")
 function beimAufgabeAbholen(index) {
   const ergebnis = holeAufgabeAb(index);
@@ -375,6 +412,11 @@ function beimAufgabeAbholen(index) {
 
 // Neuer Tag? -> neue Aufgaben, Vortags-Belohnungen automatisch gutschreiben
 function pruefeTageswechsel() {
+  const woche = pruefeWochenwechsel();
+  for (const b of woche.nachgeholt) meldeWochenBelohnung(b, true);
+  if (woche.neu && woche.nachgeholt.length === 0 && spiel.klicks > 0) {
+    meldung("🗓️ Neue Wochen-Missionen!", "Tippe auf 📋 – diese Woche wartet ein exklusiver Wochen-Schatz.");
+  }
   const { neu, nachgeholt } = pruefeAufgabenTag();
   for (const b of nachgeholt) {
     if (!b) continue;
@@ -872,6 +914,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeGeburtstag();     // Geburtstagsgeschenk hat Vorrang vor dem täglichen Geschenk
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
+  meldeWochenMissionen(aktualisiereWochenMissionen());
 
   for (const erfolg of pruefeNeueErfolge()) {
     const prozent = Math.round(KONFIG.erfolgBonus * 100);
@@ -1277,6 +1320,7 @@ function starte() {
   ladeSkins();
   const nachgeliefert = seasonSkinsNachliefern();   // z.B. neues Logo für schon erreichte Stufe 40
   setzeAufgabenAbholAktion(beimAufgabeAbholen);
+  setzeWochenAbholAktion(beimWochenAbholen);
   wendeSkinsAn();
   baueOberflaeche({ kaufeItem: beimKaufen, kaufeUpgrade: beimUpgradeKaufen });
   baueSkinSeite(beimSkinWaehlen);

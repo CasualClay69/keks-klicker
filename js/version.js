@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.55";
-const APP_NEU = "Repariert: Kleinigkeiten am Logo. Danke an Selina für die Season-Idee :)";
+const APP_VERSION = "1.56";
+const APP_NEU = "Neu: Wochen-Missionen unter 📋! Schaffst du alle 3, gibt es einen exklusiven Wochen-Schatz fürs Album. 🏆 Danke an Selina für die Season-Idee :)";
