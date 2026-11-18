@@ -34,8 +34,10 @@ function geburtstagGeoeffnetJahr(figurId) {
 }
 
 // Hut und Musik: am Geburtstag immer Partyhut und "Happy Birthday"
+// (Feiertage wie Nikolaus und Silvester haben auch einen Hut, siehe feiertage.js – der Geburtstag geht vor)
 function aktuellerHut() {
-  return istGeburtstag() ? SKINS.find(s => s.id === "hut-partyhut") : aktiverSkin("hut");
+  if (istGeburtstag()) return SKINS.find(s => s.id === "hut-partyhut");
+  return (typeof feiertagHut === "function" && feiertagHut()) || aktiverSkin("hut");
 }
 
 function aktuellesMusikStueck() {

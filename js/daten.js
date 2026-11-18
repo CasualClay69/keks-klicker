@@ -127,6 +127,7 @@ const ERFOLGE = [
   { id: "fangen30",   icon: "🧺", name: "Leckerli-Profi",    beschr: "Fange 30 Punkte beim Leckerli-Fangen",       bedingung: s => (s.minispiele?.best?.fangen || 0) >= 30 },
   { id: "woche1",     icon: "🗓️", name: "Wochen-Champion",   beschr: "Schaffe alle 3 Wochen-Missionen einer Woche", bedingung: s => (s.wochenBoni || 0) >= 1 },
   { id: "wochenSchatz", icon: "🏆", name: "Schatzkammer",    beschr: "Sammle alle 12 Wochen-Schätze im Album",   bedingung: () => { const seite = STICKER_SEITEN.find(x => x.exklusiv); return Boolean(seite) && seiteVoll(seite); } },
+  { id: "feiertage",  icon: "🎉", name: "Feiertagskind",     beschr: "Öffne die Geschenke von Nikolaus, Silvester und dem ersten Schnee", bedingung: s => ["nikolaus", "silvester", "schnee"].every(id => s.feiertage && s.feiertage[id]) },
   { id: "zimmer1",    icon: "🏠", name: "Eingezogen",        beschr: "Kaufe das erste Teil für Maries Zimmer",   bedingung: () => anzahlZimmerTeile() >= 1 },
   { id: "zimmer15",   icon: "🛋️", name: "Gemütlich",         beschr: "Besitze 15 Teile für Maries Zimmer",       bedingung: () => anzahlZimmerTeile() >= 15 },
   { id: "zimmerVoll", icon: "🏡", name: "Traumzimmer",       beschr: "Stelle auf jeden Platz im Zimmer etwas hin", bedingung: () => zimmerVoll() },

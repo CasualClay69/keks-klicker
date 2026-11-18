@@ -25,6 +25,9 @@ const SPRUECHE = {
   regenStart:    ["Schnell, fang sie alle! 💨", "Wow, es regnet! Fang sie!", "Los geht's! 🧺"],
   regenGut:      ["Wow, so viele! 🤩", "Du bist super schnell! ⚡", "Toll gefangen! 🧺"],
   regenOk:       ["Gut gemacht! 💕", "Das hat Spaß gemacht!", "Beim nächsten Mal noch mehr!"],
+  nikolaus:      ["Der Nikolaus war da! 🎅", "Schau mal in den Stiefel! 🥾", "Ich war ganz brav! 😇"],
+  silvester:     ["Guten Rutsch! 🎆", "Ein frohes neues Jahr! 🥂", "Wow, Feuerwerk! 🎇"],
+  schnee:        ["Es schneit! ❄️", "Juhu, Schnee! ⛄", "Lass uns einen Schneemann bauen! ☃️"],
   geburtstag:    ["Heute ist mein Geburtstag! 🎂", "Danke für die Glückwünsche! 🥳", "Party! 🎉🎈", "Juhu, ich habe Geburtstag! 🎁"],
 };
 

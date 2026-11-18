@@ -1331,6 +1331,7 @@ function zeigeZimmer(beimTeilWaehlen) {
     let status;
     if (steht === teil) status = "✓ Im Zimmer";
     else if (besitzt) status = "Hinstellen";
+    else if (teil.preis === null && teil.feiertag) status = `🔒 ${FEIERTAGE.find(f => f.id === teil.feiertag).name}-Geschenk`;
     else if (teil.preis === null) status = `🔒 Season-Stufe ${Object.entries(SEASON_PAESSE.find(p => p.id === teil.season).skinBelohnungen).find(([, id]) => id === teil.id)[0]}`;
     else status = `${herz()} ${format(teil.preis)}`;
     karte.classList.toggle("aktiv", steht === teil);

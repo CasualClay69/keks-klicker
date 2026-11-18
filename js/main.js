@@ -225,7 +225,8 @@ function pruefeMarieSpricht() {
   const jetzt = Date.now();
   if (begruessungOffen && marieDarfSprechen()) {
     begruessungOffen = false;
-    setTimeout(() => sag(istGeburtstag() ? "geburtstag" : begruessungsArt(), { wichtig: true }), 700);
+    const feiertag = aktiverFeiertag();
+    setTimeout(() => sag(istGeburtstag() ? "geburtstag" : feiertag ? feiertag.id : begruessungsArt(), { wichtig: true }), 700);
     return;
   }
   // Niemand klickt seit 45 Sekunden -> langweilig (danach höchstens jede Minute)
@@ -854,7 +855,9 @@ function beimZimmerTeil(teil) {
   }
   if (ergebnis === "gesperrt") {
     sound.fehler();
-    meldung("🔒 Season-Belohnung", `„${teil.name}“ gibt es im ${seasonName(teil.season)}.`);
+    meldung("🔒 Besonderes Teil", teil.feiertag
+      ? `„${teil.name}“ gibt es als Geschenk zu ${FEIERTAGE.find(f => f.id === teil.feiertag).name}.`
+      : `„${teil.name}“ gibt es im ${seasonName(teil.season)}.`);
     return;
   }
   if (ergebnis === "gekauft") {
@@ -918,6 +921,7 @@ function pruefeErfolgeUndStatistik() {
   aktualisiereHunger();   // das Haustier wird langsam hungrig
   pruefeTageswechsel();
   pruefeGeburtstag();     // Geburtstagsgeschenk hat Vorrang vor dem täglichen Geschenk
+  pruefeFeiertag();       // Nikolaus, Silvester, erster Schnee (feiertage-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1340,6 +1344,12 @@ function starte() {
   baueZimmer(beimZimmerPlatz);
   richteSkinReiterEin();
   richteGeburtstagEin();
+  richteFeiertageEin(ergebnis => {
+    for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
+    if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();
+    pruefeErfolgeUndStatistik();
+    aktualisiereAnzeige();
+  });
   richteNeustartEin();
   richteOfflineEin();
   richteBestenlisteEin();

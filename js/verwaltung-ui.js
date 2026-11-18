@@ -116,7 +116,26 @@ function adminEreignisse(inhalt) {
     zeigeHaustier();
     meldung("🍖 Alle satt!", "Die Haustiere sind glücklich.");
   });
+  // Feiertage vorab ansehen – nur Hut und Effekt, ohne Geschenk, bis die Seite neu geladen wird
+  for (const f of FEIERTAGE) {
+    ereignis(`${f.icon} ${f.name} ansehen (Test)`, () => { feiertagTest = f.id; pruefeFeiertag(); sag(f.id, { wichtig: true }); });
+  }
+  ereignis("🚫 Feiertags-Test beenden", () => { feiertagTest = null; pruefeFeiertag(); });
   inhalt.append(liste);
+
+  // Für ALLE Geräte: Erster Schnee
+  inhalt.append(el("h3", "", "Für alle Geräte"),
+    el("p", "seitenInfo", "Schneit es draußen zum ersten Mal? Dann tippe hier – heute schneit es auf allen Tablets, und alle bekommen das Schnee-Geschenk (einmal pro Winter)."));
+  const schnee = el("div", "adminKnoepfe");
+  schnee.append(knopf("❄️ Erster Schnee – für alle!", () => adminVersuche(inhalt, async () => {
+    if (!confirm("Heute ist der erste Schnee? Dann schneit es heute auf allen Geräten.")) { adminStatus(inhalt, ""); return; }
+    await adminEreignis("schnee");
+    await pruefeSchneeEreignis();
+    sound.erfolg();
+    adminStatus(inhalt, "✓ Es schneit! Die anderen Geräte merken es beim nächsten Öffnen.");
+    pruefeFeiertag();
+  }), "knopf haupt"));
+  inhalt.append(schnee);
 }
 
 // ----- 🎁 Belohnungs-Codes -----
@@ -382,6 +401,7 @@ async function pruefeNeuigkeiten() {
   if (!verwaltungMoeglich() || document.hidden) return;
   // Gerade ein anderes Fenster offen (z.B. Tagesgeschenk)? Dann gleich nochmal versuchen.
   if (irgendeinFensterOffen()) { neuigkeitenTimer = setTimeout(pruefeNeuigkeiten, 15000); return; }
+  try { await pruefeSchneeEreignis(); } catch (e) { /* ohne Ereignis-Tabelle: kein Schnee */ }
   try {
     const n = await holeNachricht();
     if (n && !nachrichtGesehen(n.id) && !irgendeinFensterOffen()) {

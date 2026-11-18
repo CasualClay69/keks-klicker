@@ -1,5 +1,5 @@
 -- =====================================================
---  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Familienziel
+--  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Familienziel, Ereignisse
 --
 --  Einmal im Supabase-Dashboard unter "SQL Editor" einfügen und auf "Run" klicken.
 --  Kann gefahrlos mehrmals ausgeführt werden. Braucht vorher supabase/bestenliste.sql.
@@ -460,6 +460,47 @@ $$;
 
 
 -- =====================================================
+--  EREIGNISSE FÜR ALLE (z.B. "Erster Schnee"): der Admin löst sie aus,
+--  dann gelten sie an diesem Tag (deutsche Zeit) auf allen Geräten
+-- =====================================================
+
+create table if not exists public.bl_ereignisse (
+  id       bigint generated always as identity primary key,
+  art      text not null,
+  tag      date not null,
+  erstellt timestamptz not null default now()
+);
+alter table public.bl_ereignisse enable row level security;
+revoke all on public.bl_ereignisse from anon, authenticated;
+
+create or replace function public.admin_ereignis(p_pin text, p_art text)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare f text := admin_fehler(p_pin);
+begin
+  if f is not null then return json_build_object('fehler', f); end if;
+  if p_art not in ('schnee') then return json_build_object('fehler', 'Unbekanntes Ereignis.'); end if;
+  insert into bl_ereignisse (art, tag) values (p_art, (now() at time zone 'Europe/Berlin')::date);
+  return json_build_object('ok', true);
+end;
+$$;
+
+create or replace function public.hole_ereignis(p_art text)
+returns json
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select json_build_object('art', art, 'tag', to_char(tag, 'YYYY-MM-DD'))
+  from bl_ereignisse where art = p_art order by id desc limit 1;
+$$;
+
+
+-- =====================================================
 --  RECHTE: Besucher dürfen nur diese Funktionen aufrufen
 -- =====================================================
 revoke all on function public.admin_anmelden(text) from public;
@@ -477,6 +518,8 @@ revoke all on function public.admin_eintrag_umbenennen(text, uuid, text) from pu
 revoke all on function public.admin_familienziel(text, text, double precision, text, double precision) from public;
 revoke all on function public.admin_familienziel_beenden(text) from public;
 revoke all on function public.hole_familienziel() from public;
+revoke all on function public.admin_ereignis(text, text) from public;
+revoke all on function public.hole_ereignis(text) from public;
 
 grant execute on function public.admin_anmelden(text) to anon, authenticated;
 grant execute on function public.admin_code_erstellen(text, text, double precision, text) to anon, authenticated;
@@ -493,3 +536,5 @@ grant execute on function public.admin_eintrag_umbenennen(text, uuid, text) to a
 grant execute on function public.admin_familienziel(text, text, double precision, text, double precision) to anon, authenticated;
 grant execute on function public.admin_familienziel_beenden(text) to anon, authenticated;
 grant execute on function public.hole_familienziel() to anon, authenticated;
+grant execute on function public.admin_ereignis(text, text) to anon, authenticated;
+grant execute on function public.hole_ereignis(text) to anon, authenticated;

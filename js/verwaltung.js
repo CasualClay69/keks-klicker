@@ -128,6 +128,17 @@ async function loeseCodeEin(code) {
   return { text: b.text || "", ...wendeBelohnungAn(b.art, b.menge) };
 }
 
+// ----- Ereignisse für alle (z.B. "Erster Schnee") -----
+
+const adminEreignis = art => adminAufruf("admin_ereignis", { p_art: art });
+const holeEreignis  = art => rufeBestenlisteAuf("hole_ereignis", { p_art: art });
+
+// Hat der Admin heute "Erster Schnee" ausgelöst? Dann den Tag merken (feiertage.js)
+async function pruefeSchneeEreignis() {
+  const e = await holeEreignis("schnee");
+  if (e && e.tag) setzeSchneeTag(e.tag);
+}
+
 // ----- Familienziel -----
 
 const holeFamilienziel = () => rufeBestenlisteAuf("hole_familienziel", {});

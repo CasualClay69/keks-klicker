@@ -28,7 +28,7 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
 - Wochen-Missionen 🗓️ (`js/wochenmissionen.js`): jede Woche 3 größere Aufgaben (unter 📋, unter den Tagesaufgaben).
   Jede bringt ~1 Std. Produktion, Season-Punkte und einen Sticker; alle 3 zusammen einen exklusiven Sticker
   der Album-Seite „🏆 Wochen-Schätze“ (12 Stück, gibt es nur so). Nicht abgeholte Belohnungen kommen in der neuen Woche automatisch
-- 47 Erfolge (je +1 % Herzen)
+- 48 Erfolge (je +1 % Herzen)
 - Offline-Fortschritt 🌙: Die Herzschenker sammeln weiter, während die App zu ist (bis zu 8 Stunden,
   einstellbar in `KONFIG.offline`). Beim Zurückkommen zeigt ein Willkommen-Fenster die Ausbeute
 - Herzregen 💖: alle 6–12 Minuten fallen 20 Sekunden lang Herzen – antippen und Bonus kassieren;
@@ -37,6 +37,9 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   Geschenk mit Partyhut und Melodie als dauerhaften Skins (Daten in `GEBURTSTAG.termine` in `js/geburtstag.js`)
 - Marie spricht 💬: Sprechblasen beim Klicken, bei Sternschnuppen, Erfolgen, Begrüßung nach Tageszeit
   und „Mir ist langweilig…“, wenn 45 Sekunden niemand klickt (Sprüche in `js/sprechen.js`)
+- Feiertage 🎅🎆❄️ (`js/feiertage.js`, Bildschirm `js/feiertage-ui.js`): Nikolaus (6.12.: Weihnachtsmütze, goldene Sterne,
+  Stiefel-Geschenk), Silvester (31.12./1.1.: Partyhut, Feuerwerk, Glücksbringer), Erster Schnee (löst der Admin aus, dann
+  schneit es an dem Tag auf allen Geräten). Geschenk einmal pro Jahr/Winter, beim ersten Mal ein Andenken fürs Zimmer
 - Haustiere 🐾: Kätzchen (grau-weiß, selbst gezeichnet), Häschen, Hündchen oder Einhorn-Baby – füttern, streicheln,
   wächst von Baby über Kind und Groß bis Prächtig (Level 50); satt gibt es +1 % Herzen pro Level, hungrig schläft es nur.
   Ab Level 50 darf ein zweites Tier einziehen (links neben der Figur).
