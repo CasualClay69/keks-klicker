@@ -43,6 +43,7 @@
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
   <script src="js/feiertage.js" defer></script>
+  <script src="js/wunder.js" defer></script>
   <script src="js/herzregen.js" defer></script>
   <script src="js/minispiele.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
@@ -53,6 +54,7 @@
   <script src="js/spielhalle.js" defer></script>
   <script src="js/verwaltung-ui.js" defer></script>
   <script src="js/feiertage-ui.js" defer></script>
+  <script src="js/wunder-ui.js" defer></script>
   <script src="js/stickerpost-ui.js" defer></script>
   <script src="js/main.js"    defer></script>
 </head>
@@ -101,6 +103,8 @@
 
     <!-- Geburtstag: Konfetti-Regen (nur am 3. Februar sichtbar) -->
     <div id="konfettiRegen" class="konfettiRegen" aria-hidden="true" hidden></div>
+    <!-- Geheime Ereignisse: Regenbogen, Nachthimmel, Kleeblätter (wunder-ui.js) -->
+    <div id="wunderEffekt" class="wunderEffekt" aria-hidden="true" hidden></div>
     <!-- Feiertage: Schnee, goldene Sterne oder Feuerwerk (feiertage-ui.js) -->
     <div id="feiertagEffekt" class="feiertagEffekt" aria-hidden="true" hidden></div>
 
@@ -444,6 +448,16 @@
   </div>
 
   <!-- Geburtstags-Geschenk (am 3. Februar) -->
+  <!-- Geheime Ereignisse: Überraschungs-Fenster -->
+  <div id="wunderOverlay" class="overlay" hidden>
+    <div class="geschenkKarte wunderKarte" role="dialog" aria-modal="true" aria-labelledby="wuTitel">
+      <div id="wuIcon" class="wunderIcon" aria-hidden="true"></div>
+      <h2 id="wuTitel"></h2>
+      <p id="wuText" class="geschenkSerie"></p>
+      <button id="wuZu" class="knopf haupt" type="button">Juhu! ✨</button>
+    </div>
+  </div>
+
   <!-- Feiertage: Nikolaus, Silvester, erster Schnee -->
   <div id="feiertagOverlay" class="overlay" hidden>
     <div class="geschenkKarte geburtstagKarte" role="dialog" aria-modal="true" aria-labelledby="ftTitel">

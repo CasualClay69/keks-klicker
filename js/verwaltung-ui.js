@@ -121,6 +121,11 @@ function adminEreignisse(inhalt) {
     ereignis(`${f.icon} ${f.name} ansehen (Test)`, () => { feiertagTest = f.id; pruefeFeiertag(); sag(f.id, { wichtig: true }); });
   }
   ereignis("🚫 Feiertags-Test beenden", () => { feiertagTest = null; pruefeFeiertag(); });
+  // Geheime Ereignisse vorab ansehen (wirken echt, bis die Seite neu geladen wird)
+  for (const w of WUNDER) {
+    ereignis(`${w.icon} ${w.name} (Test)`, () => { wunderTest = w.id; pruefeWunder(); sag(w.id, { wichtig: true }); });
+  }
+  ereignis("🚫 Wunder-Test beenden", () => { wunderTest = null; pruefeWunder(); });
   inhalt.append(liste);
 
   // Für ALLE Geräte: Erster Schnee

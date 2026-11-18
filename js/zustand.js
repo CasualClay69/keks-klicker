@@ -22,6 +22,8 @@ function neuerSpielstand() {
     familienziele: [],
     feiertage: {},     // Feiertags-Geschenke: { nikolaus: 2026, … } (siehe feiertage.js)
     stickerVerschickt: 0,  // Sticker-Post (siehe stickerpost.js)
+    wunderGesehen: "", // geheime Ereignisse: "Tag:id", wenn das Fenster schon kam (siehe wunder.js)
+    wunderErlebt: {},
     stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)

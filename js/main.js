@@ -479,7 +479,7 @@ let sternTimer = null;
 
 function planeStern() {
   clearTimeout(sternTimer);
-  const { minWartenSek, maxWartenSek } = KONFIG.stern;
+  const [minWartenSek, maxWartenSek] = sternWartezeit();   // in der Sternschnuppen-Nacht viel öfter (wunder.js)
   sternTimer = setTimeout(sternErscheint, zufallZwischen(minWartenSek, maxWartenSek) * 1000);
 }
 
@@ -922,6 +922,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeTageswechsel();
   pruefeGeburtstag();     // Geburtstagsgeschenk hat Vorrang vor dem täglichen Geschenk
   pruefeFeiertag();       // Nikolaus, Silvester, erster Schnee (feiertage-ui.js)
+  pruefeWunder();         // geheime Ereignisse: Regenbogen-Tag usw. (wunder-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1389,6 +1390,7 @@ function starte() {
   baueZimmer(beimZimmerPlatz);
   richteSkinReiterEin();
   richteGeburtstagEin();
+  richteWunderEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();

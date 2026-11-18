@@ -171,7 +171,8 @@ function zeigeKopf() {
 
   const rest = bonusRestSekunden();
   const b = aktuellerBonus();
-  setzeText(ui.bonus, rest > 0 ? `${b.name}: ${b.text} – noch ${rest}s` : "");
+  const wunder = typeof aktivesWunder === "function" ? aktivesWunder() : null;   // geheime Ereignisse (wunder.js)
+  setzeText(ui.bonus, rest > 0 ? `${b.name}: ${b.text} – noch ${rest}s` : wunder ? wunder.kurz : "");
 }
 
 function zeigeKlickItems() {

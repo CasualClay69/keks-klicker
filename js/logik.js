@@ -93,15 +93,18 @@ function basisHps() {
   return GEBAEUDE.reduce((summe, g) => summe + anzahl(g) * hpsProStueck(g), 0);
 }
 
+// wunderProdFaktor(): Regenbogen-Tag zählt doppelt (wunder.js)
 function herzenProSekunde() {
-  return basisHps() * aktuellerBonus().prodFaktor;
+  const wunder = typeof wunderProdFaktor === "function" ? wunderProdFaktor() : 1;
+  return basisHps() * aktuellerBonus().prodFaktor * wunder;
 }
 
 function herzenProKlick() {
   const basis = 1 + KLICK_ITEMS.reduce((summe, k) => summe + anzahl(k) * k.proKlick, 0);
   const sterne = typeof sternFaktor === "function" ? sternFaktor() : 1;   // Glitzersterne (neustart.js)
   const zimmer = typeof zimmerFaktor === "function" ? zimmerFaktor() : 1;   // Zimmer-Teile (zimmer.js)
-  return basis * sterne * zimmer * aktuellerBonus().klickFaktor;
+  const wunder = typeof wunderKlickFaktor === "function" ? wunderKlickFaktor() : 1;   // Regenbogen-Tag (wunder.js)
+  return basis * sterne * zimmer * aktuellerBonus().klickFaktor * wunder;
 }
 
 // ----- Aktionen (verändern den Spielstand) -----

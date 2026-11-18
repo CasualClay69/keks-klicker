@@ -141,7 +141,8 @@ function seitenBelohnung() {
 
 // Würfelt, ob bei dieser Gelegenheit ein Sticker herausfällt ("klick", "stern", "season")
 function versucheSticker(quelle) {
-  if (Math.random() >= STICKER_CHANCE[quelle]) return null;
+  const glueck = typeof wunderStickerFaktor === "function" ? wunderStickerFaktor() : 1;   // Sticker-Glückstag (wunder.js)
+  if (Math.random() >= Math.min(1, STICKER_CHANCE[quelle] * glueck)) return null;
   return gibSticker(quelle);
 }
 
