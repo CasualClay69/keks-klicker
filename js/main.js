@@ -461,7 +461,28 @@ function aktualisiereMusik() {
 
 // ----- Eingaben verbinden -----
 
+// Doppeltippen soll NIE zoomen. Die CSS-Regel (touch-action) ignorieren manche Tablet-Browser
+// (z.B. Samsung Internet oder "Zoomen erzwingen" in den Android-Bedienungshilfen).
+// Darum: Kommt ein zweites Tippen kurz nach dem ersten, nehmen wir es dem Browser weg
+// (kein Zoom) und lösen den Klick selbst aus – so zählt das zweite Tippen trotzdem.
+// Ausgenommen: Marie, Herzregen und Minispiel-Fläche (eigene Gesten) und Eingabefelder.
+function verhindereDoppeltippZoom() {
+  let letztesTippen = 0;
+  document.addEventListener("touchend", ereignis => {
+    const jetzt = Date.now();
+    const kurzNacheinander = jetzt - letztesTippen < 400;
+    letztesTippen = jetzt;
+    if (!kurzNacheinander || ereignis.touches.length > 0 || ereignis.changedTouches.length !== 1) return;
+    const ziel = ereignis.target instanceof Element ? ereignis.target : null;
+    if (!ziel || ziel.closest("#marie, .regenFeld, .spielFlaeche, input, textarea, select, label")) return;
+    ereignis.preventDefault();
+    // Klick selbst auslösen (auch für SVG-Teile, die kein .click() haben)
+    ziel.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+  }, { passive: false });
+}
+
 function verbindeEreignisse() {
+  verhindereDoppeltippZoom();
   // MULTITOUCH: "pointerdown" kommt für JEDEN Finger einzeln –
   // "click" dagegen gibt es bei mehreren Fingern gleichzeitig nicht.
   const aktiveFinger = new Set();
