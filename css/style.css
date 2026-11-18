@@ -414,7 +414,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* Die 7 Tage der Serie */
 .geschenkTage {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 4px;
   margin: 0 0 6px;
   padding: 0;
@@ -719,12 +719,13 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 
 .albumRaster {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 10px;
 }
 .stickerFeld {
   position: relative;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -738,7 +739,14 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   text-align: center;
 }
 .stickerFeld .emoji { font-size: 2.2rem; line-height: 1.2; }
-.stickerFeld .name  { font-size: 0.62rem; font-weight: bold; line-height: 1.15; color: var(--text); }
+.stickerFeld .name  {
+  max-width: 100%;
+  font-size: 0.62rem; font-weight: bold; line-height: 1.15; color: var(--text);
+  /* lange Wörter wie "Gänseblümchen" trennen, statt das Album zu verbreitern */
+  overflow-wrap: anywhere;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
 .stickerFeld .anzahl {
   position: absolute; bottom: 3px; right: 5px;
   font-size: 0.65rem; font-weight: bold; color: var(--text-sanft);
@@ -1194,7 +1202,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* Memory: 4 × 3 Karten */
 .memoryRaster {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(3, 1fr);
   gap: 8px;
   height: 100%;
@@ -1562,7 +1570,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 #tabs {
   position: sticky; top: 0; z-index: 2;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   padding: 16px 0 12px;
   background: var(--panel);
@@ -1668,7 +1676,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 .skinKarte:active { transform: scale(0.96); }
 .skinIcon   { font-size: 2.2rem; line-height: 1.2; }
-.skinName   { font-size: 0.85rem; font-weight: bold; }
+.skinName   { max-width: 100%; font-size: 0.85rem; font-weight: bold; overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; }
 .skinStatus { font-size: 0.7rem; color: var(--text-sanft); }
 
 /* Ausgewählt: pinker Rand und Häkchen */
