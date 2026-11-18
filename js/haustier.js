@@ -52,9 +52,150 @@ const KATZE_SVG = `
   <path d="M38 49 L22 46 M38 52 L23 53 M62 49 L78 46 M62 52 L77 53" stroke="#c9ced6" stroke-width="1.3" stroke-linecap="round"/>
 </svg>`;
 
+// ----- Alle Tiere selbst gezeichnet – im Stil der Katze -----
+// Gleicher Bauplan wie KATZE_SVG (viewBox 0–100): Körper unten (50/73), Kopf oben (50/40, Radius 25).
+// Darum sitzen Halsband, Schleife und Körbchen bei allen Tieren an derselben, richtigen Stelle.
+// o = { fell, bauch, pfoten, kopf, schnauze (false = keine), hinten, ohren, kopfDeko, bauchDeko, gesicht }
+function tierSvg(o) {
+  const fell = o.fell, bauch = o.bauch || "#ffffff", pfoten = o.pfoten || bauch;
+  const gesicht = o.gesicht !== undefined ? o.gesicht
+    : `<path d="M47 46 H53 L50 49.5 Z" fill="${o.nase || "#ff8fb0"}"/>
+       <path d="M50 49.5 Q47.5 53.5 44.5 51.5 M50 49.5 Q52.5 53.5 55.5 51.5" fill="none" stroke="#6b5b66" stroke-width="1.5" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  ${o.hinten || ""}
+  <ellipse cx="50" cy="73" rx="26" ry="22" fill="${fell}"/>
+  <ellipse cx="50" cy="77" rx="15" ry="17" fill="${bauch}"/>
+  ${o.bauchDeko || ""}
+  <ellipse cx="39" cy="93" rx="8" ry="5" fill="${pfoten}" stroke="rgba(0,0,0,.12)" stroke-width="1"/>
+  <ellipse cx="61" cy="93" rx="8" ry="5" fill="${pfoten}" stroke="rgba(0,0,0,.12)" stroke-width="1"/>
+  ${o.ohren || ""}
+  <circle cx="50" cy="40" r="25" fill="${o.kopf || fell}"/>
+  ${o.kopfDeko || ""}
+  ${o.schnauze === false ? "" : `<ellipse cx="50" cy="50" rx="15" ry="11" fill="${o.schnauze || bauch}"/>`}
+  <ellipse cx="40" cy="40" rx="4.6" ry="5.6" fill="#3b2240"/>
+  <ellipse cx="60" cy="40" rx="4.6" ry="5.6" fill="#3b2240"/>
+  <circle cx="41.6" cy="38" r="1.7" fill="#ffffff"/>
+  <circle cx="61.6" cy="38" r="1.7" fill="#ffffff"/>
+  <ellipse cx="35" cy="50" rx="4.5" ry="2.8" fill="#ff9ec4" opacity=".55"/>
+  <ellipse cx="65" cy="50" rx="4.5" ry="2.8" fill="#ff9ec4" opacity=".55"/>
+  ${gesicht}
+</svg>`;
+}
+
+const MUND = (y = 49.5) => `<path d="M50 ${y} Q47.5 ${y + 4} 44.5 ${y + 2} M50 ${y} Q52.5 ${y + 4} 55.5 ${y + 2}" fill="none" stroke="#6b5b66" stroke-width="1.5" stroke-linecap="round"/>`;
+
+// Truthahn: Federfächer hinter dem Körper
+const TRUTHAHN_FEDERN = [-72, -48, -24, 0, 24, 48, 72].map((winkel, i) => {
+  const rad = winkel * Math.PI / 180;
+  const x = 50 + 31 * Math.sin(rad), y = 64 - 31 * Math.cos(rad);
+  const farbe = ["#e8843f", "#d62839", "#f2c14e", "#a8521f", "#f2c14e", "#d62839", "#e8843f"][i];
+  return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="8" ry="17" fill="${farbe}" transform="rotate(${winkel} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+}).join("");
+
+// Igel: Stacheln rund um Kopf und Rücken
+const IGEL_STACHELN = [];
+for (let winkel = 150; winkel <= 390; winkel += 15) {
+  const p = (w, r) => {
+    const rad = w * Math.PI / 180;
+    return `${(50 + r * Math.cos(rad)).toFixed(1)} ${(52 + r * Math.sin(rad)).toFixed(1)}`;
+  };
+  IGEL_STACHELN.push(`<path d="M${p(winkel - 9, 26)} L${p(winkel, 42)} L${p(winkel + 9, 26)} Z" fill="${winkel % 30 ? "#6b4423" : "#7d532f"}"/>`);
+}
+
+const TIER_ZEICHNUNGEN = {
+  hase: tierSvg({
+    fell: "#ece6e0", bauch: "#ffffff",
+    hinten: `<circle cx="77" cy="84" r="7" fill="#ffffff" stroke="#e2dad2"/>`,
+    ohren: `<g transform="rotate(-10 40 30)"><ellipse cx="40" cy="17" rx="7.5" ry="16" fill="#ece6e0"/><ellipse cx="40" cy="18" rx="3.8" ry="11" fill="#ffb6c8"/></g>
+            <g transform="rotate(10 60 30)"><ellipse cx="60" cy="17" rx="7.5" ry="16" fill="#ece6e0"/><ellipse cx="60" cy="18" rx="3.8" ry="11" fill="#ffb6c8"/></g>`,
+    gesicht: `<ellipse cx="50" cy="47" rx="3" ry="2.2" fill="#ff8fb0"/>${MUND(49)}
+              <rect x="48" y="52" width="4" height="4" rx="1" fill="#ffffff" stroke="#d9d0c8" stroke-width=".8"/>`,
+  }),
+  hund: tierSvg({
+    fell: "#d9a066", bauch: "#f8e6cc",
+    hinten: `<path d="M72 80 Q92 74 88 56" fill="none" stroke="#d9a066" stroke-width="8" stroke-linecap="round"/>`,
+    kopfDeko: `<circle cx="61" cy="36" r="8" fill="#c0844f" opacity=".75"/>
+               <ellipse cx="26" cy="40" rx="9" ry="17" fill="#9c6235" transform="rotate(18 26 40)"/>
+               <ellipse cx="74" cy="40" rx="9" ry="17" fill="#9c6235" transform="rotate(-18 74 40)"/>`,
+    gesicht: `<ellipse cx="50" cy="46.5" rx="4.5" ry="3.2" fill="#3b2240"/>${MUND(49.5)}
+              <path d="M48 53 Q50 59 52 53 Z" fill="#ff7aa0"/>`,
+  }),
+  einhorn: tierSvg({
+    fell: "#fffafe", bauch: "#fdeefc", schnauze: "#ffe1f0", pfoten: "#f4d9ff",
+    hinten: `<path d="M72 84 Q96 84 92 62" fill="none" stroke="#ffb3d9" stroke-width="9" stroke-linecap="round"/>
+             <path d="M74 80 Q92 78 90 64" fill="none" stroke="#bdb2ff" stroke-width="5" stroke-linecap="round"/>`,
+    ohren: `<path d="M30 28 L30 10 L42 20 Z" fill="#fffafe" stroke="#eadff0"/><path d="M70 28 L70 10 L58 20 Z" fill="#fffafe" stroke="#eadff0"/>`,
+    kopfDeko: `<path d="M27 36 Q25 17 44 15 Q40 23 46 27 Q34 25 27 36 Z" fill="#ffb3d9"/>
+               <path d="M29 44 Q21 31 31 23 Q31 31 37 33 Q29 35 29 44 Z" fill="#bdb2ff"/>
+               <path d="M44 15 Q56 11 64 19 Q54 19 50 25 Q48 19 44 15 Z" fill="#9bf6ff"/>
+               <path d="M45 19 L50 1 L55 19 Z" fill="#ffd23f" stroke="#f0a500" stroke-width="1"/>
+               <path d="M46.5 13 L53.5 11 M47.8 7 L52.2 6" stroke="#f0a500" stroke-width="1"/>`,
+    gesicht: `<ellipse cx="45" cy="50" rx="1.6" ry="1.2" fill="#d98aa8"/><ellipse cx="55" cy="50" rx="1.6" ry="1.2" fill="#d98aa8"/>
+              <path d="M45 55 Q50 58 55 55" fill="none" stroke="#6b5b66" stroke-width="1.5" stroke-linecap="round"/>`,
+  }),
+  truthahn: tierSvg({
+    fell: "#9b6640", kopf: "#b07b52", bauch: "#d8b48c", pfoten: "#f2a33a", schnauze: false,
+    hinten: TRUTHAHN_FEDERN,
+    gesicht: `<path d="M45 46 L55 46 L50 54 Z" fill="#f2a33a"/><path d="M54 50 Q60 55 56 61 Q52 56 54 50 Z" fill="#e63946"/>`,
+  }),
+  rentier: tierSvg({
+    fell: "#b07a4e", bauch: "#f1dcc4", schnauze: "#e9cfa8",
+    hinten: `<ellipse cx="75" cy="78" rx="5" ry="7" fill="#f1dcc4"/>`,
+    ohren: `<path d="M38 22 Q34 11 28 4 M33 12 Q26 13 21 8 M62 22 Q66 11 72 4 M67 12 Q74 13 79 8" fill="none" stroke="#7a4f2a" stroke-width="4" stroke-linecap="round"/>
+            <ellipse cx="24" cy="32" rx="9" ry="5" fill="#b07a4e" transform="rotate(-25 24 32)"/>
+            <ellipse cx="76" cy="32" rx="9" ry="5" fill="#b07a4e" transform="rotate(25 76 32)"/>`,
+    gesicht: `<circle cx="50" cy="47" r="5" fill="#e63946"/><circle cx="48.4" cy="45.4" r="1.5" fill="#ffffff" opacity=".7"/>${MUND(52)}`,
+  }),
+  pinguin: tierSvg({
+    fell: "#2f3a4f", bauch: "#ffffff", pfoten: "#f2a33a", schnauze: false,
+    hinten: `<ellipse cx="25" cy="72" rx="7" ry="16" fill="#26303f" transform="rotate(20 25 72)"/>
+             <ellipse cx="75" cy="72" rx="7" ry="16" fill="#26303f" transform="rotate(-20 75 72)"/>`,
+    kopfDeko: `<path d="M50 30 Q38 22 32 34 Q28 50 50 60 Q72 50 68 34 Q62 22 50 30 Z" fill="#ffffff"/>`,
+    gesicht: `<path d="M45 47 L55 47 L50 53 Z" fill="#f2a33a"/>`,
+  }),
+  baer: tierSvg({
+    fell: "#c68b59", bauch: "#f1d3b0",
+    ohren: `<circle cx="29" cy="21" r="9" fill="#c68b59"/><circle cx="29" cy="21" r="4.5" fill="#f1d3b0"/>
+            <circle cx="71" cy="21" r="9" fill="#c68b59"/><circle cx="71" cy="21" r="4.5" fill="#f1d3b0"/>`,
+    bauchDeko: `<path d="M50 84 C40 77 41 70 46 70 C48.5 70 50 72 50 73.5 C50 72 51.5 70 54 70 C59 70 60 77 50 84 Z" fill="#ff5c8a"/>`,
+    gesicht: `<ellipse cx="50" cy="46.5" rx="4.5" ry="3.2" fill="#3b2240"/>${MUND(49.5)}`,
+  }),
+  kueken: tierSvg({
+    fell: "#ffd84d", bauch: "#ffe98f", pfoten: "#f2a33a", schnauze: false,
+    hinten: `<ellipse cx="26" cy="72" rx="7" ry="12" fill="#ffc31f" transform="rotate(25 26 72)"/>
+             <ellipse cx="74" cy="72" rx="7" ry="12" fill="#ffc31f" transform="rotate(-25 74 72)"/>`,
+    ohren: `<path d="M50 17 Q45 7 49 4 Q51 10 54 6 Q57 12 53 17 Z" fill="#ffc31f"/>`,
+    gesicht: `<path d="M45 46 L55 46 L50 52 Z" fill="#f2a33a"/>`,
+  }),
+  igel: tierSvg({
+    fell: "#8a5a34", kopf: "#e8c9a0", bauch: "#f3dfc2", schnauze: "#f6e6cf",
+    hinten: IGEL_STACHELN.join(""),
+    ohren: `<circle cx="31" cy="23" r="5" fill="#e8c9a0"/><circle cx="69" cy="23" r="5" fill="#e8c9a0"/>`,
+    gesicht: `<circle cx="50" cy="46" r="3" fill="#3b2240"/>${MUND(49)}`,
+  }),
+  schildkroete: tierSvg({
+    fell: "#8fd18a", bauch: "#f2e6a6", schnauze: "#b4e3a8",
+    hinten: `<ellipse cx="50" cy="70" rx="35" ry="26" fill="#4f9d55" stroke="#3b7d41" stroke-width="2"/>
+             <path d="M50 46 L50 94 M17 68 L83 68 M28 52 L40 68 L28 86 M72 52 L60 68 L72 86" stroke="#3b7d41" stroke-width="2" fill="none"/>`,
+    bauchDeko: `<path d="M38 72 H62 M37 82 H63" stroke="#d8c87a" stroke-width="1.5"/>`,
+  }),
+  fledermaus: tierSvg({
+    fell: "#6b5b95", bauch: "#a99bd0", schnauze: "#b9addd",
+    hinten: `<path d="M30 60 Q8 48 2 64 Q10 64 10 72 Q16 68 20 76 Q24 70 30 78 Z" fill="#4b3f72"/>
+             <path d="M70 60 Q92 48 98 64 Q90 64 90 72 Q84 68 80 76 Q76 70 70 78 Z" fill="#4b3f72"/>`,
+    ohren: `<path d="M28 32 L22 4 L44 20 Z" fill="#6b5b95"/><path d="M30 28 L26 11 L40 21 Z" fill="#c9a8e8"/>
+            <path d="M72 32 L78 4 L56 20 Z" fill="#6b5b95"/><path d="M70 28 L74 11 L60 21 Z" fill="#c9a8e8"/>`,
+    gesicht: `<path d="M47 46 H53 L50 49.5 Z" fill="#ff8fb0"/>${MUND(49.5)}
+              <path d="M46 52 L47.5 56 L49 52.5 Z M54 52 L52.5 56 L51 52.5 Z" fill="#ffffff"/>`,
+  }),
+};
+
+// Alle Tiere haben denselben Bauplan -> Halsband und Schleife sitzen überall gleich
+const TIER_ANKER = { halsY: 63, halsB: 46, kopfX: 72, kopfY: 6 };
+
 // ----- Tierarten -----
-// emoji: das Bild (immer von vorne, damit Zubehör passt) – oder svg: eigene Zeichnung.
-// anker: wo Halsband (halsY) und Schleife (kopfX/kopfY) sitzen, in % der Bildfläche.
+// Bild: die Zeichnung aus TIER_ZEICHNUNGEN (bzw. KATZE_SVG); emoji nur als kleines Symbol (z.B. im Season-Pass).
+// anker: wo Halsband und Schleife sitzen – für alle gleich (TIER_ANKER), weil alle denselben Bauplan haben.
 // season: gibt es nur im Season-Pass (Stufe 33) – vorher gesperrt.
 const HAUSTIER_ARTEN = [
   { id: "katze",   name: "Kätzchen",     svg: KATZE_SVG, emoji: "🐱",
@@ -108,6 +249,12 @@ const HAUSTIER_ARTEN = [
     leckerli: { icon: "🍒", name: "Kirsche" },     festmahl: { icon: "🍬", name: "Gruselbonbon" },
     namen: ["Flatter", "Luna", "Nachti", "Vampi"] },
 ];
+
+// Zeichnungen und Zubehör-Positionen eintragen (die Katze hat ihre eigene Zeichnung schon)
+for (const art of HAUSTIER_ARTEN) {
+  if (TIER_ZEICHNUNGEN[art.id]) art.svg = TIER_ZEICHNUNGEN[art.id];
+  art.anker = TIER_ANKER;
+}
 
 // Wachstumsstufen: ab welchem Level, und wie groß (relativ zu Marie)
 const TIER_STUFEN = [

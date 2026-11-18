@@ -528,6 +528,12 @@ function aktualisiereMusik() {
 // (kein Zoom) und lösen den Klick selbst aus – so zählt das zweite Tippen trotzdem.
 // Ausgenommen: Marie, Herzregen und Minispiel-Fläche (eigene Gesten) und Eingabefelder.
 function verhindereDoppeltippZoom() {
+  // Zoomen mit zwei Fingern abschalten (Android/iPhone), z.B. bei Multitouch auf Marie
+  document.addEventListener("touchmove", ereignis => {
+    if (ereignis.touches.length > 1) ereignis.preventDefault();
+  }, { passive: false });
+  document.addEventListener("gesturestart", ereignis => ereignis.preventDefault());   // iPhone/iPad
+
   let letztesTippen = 0;
   document.addEventListener("touchend", ereignis => {
     const jetzt = Date.now();

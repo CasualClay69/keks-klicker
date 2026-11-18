@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.57";
-const APP_NEU = "Neu: Das Familienziel! Alle in der Bestenliste sammeln zusammen – schafft ihr es, bekommen alle eine Belohnung. 🎯 Danke an Selina für die Season-Idee :)";
+const APP_VERSION = "1.58";
+const APP_NEU = "Neu: Alle Haustiere sind neu gezeichnet – und Halsband, Schleife und Körbchen sitzen jetzt überall richtig! Außerdem zoomt das Bild nicht mehr beim Tippen mit mehreren Fingern. Danke an Selina für die Season-Idee :)";

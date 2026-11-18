@@ -48,7 +48,7 @@ body {
 }
 
 /* Kein Zoomen durch Doppeltippen – überall (Sticker, Karten, Knöpfe …).
-   Mit zwei Fingern zoomen und Scrollen geht weiterhin. Wo das Spiel eigene Gesten braucht
+   Scrollen geht weiterhin (Zoomen mit zwei Fingern ist ganz aus, siehe #spielfeld). Wo das Spiel eigene Gesten braucht
    (Marie, Herzregen, Leckerli-Fangen), steht weiter unten touch-action: none – das hat Vorrang. */
 *, *::before, *::after {
   touch-action: manipulation;
@@ -56,6 +56,10 @@ body {
 html, body, * {
   -webkit-tap-highlight-color: transparent; /* kein Kasten beim Antippen */
 }
+/* Auf dem Spielfeld gibt es kein Zoomen mit zwei Fingern (z.B. Multitouch auf Marie, wenn ein
+   Finger daneben landet). Antippen funktioniert weiter ganz normal. */
+#spielfeld { touch-action: none; }
+
 /* Doppeltippen soll keinen Text markieren (sieht sonst aus wie Hineinzoomen) */
 .stickerFeld, .skinKarte, .memoryKarte, .albumSeitenwahl button, .zimmerPlatz, .item, .erfolg, #untenNav, #tabs {
   -webkit-user-select: none;
