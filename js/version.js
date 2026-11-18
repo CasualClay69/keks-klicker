@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.46";
-const APP_NEU = "Repariert: In der Bestenliste steht jetzt niemand mehr doppelt, und die Anmeldung geht nicht mehr verloren.";
+const APP_VERSION = "1.47";
+const APP_NEU = "Neu: In jeder Season sammelst du etwas Passendes – jetzt bei Thanksgiving Blätter 🍂, an Weihnachten Plätzchen 🍪 und so weiter! Danke an Selina :)";

@@ -12,6 +12,9 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   (je +10 % Herzen für immer). Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben (`js/neustart.js`)
 - Kaufmodi x1 / x10 / x100 / bis zum nächsten Upgrade
 - Sternschnuppen mit zufälligen Boni
+- Season-Währung 🍂: Während einer Season sammelt man statt Herzen etwas Passendes (Blätter, Plätzchen,
+  Schneeflocken, Liebesbriefe, Ostereier, Blüten, Muscheln, Bonbons – `SEASON_WAEHRUNG` in `js/skins.js`).
+  Es bleibt derselbe Zähler, nur Symbol und Wort wechseln. Idee: Selina
 - Zwei Figuren 👧: unter Skins → „Wer wird geklickt?“ zwischen Marie (7, hellbraune Haare) und
   Hannah (5, blonde Haare) wechseln. Logo und Texte passen sich an (`figur` in `js/skins.js`)
 - Zimmer 🏠: Maries bzw. Hannahs Zimmer mit 11 Plätzen (Wand, Boden, Fenster, Bett, Lampe …) und 67 Teilen

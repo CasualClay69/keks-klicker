@@ -422,9 +422,35 @@ function figurName() {
   return aktiverSkin("figur").rufname;
 }
 
-// Ersetzt "Marie" in einem Text durch den Namen der gewählten Figur ("Marienkäfer" bleibt)
+// ----- Was man sammelt: Herzen – oder in einer Season etwas Passendes -----
+const SEASON_WAEHRUNG = {
+  s1: { name: "Blätter",       icon: "🍂" },   // Thanksgiving
+  s2: { name: "Plätzchen",     icon: "🍪" },   // Weihnachten
+  s3: { name: "Schneeflocken", icon: "❄️" },   // Winterwunderland
+  s4: { name: "Liebesbriefe",  icon: "💌" },   // Valentinstag
+  s5: { name: "Ostereier",     icon: "🥚" },   // Ostern
+  s6: { name: "Blüten",        icon: "🌸" },   // Einhornwiese
+  s7: { name: "Muscheln",      icon: "🐚" },   // Sommer & Meer
+  s8: { name: "Bonbons",       icon: "🍬" },   // Halloween
+};
+
+// { name, icon } – icon null = Herz-Symbol des HUD-Skins
+function waehrung() {
+  const pass = aktiverSeasonPass();
+  return (pass && SEASON_WAEHRUNG[pass.id]) || { name: "Herzen", icon: null };
+}
+
+// "Herzen" im Text durch das ersetzen, was man gerade sammelt ("Herzensbrecher" bleibt)
+function inWaehrung(text) {
+  const name = waehrung().name;
+  if (name === "Herzen") return String(text);
+  return String(text).replace(/\bHerzen\b/g, name).replace(/\bHerz-/g, name + "-");
+}
+
+// Passt einen Text an: "Marie" -> Name der gewählten Figur ("Marienkäfer" bleibt),
+// "Herzen" -> was man in der laufenden Season sammelt
 function mitName(text) {
-  return String(text).replace(/\bMarie(s?)\b/g, (_, s) => figurName() + s);
+  return inWaehrung(String(text).replace(/\bMarie(s?)\b/g, (_, s) => figurName() + s));
 }
 
 // Gibt true zurück, wenn der Skin gewählt werden konnte

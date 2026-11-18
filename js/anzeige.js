@@ -41,22 +41,25 @@ const ui = {
 };
 
 // Währungssymbol – kann vom HUD-Skin geändert werden (z.B. 🧡 beim Herbstlaub)
+// Symbol für das, was man sammelt: in einer Season etwas Passendes (z.B. 🍂), sonst das Herz des HUD-Skins
 function herz() {
-  return aktiverSkin("hud").symbole.herz || "💖";
+  return waehrung().icon || aktiverSkin("hud").symbole.herz || "💖";
 }
 
 // Zu jedem Datenobjekt (Herzschenker, Upgrade, Erfolg …) merken wir uns seine HTML-Teile
 const elemente = new Map();
 
 // Text nur ändern, wenn er anders ist (spart dem Browser Arbeit)
+// In einer Season wird "Herzen" durch das ersetzt, was man gerade sammelt (siehe inWaehrung in skins.js)
 function setzeText(el, text) {
+  text = inWaehrung(text);
   if (el.textContent !== text) el.textContent = text;
 }
 
 function span(klasse, text = "") {
   const el = document.createElement("span");
   el.className = klasse;
-  el.textContent = text;
+  el.textContent = inWaehrung(text);
   return el;
 }
 
@@ -164,7 +167,7 @@ function baueOberflaeche(aktionen) {
 function zeigeKopf() {
   setzeText(ui.herzen, `${format(spiel.herzen)} ${herz()}`);
   setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
-  document.title = `${format(spiel.herzen)} Herzen – ${figurName()} Clicker`;
+  document.title = `${format(spiel.herzen)} ${waehrung().name} – ${figurName()} Clicker`;
 
   const rest = bonusRestSekunden();
   const b = aktuellerBonus();
@@ -407,6 +410,7 @@ function zeigeFigur() {
   const figur = aktiverSkin("figur");
   const name = figur.rufname;
   for (const el of document.querySelectorAll(".figurName")) setzeText(el, name);
+  for (const el of document.querySelectorAll(".waehrungName")) setzeText(el, waehrung().name);
   for (const el of document.querySelectorAll("[data-vorlage]")) setzeText(el, mitName(el.dataset.vorlage));
   for (const el of document.querySelectorAll("[data-titel-vorlage]")) el.title = mitName(el.dataset.titelVorlage);
   $("titel").setAttribute("aria-label", `${name} Clicker`);
@@ -773,12 +777,12 @@ function baueGluecksrad() {
   let svg = "";
   GLUECKSRAD_FELDER.forEach((feld, i) => {
     const von = (i / n) * 360, bis = ((i + 1) / n) * 360, mittelWinkel = (i + 0.5) / n * 360;
-    const icon = feld.typ === "season" && pass ? pass.icon : feld.icon;
+    const icon = feld.typ === "season" && pass ? pass.icon : feld.typ === "herzen" ? herz() : feld.icon;
     svg += `<path d="M${mitte} ${mitte} L${punkt(von)} A${radius} ${radius} 0 0 1 ${punkt(bis)} Z"
                   fill="${feld.farbe}" stroke="#fff" stroke-width="3"/>
             <g transform="rotate(${mittelWinkel} ${mitte} ${mitte})">
               <text x="${mitte}" y="58" text-anchor="middle" font-size="30">${icon}</text>
-              <text x="${mitte}" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b2a4f">${feld.kurz}</text>
+              <text x="${mitte}" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b2a4f">${inWaehrung(feld.kurz)}</text>
             </g>`;
   });
   svg += `<circle cx="${mitte}" cy="${mitte}" r="${radius}" fill="none" stroke="#ff5fa2" stroke-width="6"/>`;
@@ -986,6 +990,7 @@ let sprechTimer = null, mundTimer = null;
 // Sprechblase zeigen, Mund bewegen, leise "plappern"
 function marieSagt(text, dauerMs = 2800) {
   if (!text) return;
+  text = mitName(text);   // "Mehr Herzen!" -> in der Season z.B. "Mehr Blätter!"
   const blase = $("sprechblase");
   clearTimeout(sprechTimer);
   blase.classList.remove("weg");
@@ -1504,7 +1509,7 @@ function zeigeSchwebeText({ x, y }, text, gross = false) {
 function meldung(titel, text) {
   const el = document.createElement("div");
   el.className = "meldung";
-  el.append(Object.assign(document.createElement("b"), { textContent: titel }), text);
+  el.append(Object.assign(document.createElement("b"), { textContent: mitName(titel) }), mitName(text));
   ui.meldungen.append(el);
   // Höchstens 3 gleichzeitig – sonst verdecken sie auf dem Handy den halben Bildschirm
   while (ui.meldungen.children.length > 3) ui.meldungen.firstElementChild.remove();
