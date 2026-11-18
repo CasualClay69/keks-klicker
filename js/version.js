@@ -7,5 +7,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.48";
-const APP_NEU = "Repariert: Das Sticker-Album lässt sich nicht mehr seitlich verschieben. Danke an Selina für die Season-Idee :)";
+const APP_VERSION = "1.49";
+const APP_NEU = "Repariert: Doppeltippen zoomt nicht mehr ins Bild. Danke an Selina für die Season-Idee :)";

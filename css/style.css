@@ -47,11 +47,19 @@ body {
   overscroll-behavior: none;   /* kein "Ziehen zum Neuladen" in der App */
 }
 
+/* Kein Zoomen durch Doppeltippen – überall (Sticker, Karten, Knöpfe …).
+   Mit zwei Fingern zoomen und Scrollen geht weiterhin. Wo das Spiel eigene Gesten braucht
+   (Marie, Herzregen, Leckerli-Fangen), steht weiter unten touch-action: none – das hat Vorrang. */
+*, *::before, *::after {
+  touch-action: manipulation;
+}
+html, body, * {
+  -webkit-tap-highlight-color: transparent; /* kein Kasten beim Antippen */
+}
+
 button {
   font: inherit;
   color: inherit;
-  touch-action: manipulation;               /* kein Zoomen bei schnellem Tippen */
-  -webkit-tap-highlight-color: transparent; /* kein Kasten beim Antippen */
 }
 
 [hidden] { display: none !important; }
@@ -824,6 +832,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   background: var(--karte);
   color: var(--text);
   font: inherit;
+  font-size: 16px;      /* kleiner als 16px -> iPhone/iPad zoomen beim Antippen hinein */
   font-weight: normal;
 }
 .feld input:focus { outline: none; border-color: var(--akzent); }
