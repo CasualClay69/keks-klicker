@@ -43,9 +43,11 @@
   <script src="js/herzregen.js" defer></script>
   <script src="js/minispiele.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
+  <script src="js/verwaltung.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
   <script src="js/spielhalle.js" defer></script>
+  <script src="js/verwaltung-ui.js" defer></script>
   <script src="js/main.js"    defer></script>
 </head>
 <body>
@@ -374,6 +376,17 @@
         <input id="sicherungDateiInput" type="file" accept=".txt,text/plain" hidden>
       </div>
 
+      <div id="codeBereich" hidden>
+        <h2>🎁 Code einlösen</h2>
+        <p class="seitenInfo">Hast du einen Belohnungs-Code bekommen? Hier eintippen – jeder Code geht nur einmal.</p>
+        <label class="feld">Code
+          <input id="codeEingabe" type="text" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z.B. ABCD-EFGH">
+        </label>
+        <div class="knopfReihe">
+          <button id="codeEinloesen" type="button" class="knopf haupt">🎁 Einlösen</button>
+        </div>
+      </div>
+
       <button id="reset" type="button">Spielstand löschen</button>
     </section>
   </aside>
@@ -447,6 +460,54 @@
           <button id="spielNochmal" type="button" class="knopf haupt">🔁 Nochmal</button>
           <button id="spielFertig" type="button" class="knopf">Fertig</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nachricht an alle (vom Admin) -->
+  <div id="nachrichtOverlay" class="overlay" hidden>
+    <div class="geschenkKarte" role="dialog" aria-modal="true" aria-labelledby="nachrichtTitel">
+      <div class="updateIcon">📢</div>
+      <h2 id="nachrichtTitel">Neuigkeiten!</h2>
+      <p id="nachrichtText" class="nachrichtText"></p>
+      <div class="knopfReihe"><button id="nachrichtOk" type="button" class="knopf haupt">Alles klar! 💖</button></div>
+    </div>
+  </div>
+
+  <!-- Umfrage (vom Admin) -->
+  <div id="umfrageOverlay" class="overlay" hidden>
+    <div class="geschenkKarte" role="dialog" aria-modal="true" aria-labelledby="umfrageFrage">
+      <div class="updateIcon">📊</div>
+      <h2 id="umfrageFrage"></h2>
+      <p id="umfrageHinweis" class="geschenkSerie"></p>
+      <div id="umfrageAntworten" class="umfrageAntworten"></div>
+      <div class="knopfReihe"><button id="umfrageZu" type="button" class="knopf">Später</button></div>
+    </div>
+  </div>
+
+  <!-- Admin-Menü (versteckt: 7× auf die Versionsnummer tippen) -->
+  <div id="adminOverlay" class="overlay" hidden>
+    <div class="spielKarte adminKarte" role="dialog" aria-modal="true" aria-labelledby="adminTitel">
+      <div class="spielKopf">
+        <h2 id="adminTitel">🛠️ Admin</h2>
+        <button id="adminZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <div id="adminAnmeldung">
+        <label class="feld">PIN
+          <input id="adminPinEingabe" type="password" inputmode="numeric" autocomplete="off" maxlength="12">
+        </label>
+        <div class="knopfReihe"><button id="adminAnmelden" type="button" class="knopf haupt">🔓 Anmelden</button></div>
+        <p id="adminAnmeldeFehler" class="adminFehler"></p>
+      </div>
+      <div id="adminMenue" hidden>
+        <div id="adminReiter" class="albumSeitenwahl adminReiter">
+          <button type="button" data-reiter="ereignisse" class="aktiv">⚡<small>Ereignisse</small></button>
+          <button type="button" data-reiter="codes">🎁<small>Codes</small></button>
+          <button type="button" data-reiter="nachricht">📢<small>Nachricht</small></button>
+          <button type="button" data-reiter="umfrage">📊<small>Umfrage</small></button>
+          <button type="button" data-reiter="liste">🏅<small>Liste</small></button>
+        </div>
+        <div id="adminInhalt" class="adminInhalt"></div>
       </div>
     </div>
   </div>

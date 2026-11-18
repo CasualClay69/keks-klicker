@@ -1292,6 +1292,7 @@ function starte() {
   richteNeustartEin();
   richteOfflineEin();
   richteBestenlisteEin();
+  richteVerwaltungEin();   // Admin-Menü, Nachricht an alle, Umfrage, Codes (verwaltung-ui.js)
   richteAppEin();
   richteUpdateEin();
 

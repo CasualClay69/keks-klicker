@@ -1185,6 +1185,60 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .tierKarte .skinIcon svg { display: block; width: 3.6rem; height: 2.4rem; margin: 0 auto; }
 .tierKarte.zuTeuer .skinStatus { opacity: 0.55; }
 
+/* ----- Admin-Menü, Nachricht, Umfrage ----- */
+.adminKarte { overflow: hidden; }
+.adminKarte #adminMenue { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.adminKarte #adminMenue[hidden] { display: none; }
+.adminReiter { grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 8px 0; }
+.adminInhalt { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 2px 10px; }
+.adminInhalt textarea, .adminInhalt input[type="text"] {
+  display: block; width: 100%; margin-top: 4px; padding: 10px 12px;
+  border: 2px solid var(--rand); border-radius: 12px;
+  background: var(--karte); color: var(--text); font: inherit; font-size: 16px;
+}
+.adminKnoepfe { display: grid; gap: 8px; }
+.adminKnoepfe .knopf { flex: none; text-align: left; }
+.adminAuswahl { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.adminChip {
+  padding: 6px 10px; border: 2px solid var(--rand); border-radius: 999px;
+  background: var(--karte); color: var(--text); font-size: 0.85rem; font-weight: bold; cursor: pointer;
+}
+.adminChip.aktiv { border-color: var(--akzent); background: var(--akzent); color: #fff; }
+.adminAntworten { display: grid; gap: 6px; }
+.adminCodeErgebnis {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  margin: 10px 0; padding: 12px; border: 3px dashed var(--akzent); border-radius: 16px; background: #fff;
+}
+.adminCodeGross { font-size: 2rem; font-weight: 900; letter-spacing: 0.08em; color: var(--akzent-dunkel); user-select: all; -webkit-user-select: all; }
+.adminCodeErgebnis .knopf { flex: none; }
+.adminListe h3 { margin: 12px 0 6px; font-size: 0.95rem; }
+.adminZeile {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; align-items: center;
+  margin-bottom: 6px; padding: 8px 10px; border: 2px solid var(--rand); border-radius: 12px; background: var(--karte);
+  font-size: 0.85rem;
+}
+.adminZeile small { grid-column: 1 / -1; color: var(--text-sanft); }
+.adminZeileKnoepfe { display: flex; gap: 4px; }
+.adminMini { width: 36px; height: 36px; border: 2px solid var(--rand); border-radius: 10px; background: #fff; cursor: pointer; }
+.adminAktuell { margin: 6px 0 10px; padding: 10px; border-radius: 12px; background: var(--karte-hover); font-size: 0.88rem; }
+.adminAktuell .knopf { margin-top: 8px; }
+.adminStatus { min-height: 1.2em; margin: 8px 0 0; font-weight: bold; color: var(--akzent-dunkel); }
+.adminFehler { min-height: 1.2em; font-weight: bold; color: var(--akzent-dunkel); }
+
+.nachrichtText { margin: 6px 0 12px; font-size: 1.1rem; font-weight: bold; white-space: pre-line; }
+.umfrageAntworten { display: grid; gap: 8px; margin: 8px 0; }
+.umfrageKnopf { flex: none; }
+.umfrageErgebnis { display: grid; gap: 6px; margin: 6px 0; text-align: left; }
+.umfrageErgebnis small { color: var(--text-sanft); text-align: center; }
+.umfrageZeile {
+  position: relative; display: flex; justify-content: space-between; gap: 8px;
+  padding: 8px 10px; border: 2px solid var(--rand); border-radius: 12px; background: #fff; overflow: hidden;
+  font-size: 0.9rem;
+}
+.umfrageZeile.meine { border-color: var(--akzent); }
+.umfrageBalken { position: absolute; inset: 0 auto 0 0; background: var(--karte-hover); z-index: 0; }
+.umfrageZeile > :not(.umfrageBalken) { position: relative; z-index: 1; }
+
 /* ----- Minispiele ----- */
 .spieleKopf { background: linear-gradient(135deg, #e9f6ff, #ffe6f2); color: #3b2a5a; }
 .spieleListe { display: grid; gap: 10px; }
