@@ -8,7 +8,8 @@
 //  ebenso neue Tierarten. Kindgerecht: Ein hungriges Tier stirbt nie – es schläft nur.
 //
 //  Gespeichert: spiel.haustier / spiel.haustier2 = { art, name, level, xp, sattheit, letzteZeit,
-//               streichelTag, streichelHeute, zubehoer: { halsband, schleife, koerbchen } }
+//               streichelTag, streichelHeute, zubehoer: { halsband, schleife, koerbchen },
+//               ausflug: { ziel, start, ende } (nur unterwegs, siehe ausfluege.js) }
 //               spiel.tierZubehoer = [gekaufte Zubehör-IDs]
 //  Season-Tiere und -Zubehör stehen wie Skins in skinStand.freigeschaltet.
 //  Diese Datei fasst das HTML nicht an.
@@ -511,6 +512,7 @@ function gibTierXp(menge, t = haustier()) {
 // Füttern. Rückgabe: { ok: false, grund: "satt" | "herzen" } oder { ok: true, preis, aufgestiegen, gewachsen }
 function fuettere(sorte, t = haustier()) {
   if (!t) return { ok: false, grund: "keins" };
+  if (t.ausflug) return { ok: false, grund: "unterwegs" };   // auf Ausflug (ausfluege.js)
   aktualisiereHunger();
   if (t.sattheit >= 100) return { ok: false, grund: "satt" };
   const preis = futterPreis(sorte);
@@ -527,7 +529,7 @@ function streichelnUebrig(t = haustier()) {
 
 // Streicheln (begrenzt pro Tag und Tier). Rückgabe: { ok, aufgestiegen, gewachsen }
 function streichle(t = haustier()) {
-  if (!t || streichelnUebrig(t) <= 0) return { ok: false };
+  if (!t || t.ausflug || streichelnUebrig(t) <= 0) return { ok: false };
   if (t.streichelTag !== datumText()) { t.streichelTag = datumText(); t.streichelHeute = 0; }
   t.streichelHeute++;
   return { ok: true, ...gibTierXp(TIER.streichelnXp, t) };

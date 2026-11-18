@@ -125,6 +125,10 @@ function adminEreignisse(inhalt) {
   for (const w of WUNDER) {
     ereignis(`${w.icon} ${w.name} (Test)`, () => { wunderTest = w.id; pruefeWunder(); sag(w.id, { wichtig: true }); });
   }
+  ereignis("🎒 Ausflüge sofort beenden (Test)", () => {
+    for (const t of alleHaustiere()) if (t.ausflug) t.ausflug.ende = Date.now();
+    meldung("🎒 Gleich zurück!", "Alle Haustiere kommen jetzt vom Ausflug heim.");
+  });
   ereignis("🚫 Wunder-Test beenden", () => { wunderTest = null; pruefeWunder(); });
   inhalt.append(liste);
 

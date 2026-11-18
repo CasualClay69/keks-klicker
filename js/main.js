@@ -54,7 +54,7 @@ function klickAufMarie(position) {
 
   // Das Haustier hüpft mit – und alle 25 Klicks schickt es ein Herzchen
   haustierHopst();
-  if (haustier() && spiel.klicks % 25 === 0) {
+  if (haustier() && !haustier().ausflug && spiel.klicks % 25 === 0) {
     const r = ui.haustier.getBoundingClientRect();
     zeigeSchwebeText({ x: r.left + r.width / 2, y: r.top }, "💕");
   }
@@ -855,7 +855,10 @@ function beimZimmerTeil(teil) {
   }
   if (ergebnis === "gesperrt") {
     sound.fehler();
-    meldung("🔒 Besonderes Teil", teil.feiertag
+    const ziel = teil.ausflug && ausflugZiel(teil.ausflug);
+    meldung("🔒 Besonderes Teil", ziel
+      ? `„${teil.name}“ bringt dein Haustier manchmal von einem Ausflug ${ziel.wohin} mit. Tippe auf dein Haustier!`
+      : teil.feiertag
       ? `„${teil.name}“ gibt es als Geschenk zu ${FEIERTAGE.find(f => f.id === teil.feiertag).name}.`
       : `„${teil.name}“ gibt es im ${seasonName(teil.season)}.`);
     return;
@@ -923,6 +926,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeGeburtstag();     // Geburtstagsgeschenk hat Vorrang vor dem täglichen Geschenk
   pruefeFeiertag();       // Nikolaus, Silvester, erster Schnee (feiertage-ui.js)
   pruefeWunder();         // geheime Ereignisse: Regenbogen-Tag usw. (wunder-ui.js)
+  pruefeAusfluege();      // Haustier vom Ausflug zurück? (ausfluege-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1391,6 +1395,7 @@ function starte() {
   richteSkinReiterEin();
   richteGeburtstagEin();
   richteWunderEin();
+  richteAusfluegeEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();

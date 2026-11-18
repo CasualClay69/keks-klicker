@@ -652,6 +652,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 .tierGross > svg { display: block; width: 1.15em; height: 1.15em; margin: 0 auto; }
 .tierGross.freut { animation: tierHops 0.4s ease-out; }
+.tierKarte { max-height: 100%; overflow-y: auto; overscroll-behavior: contain; }
 .tierKarte h2 { margin: 2px 0; }
 .tierWerte { margin: 6px 0 4px; text-align: left; font-size: 0.85rem; }
 .tierZeile { display: flex; justify-content: space-between; margin-top: 6px; font-weight: bold; }
@@ -1283,6 +1284,37 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .wochenKopf { margin-top: 18px; background: linear-gradient(135deg, #fff4cc, #ffe0f0); }
 .aufgabe.woche { border-color: #f5c542; }
 .aufgabe.woche.bonus { background: linear-gradient(135deg, #fffbe6, #fff0f7); }
+
+/* ----- Haustier-Ausflüge ----- */
+.haustierKnopf.unterwegs .haustierBild { visibility: hidden; }
+.haustierKnopf.unterwegs::after {
+  content: "🐾"; position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-size: 0.55em; opacity: 0.55;
+}
+.tierGross.unterwegs { opacity: 0.35; filter: grayscale(0.6); pointer-events: none; }
+.tierAusflug { margin-top: 12px; padding-top: 10px; border-top: 2px dashed var(--rand); }
+.tierAusflug h3, .tierUnterwegs h3 { margin: 0 0 8px; font-size: 1rem; color: var(--akzent-dunkel); }
+.ausflugZiele { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.ausflugZiel {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  min-width: 0; padding: 6px 2px;
+  border: 2px solid var(--rand); border-radius: 14px;
+  background: var(--karte); color: var(--text); font: inherit; cursor: pointer;
+}
+.ausflugZiel .icon  { font-size: 1.6rem; line-height: 1.2; }
+.ausflugZiel .name  { font-size: 0.62rem; font-weight: bold; line-height: 1.15; overflow-wrap: anywhere; text-align: center; }
+.ausflugZiel .dauer { font-size: 0.7rem; font-weight: 900; color: var(--akzent-dunkel); }
+.ausflugZiel .beute { font-size: 0.6rem; }
+.ausflugZiel:disabled { opacity: 0.45; }
+.ausflugHinweis { margin: 8px 0 0; font-size: 0.75rem; color: var(--text-sanft); }
+.ausflugHinweis.warnung { color: #c0392b; font-weight: bold; }
+.tierUnterwegs { margin-top: 10px; }
+.ausflugOrt { font-size: 1.3rem; font-weight: 900; color: var(--akzent-dunkel); margin-bottom: 6px; }
+.tierBalken.ausflug > div { background: linear-gradient(90deg, #5fd38d, #4fa8ff); }
+.ausflugRest { margin: 6px 0 0; font-weight: bold; color: var(--text-sanft); }
+.auTier { display: inline-block; position: relative; width: 90px; height: 90px; font-size: 70px; line-height: 90px; }
+.auBeute { white-space: pre-line; font-size: 1rem; line-height: 1.5; }
 
 /* ----- Geheime Ereignisse ----- */
 /* z-index 0 + vor #marieBereich im HTML -> liegt hinter der Figur */

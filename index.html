@@ -40,6 +40,7 @@
   <script src="js/album.js" defer></script>
   <script src="js/seasons.js" defer></script>
   <script src="js/haustier.js" defer></script>
+  <script src="js/ausfluege.js" defer></script>
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
   <script src="js/feiertage.js" defer></script>
@@ -54,6 +55,7 @@
   <script src="js/spielhalle.js" defer></script>
   <script src="js/verwaltung-ui.js" defer></script>
   <script src="js/feiertage-ui.js" defer></script>
+  <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
   <script src="js/stickerpost-ui.js" defer></script>
   <script src="js/main.js"    defer></script>
@@ -611,12 +613,36 @@
           <div class="tierBalken satt"><div id="tierSattBalken"></div></div>
           <div id="tierBonus" class="tierBonus"></div>
         </div>
-        <div class="knopfReihe">
+        <div id="tierFutter" class="knopfReihe">
           <button id="tierLeckerli" type="button" class="knopf haupt"></button>
           <button id="tierFestmahl" type="button" class="knopf haupt"></button>
         </div>
         <button id="tierStreicheln" type="button" class="knopf tierStreicheln"></button>
+
+        <!-- Ausflüge (ausfluege-ui.js) -->
+        <div id="tierAusflug" class="tierAusflug">
+          <h3>🗺️ Auf Entdeckungstour schicken</h3>
+          <div id="ausflugZiele" class="ausflugZiele"></div>
+          <p id="ausflugHinweis" class="ausflugHinweis"></p>
+        </div>
+        <div id="tierUnterwegs" class="tierUnterwegs" hidden>
+          <div id="ausflugOrt" class="ausflugOrt"></div>
+          <div class="tierBalken ausflug"><div id="ausflugBalken"></div></div>
+          <p id="ausflugRest" class="ausflugRest"></p>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Haustier ist vom Ausflug zurück -->
+  <div id="ausflugOverlay" class="overlay" hidden>
+    <div class="geschenkKarte ausflugKarte" role="dialog" aria-modal="true" aria-labelledby="auTitel">
+      <span id="auTier" class="auTier haustierBild" aria-hidden="true"></span>
+      <h2 id="auTitel"></h2>
+      <p id="auText" class="geschenkSerie"></p>
+      <div id="auBeute" class="geschenkBetrag auBeute"></div>
+      <p id="auHinweis" class="geschenkMorgen"></p>
+      <button id="auZu" class="knopf haupt" type="button">Danke! 💕</button>
     </div>
   </div>
 

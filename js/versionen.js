@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.64", datum: "2026-11-18", neu: ["Haustier-Ausflüge: Schick dein Tier für 1 bis 8 Stunden auf Entdeckungstour – auch wenn das Spiel zu ist", "Es bringt Herzen, Sticker und Erfahrung mit – und manchmal ein Mitbringsel fürs Zimmer", "Neuer Erfolg „Weltenbummler“"] },
   { v: "1.63", datum: "2026-11-18", neu: ["Psst … ab jetzt passiert manchmal etwas ganz Besonderes. Halte die Augen offen! 🌈", "Ein neuer, geheimer Erfolg"] },
   { v: "1.62", datum: "2026-11-18", neu: ["Sticker-Post: In der Bestenliste auf 🎁 tippen und doppelte Sticker an andere verschicken", "Neuer Erfolg „Gute Freundin“: Verschicke 5 Sticker"] },
   { v: "1.61", datum: "2026-11-18", neu: ["Tippe auf die Versionsnummer unter dem Logo – dann siehst du alle Versionen und was sich geändert hat (dieses Fenster!)"] },

@@ -1341,6 +1341,7 @@ function zeigeZimmer(beimTeilWaehlen) {
     let status;
     if (steht === teil) status = "✓ Im Zimmer";
     else if (besitzt) status = "Hinstellen";
+    else if (teil.preis === null && teil.ausflug) status = "🔒 Ausflugs-Mitbringsel";
     else if (teil.preis === null && teil.feiertag) status = `🔒 ${FEIERTAGE.find(f => f.id === teil.feiertag).name}-Geschenk`;
     else if (teil.preis === null) status = `🔒 Season-Stufe ${Object.entries(SEASON_PAESSE.find(p => p.id === teil.season).skinBelohnungen).find(([, id]) => id === teil.id)[0]}`;
     else status = `${herz()} ${format(teil.preis)}`;
@@ -1415,7 +1416,11 @@ function zeigeHaustier() {
 
     const laune = tierLaune(t);
     const blase = $(nr === 1 ? "haustierBlase" : "haustier2Blase");
-    const zeichen = !t ? "❓" : laune === "schlaeft" ? "💤" : laune === "hungrig" ? tierArt(t).leckerli.icon : "";
+    const weg = typeof istUnterwegs === "function" && istUnterwegs(t);   // auf Ausflug (ausfluege.js)
+    el.classList.toggle("unterwegs", weg);
+    if (weg) el.setAttribute("aria-label", `${t.name} ist auf einem Ausflug`);
+    const zeichen = !t ? "❓" : weg ? (ausflugFertig(t) ? "🎒" : "🗺️")
+      : laune === "schlaeft" ? "💤" : laune === "hungrig" ? tierArt(t).leckerli.icon : "";
     blase.hidden = !zeichen;
     setzeText(blase, zeichen);
     el.classList.toggle("schlaeft", laune === "schlaeft");
@@ -1425,7 +1430,7 @@ function zeigeHaustier() {
 // Klick auf Marie: die Tiere hüpfen mit
 function haustierHopst() {
   for (const [t, el] of [[haustier(1), ui.haustier], [haustier(2), $("haustier2")]]) {
-    if (!t) continue;
+    if (!t || t.ausflug) continue;
     el.classList.remove("hopst");
     void el.offsetWidth;
     el.classList.add("hopst");
@@ -1508,6 +1513,7 @@ function zeigeTierPflege() {
   const uebrig = streichelnUebrig(t);
   setzeText($("tierStreicheln"), uebrig > 0 ? `🤗 Streicheln (noch ${uebrig}× heute)` : "🤗 Genug gestreichelt für heute – morgen wieder!");
   $("tierStreicheln").disabled = uebrig <= 0;
+  zeigeAusflugBereich(t);   // Ausflüge (ausfluege-ui.js)
 }
 
 function tierFreutSich() {
