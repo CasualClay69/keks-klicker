@@ -1580,6 +1580,35 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   letter-spacing: 0.04em;
 }
 
+.logo-version { pointer-events: auto; cursor: pointer; -webkit-user-select: none; user-select: none; }
+
+/* ----- Alle Versionen ----- */
+.versionenKarte { height: min(100%, 680px); }
+.versionenListe {
+  flex: 1; min-height: 0;
+  margin-top: 10px; padding-right: 4px;
+  overflow-y: auto; overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.versionEintrag {
+  margin-bottom: 10px; padding: 10px 12px;
+  border: 2px solid var(--rand); border-radius: 16px;
+  background: var(--karte);
+}
+.versionEintrag.aktuell { border-color: #f5b400; box-shadow: 0 0 0 3px rgba(245, 180, 0, 0.25); }
+.versionEintrag h3 {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  margin: 0 0 4px; font-size: 1rem; color: var(--akzent-dunkel);
+}
+.versionEintrag h3 small { margin-left: auto; font-size: 0.75rem; font-weight: normal; color: var(--text-sanft); }
+.versionMarke {
+  padding: 1px 8px; border-radius: 999px;
+  background: #ffd23f; color: #6b4a00; font-size: 0.7rem;
+}
+.versionEintrag ul { margin: 0; padding-left: 20px; }
+.versionEintrag li { margin: 2px 0; line-height: 1.35; overflow-wrap: anywhere; }
+
 /* Krönchen schief auf dem "M" */
 .logo-krone {
   position: absolute;

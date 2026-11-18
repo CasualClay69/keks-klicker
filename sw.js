@@ -23,6 +23,7 @@ const DATEIEN = [
   "manifest.webmanifest",
   "css/style.css",
   "js/version.js",
+  "js/versionen.js",
   "js/daten.js",
   "js/skins.js",
   "js/kleiderschrank.js",

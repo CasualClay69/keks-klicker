@@ -23,6 +23,7 @@
   <!-- Reihenfolge ist wichtig: spätere Dateien benutzen Dinge aus früheren.
        "defer" = erst ausführen, wenn das HTML fertig geladen ist. -->
   <script src="js/version.js" defer></script>
+  <script src="js/versionen.js" defer></script>
   <script src="js/daten.js"   defer></script>
   <script src="js/skins.js"   defer></script>
   <script src="js/kleiderschrank.js" defer></script>
@@ -67,7 +68,7 @@
       <span class="logo-deko" aria-hidden="true"></span>
       <span class="logo-marie figurName" aria-hidden="true">Marie</span>
       <span class="logo-clicker" aria-hidden="true">Clicker</span>
-      <span class="logo-version" id="version"></span>
+      <span class="logo-version" id="version" role="button" tabindex="0" title="Alle Versionen ansehen"></span>
       <span class="funkeln f1" aria-hidden="true">✦</span>
       <span class="funkeln f2" aria-hidden="true">✦</span>
       <span class="funkeln f3" aria-hidden="true">✦</span>
@@ -514,7 +515,18 @@
     </div>
   </div>
 
-  <!-- Admin-Menü (versteckt: 7× auf die Versionsnummer tippen) -->
+  <!-- Alle Versionen (Tippen auf die Versionsnummer unter dem Logo) -->
+  <div id="versionenOverlay" class="overlay" hidden>
+    <div class="spielKarte versionenKarte" role="dialog" aria-modal="true" aria-labelledby="versionenTitel">
+      <div class="spielKopf">
+        <h2 id="versionenTitel">📜 Alle Versionen</h2>
+        <button id="versionenZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <div id="versionenListe" class="versionenListe"></div>
+    </div>
+  </div>
+
+  <!-- Admin-Menü (versteckt: 10 Sekunden auf das Logo drücken) -->
   <div id="adminOverlay" class="overlay" hidden>
     <div class="spielKarte adminKarte" role="dialog" aria-modal="true" aria-labelledby="adminTitel">
       <div class="spielKopf">

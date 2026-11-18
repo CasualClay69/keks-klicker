@@ -1235,6 +1235,47 @@ async function pruefeAufUpdate() {
   } catch (e) { /* offline -> später nochmal */ }
 }
 
+// ----- Alle Versionen (Tippen auf die Versionsnummer) -----
+
+function zeigeVersionen() {
+  const liste = $("versionenListe");
+  liste.textContent = "";
+  for (const eintrag of VERSIONEN) {
+    const block = document.createElement("section");
+    block.className = "versionEintrag" + (eintrag.v === APP_VERSION ? " aktuell" : "");
+    const kopf = document.createElement("h3");
+    const [j, m, t] = eintrag.datum.split("-");
+    kopf.textContent = eintrag.v === "Anfang" ? "🌱 Die Anfänge" : `Version ${eintrag.v}`;
+    if (eintrag.v === APP_VERSION) {
+      const marke = document.createElement("b");
+      marke.className = "versionMarke";
+      marke.textContent = "deine Version";
+      kopf.append(" ", marke);
+    }
+    const datum = document.createElement("small");
+    datum.textContent = `${Number(t)}.${Number(m)}.${j}`;
+    kopf.append(datum);
+    const punkte = document.createElement("ul");
+    for (const text of eintrag.neu) {
+      const li = document.createElement("li");
+      li.textContent = text;   // Geschichte wörtlich, ohne Season-Wörter
+      punkte.append(li);
+    }
+    block.append(kopf, punkte);
+    liste.append(block);
+  }
+  liste.scrollTop = 0;
+  $("versionenOverlay").hidden = false;
+}
+
+function richteVersionenEin() {
+  const version = $("version");
+  version.addEventListener("click", () => { sound.klick(); zeigeVersionen(); });
+  version.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); zeigeVersionen(); } });
+  $("versionenZu").addEventListener("click", () => { $("versionenOverlay").hidden = true; sound.klick(); });
+  $("versionenOverlay").addEventListener("click", e => { if (e.target.id === "versionenOverlay") $("versionenOverlay").hidden = true; });
+}
+
 function zeigeUpdateFenster(version, neu) {
   setzeText($("updateVersionen"), `Du spielst Version ${APP_VERSION} – neu ist Version ${version}.`);
   setzeText($("updateNeu"), neu ? `🆕 ${neu}` : "");
@@ -1326,6 +1367,7 @@ function richteAppEin() {
 
 function starte() {
   $("version").textContent = "v" + APP_VERSION;
+  richteVersionenEin();
   laden();
   aktualisiereHunger();   // Hunger seit dem letzten Spielen nachrechnen
   ladeSkins();
