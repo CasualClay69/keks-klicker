@@ -50,6 +50,7 @@
   <script src="js/minispiele.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
   <script src="js/stickerpost.js" defer></script>
+  <script src="js/besuch.js" defer></script>
   <script src="js/verwaltung.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
@@ -60,6 +61,7 @@
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
   <script src="js/stickerpost-ui.js" defer></script>
+  <script src="js/besuch-ui.js" defer></script>
   <script src="js/main.js"    defer></script>
 </head>
 <body>
@@ -534,6 +536,19 @@
       <p id="umfrageHinweis" class="geschenkSerie"></p>
       <div id="umfrageAntworten" class="umfrageAntworten"></div>
       <div class="knopfReihe"><button id="umfrageZu" type="button" class="knopf">Später</button></div>
+    </div>
+  </div>
+
+  <!-- Zu Besuch: Zimmer eines anderen Spielers ansehen (besuch-ui.js) -->
+  <div id="besuchOverlay" class="overlay" hidden>
+    <div class="spielKarte besuchKarte" role="dialog" aria-modal="true" aria-labelledby="besuchTitel">
+      <div class="spielKopf">
+        <h2 id="besuchTitel">🏠 Zu Besuch</h2>
+        <button id="besuchZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <div id="besuchZimmer" class="zimmer besuchZimmer" aria-label="Zimmer" hidden></div>
+      <p id="besuchInfo" class="besuchInfo"></p>
+      <button id="besuchPost" type="button" class="knopf haupt" hidden>🎁 Sticker schicken</button>
     </div>
   </div>
 

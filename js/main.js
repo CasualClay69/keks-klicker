@@ -1162,6 +1162,7 @@ function richteBestenlisteEin() {
 
   $("blAktualisieren").addEventListener("click", () => aktualisiereBestenliste());
   richteStickerPostEin();   // 🎁 in der Liste, Post abholen (stickerpost-ui.js)
+  richteBesuchEin();        // Name antippen -> Zimmer ansehen (besuch-ui.js)
 
   // Umschalten zwischen Gesamt und Woche
   for (const btn of $("blAnsicht").children) {
@@ -1180,6 +1181,7 @@ function richteBestenlisteEin() {
         feiereWochenSieg(await holeBestenliste());
       } catch (e) { /* offline – dann beim nächsten Mal */ }
       pruefeStickerPost();
+      sendeProfil().catch(() => {});
     }, 8000);
   }
 
@@ -1212,6 +1214,7 @@ function richteBestenlisteEin() {
     if (!$("seiteBestenliste").hidden) aktualisiereBestenliste();
     else sendePunkte().catch(() => {});
     pruefeStickerPost();
+    sendeProfil().catch(() => {});   // nur wenn sich Figur, Zimmer oder Tiere geändert haben
   }, BESTENLISTE.sendenAlleSek * 1000);
 
   // Beim Verlassen der App noch schnell den neuesten Stand senden

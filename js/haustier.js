@@ -426,6 +426,7 @@ function zubehoerBesitzt(z) {
 function tierTraegt(t, typ) {
   const id = t && t.zubehoer && t.zubehoer[typ];
   const z = id && TIER_ZUBEHOER.find(x => x.id === id && x.typ === typ);
+  if (z && t.fremd) return z;   // Tier eines anderen Spielers (besuch.js): nicht mit dem eigenen Besitz abgleichen
   return z && zubehoerBesitzt(z) ? z : undefined;
 }
 

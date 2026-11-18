@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.66";
-const APP_NEU = "Neu: Weihnachten! Vom 24. bis 26. Dezember leuchten Lichterketten, es schneit – und unterm Baum liegt ein Geschenk für dich. 🎄";
+const APP_VERSION = "1.67";
+const APP_NEU = "Neu: Zu Besuch! Tippe in der Bestenliste auf einen Namen – dann siehst du das Zimmer, die Figur und die Haustiere der anderen.";

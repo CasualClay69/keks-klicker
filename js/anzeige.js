@@ -1653,6 +1653,9 @@ function zeigeBestenlisteEintraege(eintraege, ansicht = "gesamt") {
   eintraege.forEach((e, i) => {
     const zeile = document.createElement("li");
     zeile.className = "blZeile";
+    zeile.dataset.id = e.spieler_id;   // Tippen -> Zimmer ansehen (besuch-ui.js)
+    zeile.dataset.name = e.name;
+    zeile.title = "Tippen: Zimmer ansehen";
     const istDu = mitglied && e.spieler_id === mitglied.spielerId;
     if (istDu) zeile.classList.add("du");
     if (e.wochen_sieger) zeile.classList.add("sieger");   // goldener Rahmen für die Gewinner der letzten Woche

@@ -17,6 +17,9 @@
 --
 --  Sticker-Post (seit v1.62): Doppelte Sticker an andere Spieler aus der Liste schicken.
 --  Der Empfänger holt sie beim nächsten Öffnen der App ab.
+--
+--  Zu Besuch (seit v1.67): Jeder meldet ein kleines Profil (Figur, Zimmer, Haustiere – nur IDs),
+--  die anderen können es sich in der Liste ansehen.
 -- =====================================================
 
 create table if not exists public.bestenliste (
@@ -37,6 +40,9 @@ alter table public.bestenliste add column if not exists woche           text;
 alter table public.bestenliste add column if not exists woche_start     double precision not null default 0;
 alter table public.bestenliste add column if not exists vorwoche        text;
 alter table public.bestenliste add column if not exists vorwoche_herzen double precision not null default 0;
+
+-- Zu Besuch (seit v1.67)
+alter table public.bestenliste add column if not exists profil jsonb;
 
 -- Jeder Spitzname nur einmal pro Gruppe (seit v1.46).
 -- Vorher entstandene doppelte Einträge aufräumen: behalten wird der zuletzt aktualisierte.
@@ -300,6 +306,37 @@ end;
 $$;
 
 
+-- =====================================================
+--  ZU BESUCH: eigenes Profil melden, fremdes ansehen
+-- =====================================================
+
+create or replace function public.melde_profil(p_gruppe text, p_spieler_id uuid, p_geheimnis text, p_profil jsonb)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if p_profil is null or jsonb_typeof(p_profil) <> 'object' or length(p_profil::text) > 6000 then
+    raise exception 'Ungültiges Profil.';
+  end if;
+  update bestenliste set profil = p_profil
+  where gruppe = lower(trim(p_gruppe)) and spieler_id = p_spieler_id and geheimnis = p_geheimnis;
+end;
+$$;
+
+create or replace function public.hole_profil(p_gruppe text, p_spieler_id uuid)
+returns json
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select json_build_object('name', name, 'profil', profil)
+  from bestenliste where gruppe = lower(trim(p_gruppe)) and spieler_id = p_spieler_id;
+$$;
+
+
 -- ----- Rechte: Besucher dürfen nur diese Funktionen aufrufen -----
 revoke all on function public.melde_punkte(text, uuid, text, text, double precision, double precision, integer, integer) from public;
 revoke all on function public.hole_bestenliste(text) from public;
@@ -313,3 +350,8 @@ revoke all on function public.sende_sticker(text, uuid, text, uuid, text) from p
 revoke all on function public.hole_sticker_post(text, uuid, text) from public;
 grant execute on function public.sende_sticker(text, uuid, text, uuid, text) to anon, authenticated;
 grant execute on function public.hole_sticker_post(text, uuid, text) to anon, authenticated;
+
+revoke all on function public.melde_profil(text, uuid, text, jsonb) from public;
+revoke all on function public.hole_profil(text, uuid) from public;
+grant execute on function public.melde_profil(text, uuid, text, jsonb) to anon, authenticated;
+grant execute on function public.hole_profil(text, uuid) to anon, authenticated;
