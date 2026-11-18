@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.61";
-const APP_NEU = "Neu: Tippe auf die Versionsnummer unter dem Logo – dann siehst du alle Versionen und was sich darin geändert hat.";
+const APP_VERSION = "1.62";
+const APP_NEU = "Neu: Sticker-Post! Tippe in der Bestenliste auf 🎁 und schick anderen Spielern Sticker, die du doppelt hast.";

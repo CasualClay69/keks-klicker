@@ -46,12 +46,14 @@
   <script src="js/herzregen.js" defer></script>
   <script src="js/minispiele.js" defer></script>
   <script src="js/bestenliste.js" defer></script>
+  <script src="js/stickerpost.js" defer></script>
   <script src="js/verwaltung.js" defer></script>
   <script src="js/sound.js"   defer></script>
   <script src="js/anzeige.js" defer></script>
   <script src="js/spielhalle.js" defer></script>
   <script src="js/verwaltung-ui.js" defer></script>
   <script src="js/feiertage-ui.js" defer></script>
+  <script src="js/stickerpost-ui.js" defer></script>
   <script src="js/main.js"    defer></script>
 </head>
 <body>
@@ -512,6 +514,19 @@
       <p id="umfrageHinweis" class="geschenkSerie"></p>
       <div id="umfrageAntworten" class="umfrageAntworten"></div>
       <div class="knopfReihe"><button id="umfrageZu" type="button" class="knopf">Später</button></div>
+    </div>
+  </div>
+
+  <!-- Sticker-Post: doppelte Sticker an andere Spieler schicken (stickerpost-ui.js) -->
+  <div id="postOverlay" class="overlay" hidden>
+    <div class="spielKarte postKarte" role="dialog" aria-modal="true" aria-labelledby="postTitel">
+      <div class="spielKopf">
+        <h2 id="postTitel">🎁 Sticker schicken</h2>
+        <button id="postZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <p id="postInfo" class="seitenInfo"></p>
+      <div id="postRaster" class="albumRaster postRaster"></div>
+      <p id="postStatus" class="postStatus" aria-live="polite"></p>
     </div>
   </div>
 

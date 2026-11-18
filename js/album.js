@@ -167,7 +167,14 @@ function gibSticker(quelle = "klick", eigenerVorrat = null) {
     const fehlend = kandidaten.filter(s => stickerAnzahl(s) === 0);
     sticker = fehlend.length && Math.random() < 0.5 ? zufallAus(fehlend) : zufallAus(kandidaten);
   }
+  return klebeStickerEin(sticker);
+}
 
+// Einen bestimmten Sticker ins Album kleben (neu -> evtl. Seite voll, doppelt -> Herzen).
+// Rückgabe wie bei gibSticker
+function klebeStickerEin(sticker) {
+  if (!spiel.sticker) spiel.sticker = {};
+  if (!spiel.stickerNeu) spiel.stickerNeu = [];
   const neu = stickerAnzahl(sticker) === 0;
   spiel.sticker[sticker.id] = stickerAnzahl(sticker) + 1;
 

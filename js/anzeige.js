@@ -1668,6 +1668,18 @@ function zeigeBestenlisteEintraege(eintraege, ansicht = "gesamt") {
       span("punkte", punkte),
       span("details", details.join(" · ")),
     );
+    if (!istDu) {
+      const post = document.createElement("button");
+      post.type = "button";
+      post.className = "blPost";
+      post.textContent = "🎁";
+      post.title = "Sticker schicken";
+      post.setAttribute("aria-label", `Sticker an ${e.name} schicken`);
+      post.dataset.id = e.spieler_id;
+      post.dataset.name = e.name;
+      zeile.classList.add("mitPost");
+      zeile.append(post);
+    }
     if (e.wochen_sieger) {
       zeile.append(span("siegerBadge", `👑 Gewinner der letzten Woche · ${format(e.vorwoche_herzen)} ${herz()}`));
     }
@@ -1757,10 +1769,11 @@ function zeigeSchwebeText({ x, y }, text, gross = false) {
 }
 
 // Benachrichtigung, die nach 4 Sekunden verschwindet
-function meldung(titel, text) {
+// roh = true: Text genau so zeigen (z.B. Spitznamen anderer Spieler, die "Marie" heißen könnten)
+function meldung(titel, text, roh = false) {
   const el = document.createElement("div");
   el.className = "meldung";
-  el.append(Object.assign(document.createElement("b"), { textContent: mitName(titel) }), mitName(text));
+  el.append(Object.assign(document.createElement("b"), { textContent: roh ? titel : mitName(titel) }), roh ? text : mitName(text));
   ui.meldungen.append(el);
   // Höchstens 3 gleichzeitig – sonst verdecken sie auf dem Handy den halben Bildschirm
   while (ui.meldungen.children.length > 3) ui.meldungen.firstElementChild.remove();

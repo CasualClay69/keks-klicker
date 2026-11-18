@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.62", datum: "2026-11-18", neu: ["Sticker-Post: In der Bestenliste auf 🎁 tippen und doppelte Sticker an andere verschicken", "Neuer Erfolg „Gute Freundin“: Verschicke 5 Sticker"] },
   { v: "1.61", datum: "2026-11-18", neu: ["Tippe auf die Versionsnummer unter dem Logo – dann siehst du alle Versionen und was sich geändert hat (dieses Fenster!)"] },
   { v: "1.60", datum: "2026-11-18", neu: ["Die Herzschenker heißen jetzt Helfer", "Ein ⭐ am Shop zeigt, wenn du dir einen Meilenstein leisten kannst", "Danke an Selina für die Season-Idee :)"] },
   { v: "1.59", datum: "2026-11-18", neu: ["Feiertage: Nikolaus mit Stiefel-Geschenk, Silvester mit Feuerwerk", "Erster Schnee: dann schneit es auf allen Geräten", "Neue Andenken fürs Zimmer"] },

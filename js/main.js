@@ -1153,6 +1153,7 @@ function richteBestenlisteEin() {
   });
 
   $("blAktualisieren").addEventListener("click", () => aktualisiereBestenliste());
+  richteStickerPostEin();   // 🎁 in der Liste, Post abholen (stickerpost-ui.js)
 
   // Umschalten zwischen Gesamt und Woche
   for (const btn of $("blAnsicht").children) {
@@ -1170,6 +1171,7 @@ function richteBestenlisteEin() {
         await sendePunkte();
         feiereWochenSieg(await holeBestenliste());
       } catch (e) { /* offline – dann beim nächsten Mal */ }
+      pruefeStickerPost();
     }, 8000);
   }
 
@@ -1201,6 +1203,7 @@ function richteBestenlisteEin() {
     if (!mitglied || document.hidden) return;
     if (!$("seiteBestenliste").hidden) aktualisiereBestenliste();
     else sendePunkte().catch(() => {});
+    pruefeStickerPost();
   }, BESTENLISTE.sendenAlleSek * 1000);
 
   // Beim Verlassen der App noch schnell den neuesten Stand senden

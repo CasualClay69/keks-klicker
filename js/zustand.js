@@ -20,7 +20,9 @@ function neuerSpielstand() {
     wochenmissionen: null, // die 3 Wochen-Missionen (siehe wochenmissionen.js)
     wochenBoni: 0,
     familienziele: [],
-    feiertage: {},     // Feiertags-Geschenke: { nikolaus: 2026, … } (siehe feiertage.js) // IDs der Familienziele, deren Belohnung schon abgeholt wurde     // wie oft alle 3 Wochen-Missionen geschafft
+    feiertage: {},     // Feiertags-Geschenke: { nikolaus: 2026, … } (siehe feiertage.js)
+    stickerVerschickt: 0,  // Sticker-Post (siehe stickerpost.js)
+    stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)
     sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)

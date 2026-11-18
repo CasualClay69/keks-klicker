@@ -14,6 +14,9 @@
 --  meisten Herzen? Das rechnet die Datenbank selbst aus – aus "herzen_gesamt" beim ersten
 --  Melden in der Woche (woche_start). Die Gewinner der letzten Woche bekommen
 --  in der Liste einen besonderen Rahmen (wochen_sieger = true).
+--
+--  Sticker-Post (seit v1.62): Doppelte Sticker an andere Spieler aus der Liste schicken.
+--  Der Empfänger holt sie beim nächsten Öffnen der App ab.
 -- =====================================================
 
 create table if not exists public.bestenliste (
@@ -114,6 +117,9 @@ begin
       update bestenliste set spieler_id = p_spieler_id, geheimnis = p_geheimnis
       where gruppe = v_gruppe and spieler_id = v_anderer.spieler_id;
     end if;
+    -- noch nicht abgeholte Sticker-Post wandert mit
+    update bl_sticker_post set an_id = p_spieler_id
+    where gruppe = v_gruppe and an_id = v_anderer.spieler_id and abgeholt is null;
   end if;
 
   -- höchstens 50 Spieler pro Gruppe
@@ -202,7 +208,99 @@ as $$
 $$;
 
 
--- ----- Rechte: Besucher dürfen nur diese drei Funktionen aufrufen -----
+-- =====================================================
+--  STICKER-POST: doppelte Sticker an andere Spieler schicken
+-- =====================================================
+
+create table if not exists public.bl_sticker_post (
+  id        bigint generated always as identity primary key,
+  gruppe    text        not null,
+  von_id    uuid        not null,
+  von_name  text        not null,
+  an_id     uuid        not null,
+  sticker   text        not null,
+  erstellt  timestamptz not null default now(),
+  abgeholt  timestamptz
+);
+create index if not exists bl_sticker_post_an  on public.bl_sticker_post (gruppe, an_id) where abgeholt is null;
+create index if not exists bl_sticker_post_von on public.bl_sticker_post (von_id, erstellt);
+alter table public.bl_sticker_post enable row level security;
+revoke all on public.bl_sticker_post from anon, authenticated;
+
+-- Sticker verschicken. Antwort: {ok, an} oder {fehler}
+create or replace function public.sende_sticker(
+  p_gruppe text, p_spieler_id uuid, p_geheimnis text, p_an uuid, p_sticker text
+) returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_gruppe  text := lower(trim(p_gruppe));
+  v_name    text;
+  v_an_name text;
+begin
+  select name into v_name from bestenliste
+  where gruppe = v_gruppe and spieler_id = p_spieler_id and geheimnis = p_geheimnis;
+  if not found then
+    return json_build_object('fehler', 'Bitte mach erst bei der Bestenliste mit.');
+  end if;
+  if p_an = p_spieler_id then
+    return json_build_object('fehler', 'An dich selbst kannst du keinen Sticker schicken.');
+  end if;
+  select name into v_an_name from bestenliste where gruppe = v_gruppe and spieler_id = p_an;
+  if not found then
+    return json_build_object('fehler', 'Diesen Spieler gibt es nicht mehr in der Bestenliste.');
+  end if;
+  if p_sticker is null or p_sticker !~ '^[a-z0-9-]{1,40}-[0-9]{1,2}$' then
+    return json_build_object('fehler', 'Unbekannter Sticker.');
+  end if;
+  if (select count(*) from bl_sticker_post
+      where von_id = p_spieler_id and erstellt > now() - interval '1 day') >= 30 then
+    return json_build_object('fehler', 'Für heute hast du genug Sticker verschickt – morgen geht es weiter!');
+  end if;
+  if (select count(*) from bl_sticker_post
+      where gruppe = v_gruppe and an_id = p_an and abgeholt is null) >= 100 then
+    return json_build_object('fehler', 'Der Briefkasten von ' || v_an_name || ' ist gerade voll.');
+  end if;
+
+  -- alte, längst abgeholte Post aufräumen
+  delete from bl_sticker_post where abgeholt < now() - interval '7 days';
+
+  insert into bl_sticker_post (gruppe, von_id, von_name, an_id, sticker)
+  values (v_gruppe, p_spieler_id, v_name, p_an, p_sticker);
+  return json_build_object('ok', true, 'an', v_an_name);
+end;
+$$;
+
+-- Eigene Post abholen (jeder Sticker kommt genau einmal an). Antwort: [{von, sticker}, …]
+create or replace function public.hole_sticker_post(p_gruppe text, p_spieler_id uuid, p_geheimnis text)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_gruppe text := lower(trim(p_gruppe));
+  v_post   json;
+begin
+  if not exists (select 1 from bestenliste
+                 where gruppe = v_gruppe and spieler_id = p_spieler_id and geheimnis = p_geheimnis) then
+    return '[]'::json;
+  end if;
+  with geholt as (
+    update bl_sticker_post set abgeholt = now()
+    where gruppe = v_gruppe and an_id = p_spieler_id and abgeholt is null
+    returning von_name, sticker, erstellt
+  )
+  select coalesce(json_agg(json_build_object('von', von_name, 'sticker', sticker) order by erstellt), '[]'::json)
+  into v_post from geholt;
+  return v_post;
+end;
+$$;
+
+
+-- ----- Rechte: Besucher dürfen nur diese Funktionen aufrufen -----
 revoke all on function public.melde_punkte(text, uuid, text, text, double precision, double precision, integer, integer) from public;
 revoke all on function public.hole_bestenliste(text) from public;
 revoke all on function public.verlasse_bestenliste(text, uuid, text) from public;
@@ -210,3 +308,8 @@ revoke all on function public.verlasse_bestenliste(text, uuid, text) from public
 grant execute on function public.melde_punkte(text, uuid, text, text, double precision, double precision, integer, integer) to anon, authenticated;
 grant execute on function public.hole_bestenliste(text) to anon, authenticated;
 grant execute on function public.verlasse_bestenliste(text, uuid, text) to anon, authenticated;
+
+revoke all on function public.sende_sticker(text, uuid, text, uuid, text) from public;
+revoke all on function public.hole_sticker_post(text, uuid, text) from public;
+grant execute on function public.sende_sticker(text, uuid, text, uuid, text) to anon, authenticated;
+grant execute on function public.hole_sticker_post(text, uuid, text) to anon, authenticated;
