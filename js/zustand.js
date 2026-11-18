@@ -31,7 +31,8 @@ function neuerSpielstand() {
     neustarts: 0,
     zuletztAktiv: 0,   // Zeitpunkt (ms), zu dem das Spiel zuletzt lief – für den Offline-Fortschritt
     zimmer: { besitz: [], platz: {} },
-    minispiele: null,  // Minispiele: Rekorde und wie oft heute gespielt (siehe minispiele.js)   // Maries Zimmer (siehe zimmer.js)
+    minispiele: null,
+    bestenliste: null, // Anmeldung für die Online-Bestenliste (Kopie, siehe bestenliste.js)  // Minispiele: Rekorde und wie oft heute gespielt (siehe minispiele.js)   // Maries Zimmer (siehe zimmer.js)
     offlineMax: 0,     // längste Abwesenheit in Sekunden (für den Erfolg "Über Nacht")
     kaufModus: "1",    // siehe KONFIG.kaufModi
     tonAn: true,       // Klang-Effekte
@@ -67,7 +68,9 @@ function laden() {
 
 // "Spielstand löschen" setzt nur das Spiel zurück – Skins (z.B. aus Season-Pässen) bleiben
 function zuruecksetzen() {
+  const anmeldung = spiel.bestenliste;   // in der Bestenliste bleibt man trotzdem angemeldet
   spiel = neuerSpielstand();
+  spiel.bestenliste = anmeldung;
   bonus = KEIN_BONUS;
   speichern();
 }

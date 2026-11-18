@@ -35,6 +35,16 @@ alter table public.bestenliste add column if not exists woche_start     double p
 alter table public.bestenliste add column if not exists vorwoche        text;
 alter table public.bestenliste add column if not exists vorwoche_herzen double precision not null default 0;
 
+-- Jeder Spitzname nur einmal pro Gruppe (seit v1.46).
+-- Vorher entstandene doppelte Einträge aufräumen: behalten wird der zuletzt aktualisierte.
+delete from public.bestenliste a
+using public.bestenliste b
+where a.gruppe = b.gruppe
+  and lower(a.name) = lower(b.name)
+  and a.spieler_id <> b.spieler_id
+  and (a.aktualisiert < b.aktualisiert or (a.aktualisiert = b.aktualisiert and a.spieler_id < b.spieler_id));
+create unique index if not exists bestenliste_name_einmalig on public.bestenliste (gruppe, lower(name));
+
 alter table public.bestenliste enable row level security;
 
 
@@ -69,6 +79,7 @@ declare
   v_gruppe text := lower(trim(p_gruppe));
   v_name   text := trim(p_name);
   v_woche  text := bl_woche(now());
+  v_anderer record;
 begin
   if length(v_gruppe) < 4 or length(v_gruppe) > 32 then
     raise exception 'Der Gruppen-Code muss 4 bis 32 Zeichen lang sein.';
@@ -84,6 +95,27 @@ begin
      or not (p_season_stufe between 0 and 1000) or not (p_erfolge between 0 and 1000) then
     raise exception 'Ungültige Punkte.';
   end if;
+  -- Gibt es den Spitznamen schon bei einem ANDEREN Spieler?
+  -- • wird gerade gespielt (letzte 15 Minuten) -> ablehnen
+  -- • sonst ist es sehr wahrscheinlich dasselbe Kind auf einem Gerät, das seine Anmeldung
+  --   verloren hat (Browserdaten gelöscht, anderer Browser …) -> Eintrag übernehmen statt verdoppeln
+  select spieler_id, aktualisiert into v_anderer
+  from bestenliste
+  where gruppe = v_gruppe and lower(name) = lower(v_name) and spieler_id <> p_spieler_id;
+  if found then
+    if v_anderer.aktualisiert > now() - interval '15 minutes' then
+      raise exception 'Den Spitznamen „%“ benutzt gerade jemand anderes. Bitte nimm einen anderen.', v_name;
+    end if;
+    if exists (select 1 from bestenliste where gruppe = v_gruppe and spieler_id = p_spieler_id) then
+      -- man hat schon einen eigenen Eintrag (Umbenennen) -> den alten, verwaisten löschen
+      delete from bestenliste where gruppe = v_gruppe and spieler_id = v_anderer.spieler_id;
+    else
+      -- den verwaisten Eintrag übernehmen (Wochenpunkte bleiben erhalten)
+      update bestenliste set spieler_id = p_spieler_id, geheimnis = p_geheimnis
+      where gruppe = v_gruppe and spieler_id = v_anderer.spieler_id;
+    end if;
+  end if;
+
   -- höchstens 50 Spieler pro Gruppe
   if not exists (select 1 from bestenliste where gruppe = v_gruppe and spieler_id = p_spieler_id)
      and (select count(*) from bestenliste where gruppe = v_gruppe) >= 50 then

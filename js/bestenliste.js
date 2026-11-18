@@ -27,11 +27,20 @@ function bestenlisteEingerichtet() {
 // { gruppe, name, spielerId, geheimnis }  – das Geheimnis schützt den eigenen Eintrag
 let mitglied = null;
 
+// Die Anmeldung steht an zwei Stellen: unter eigenem Schlüssel und zusätzlich im Spielstand
+// (spiel.bestenliste). So geht sie auch mit "Spielstand sichern/wiederherstellen" mit,
+// und wenn eine der beiden Stellen verloren geht, gibt es noch die andere.
+function gueltigeMitgliedschaft(d) {
+  return Boolean(d && d.gruppe && d.name && d.spielerId && d.geheimnis);
+}
+
 function ladeMitgliedschaft() {
   try {
     const d = JSON.parse(localStorage.getItem(BESTENLISTE_SPEICHER));
-    if (d && d.gruppe && d.name && d.spielerId && d.geheimnis) mitglied = d;
+    if (gueltigeMitgliedschaft(d)) mitglied = d;
   } catch (e) { /* nichts gespeichert */ }
+  if (!mitglied && gueltigeMitgliedschaft(spiel.bestenliste)) mitglied = { ...spiel.bestenliste };
+  if (mitglied) speichereMitgliedschaft();   // beide Stellen wieder auf denselben Stand bringen
 }
 
 function speichereMitgliedschaft() {
@@ -39,6 +48,8 @@ function speichereMitgliedschaft() {
     if (mitglied) localStorage.setItem(BESTENLISTE_SPEICHER, JSON.stringify(mitglied));
     else localStorage.removeItem(BESTENLISTE_SPEICHER);
   } catch (e) { /* Speichern nicht möglich */ }
+  spiel.bestenliste = mitglied ? { ...mitglied } : null;
+  speichern();
 }
 
 // ----- Zufällige IDs -----
