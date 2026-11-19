@@ -43,6 +43,7 @@
   <script src="js/seasons.js" defer></script>
   <script src="js/haustier.js" defer></script>
   <script src="js/ausfluege.js" defer></script>
+  <script src="js/garten.js" defer></script>
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
   <script src="js/feiertage.js" defer></script>
@@ -66,6 +67,7 @@
   <script src="js/advent-ui.js" defer></script>
   <script src="js/unendlich-ui.js" defer></script>
   <script src="js/geschichte-ui.js" defer></script>
+  <script src="js/garten-ui.js" defer></script>
   <script src="js/skills-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
@@ -84,6 +86,8 @@
     <button id="spieleBtn" type="button" title="Minispiele" aria-label="Minispiele öffnen">🎮</button>
     <!-- Geschichtenbuch: Zahl = ungelesene Kapitel (geschichte-ui.js) -->
     <button id="buchBtn" type="button" title="Geschichtenbuch" aria-label="Geschichtenbuch öffnen">📖<b id="buchBadge" hidden></b></button>
+    <!-- Garten: 💧 = etwas hat Durst, 🧺 = etwas ist reif (garten-ui.js) -->
+    <button id="gartenBtn" type="button" title="Garten" aria-label="Garten öffnen">🌱<b id="gartenBadge" hidden></b></button>
     <!-- Adventskalender: nur im Dezember. "!" = ein Türchen wartet (advent-ui.js) -->
     <button id="adventBtn" type="button" title="Adventskalender" aria-label="Adventskalender öffnen" hidden>🎄<b id="adventBadge" hidden>!</b></button>
     <h1 id="titel" aria-label="Marie Clicker">
@@ -688,6 +692,26 @@
           <div class="tierBalken ausflug"><div id="ausflugBalken"></div></div>
           <p id="ausflugRest" class="ausflugRest"></p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Garten (garten-ui.js) -->
+  <div id="gartenOverlay" class="overlay" hidden>
+    <div class="spielKarte gartenKarte" role="dialog" aria-modal="true" aria-labelledby="gartenTitel">
+      <div class="spielKopf">
+        <h2 id="gartenTitel">🌱 Garten</h2>
+        <button id="gartenZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <p class="seitenInfo">Pflanze Samen, gieß sie jeden Tag einmal – nach ein paar Tagen kannst du ernten!</p>
+      <div class="gartenLeiste">
+        <span id="gartenSamen" class="gartenSamen"></span>
+        <button id="gartenGiessen" type="button" class="knopf haupt"></button>
+      </div>
+      <div id="gartenBeete" class="gartenBeete"></div>
+      <div id="gartenSamenwahl" class="gartenSamenwahl" hidden>
+        <div class="gartenSamenKopf"><b>Was möchtest du pflanzen?</b><button id="gartenAbbrechen" type="button" class="skillZurueck">Abbrechen</button></div>
+        <div id="gartenSamenListe" class="gartenSamenListe"></div>
       </div>
     </div>
   </div>

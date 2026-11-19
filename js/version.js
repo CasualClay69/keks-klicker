@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.79";
-const APP_NEU = "Neu: Das Geschichtenbuch 📖 – Die Reise zum Herzstern! Mit jedem Symbol am Ring um Marie wird ein neues Kapitel frei. Mit Vorlesen!";
+const APP_VERSION = "1.80";
+const APP_NEU = "Neu: Dein eigener Garten 🌱! Pflanze Blumen und Obst, gieß sie jeden Tag und ernte nach ein paar Tagen – mit seltenen Zauberpflanzen!";

@@ -119,6 +119,8 @@ const ERFOLGE = [
   { id: "seite1",     icon: "📗", name: "Seite voll!",       beschr: "Mache eine Album-Seite voll",              bedingung: () => STICKER_SEITEN.some(seiteVoll) },
   { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker der 5 Grundseiten", bedingung: () => anzahlVerschiedeneSticker(GRUND_STICKER) >= GRUND_STICKER.length },
   { id: "stickerPost", icon: "💌", name: "Gute Freundin",     beschr: "Verschicke 5 Sticker an andere Spieler",   bedingung: s => (s.stickerVerschickt || 0) >= 5 },
+  { id: "garten10",   icon: "🧺", name: "Grüner Daumen",     beschr: "Ernte 10-mal im Garten", bedingung: s => (s.ernten || 0) >= 10 },
+  { id: "zaubergarten", icon: "🪻", name: "Zaubergärtnerin", beschr: "Ernte alle 4 Zauberpflanzen", bedingung: s => typeof PFLANZEN !== "undefined" && PFLANZEN.filter(p => p.art === "zauber").every(p => s.garten && s.garten.ernte && s.garten.ernte[p.id] > 0) },
   { id: "klickstufe10",  icon: "✋", name: "Flinke Finger",   beschr: "Erreiche Klick-Stufe 10",  bedingung: () => klickStufe() >= 10 },
   { id: "klickstufe100", icon: "🖐️", name: "Wirbelwind-Finger", beschr: "Erreiche Klick-Stufe 100", bedingung: () => klickStufe() >= 100 },
   { id: "klickstufe500", icon: "⚡", name: "Blitz-Finger",    beschr: "Erreiche Klick-Stufe 500", bedingung: () => klickStufe() >= 500 },

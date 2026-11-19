@@ -30,6 +30,8 @@ function neuerSpielstand() {
     skills: [],        // gelernte Fähigkeiten der Sternen-Karte (siehe skills.js)
     erklaert: [],      // welche Erklärungen Marie schon gegeben hat (siehe erklaerungen.js)
     buch: null,        // Geschichtenbuch: { gelesen, bekannt } (siehe geschichte.js)
+    garten: null,      // Garten: { beete, frei, zaubersamen, ernte } (siehe garten.js)
+    ernten: 0,
     automatik: {},     // Automatik an/aus: { klick, kaufen, helfer, sterne, fuettern }
     stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)

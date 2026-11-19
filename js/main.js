@@ -875,7 +875,9 @@ function beimZimmerTeil(teil) {
   if (ergebnis === "gesperrt") {
     sound.fehler();
     const ziel = teil.ausflug && ausflugZiel(teil.ausflug);
-    meldung("🔒 Besonderes Teil", teil.unendlich
+    meldung("🔒 Besonderes Teil", teil.garten
+      ? `„${teil.name}“ wächst aus einer Zauberpflanze im Garten 🌱. Zaubersamen findest du manchmal beim Ernten!`
+      : teil.unendlich
       ? `„${teil.name}“ bekommst du, wenn du 10³⁰⁸ Herzen gesammelt hast – das ultimative Ziel! ♾️`
       : teil.advent
       ? `„${teil.name}“ steckt hinter Türchen ${teil.advent} im Adventskalender.`
@@ -954,6 +956,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeUnendlich();      // 10³⁰⁸ geschafft? (unendlich-ui.js)
   pruefeErklaerungen();   // Marie erklärt Neues beim ersten Mal (erklaerungen.js)
   pruefeBuch();           // neues Kapitel im Geschichtenbuch? (geschichte-ui.js)
+  zeigeGartenKnopf();     // 💧/🧺 am Garten-Knopf, auch nach Mitternacht (garten-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1431,6 +1434,7 @@ function starte() {
   richteUnendlichEin();
   richteSkillsEin();
   richteBuchEin();
+  richteGartenEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();
