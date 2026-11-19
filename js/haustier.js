@@ -422,6 +422,11 @@ function zubehoerBesitzt(z) {
   return (spiel.tierZubehoer || []).includes(z.id) || skinStand.freigeschaltet.includes(z.id);
 }
 
+// Was kostet das Zubehör gerade? (wächst mit, siehe mitwachsenderPreis in logik.js)
+function zubehoerPreis(z) {
+  return mitwachsenderPreis(z.preis);
+}
+
 // Was trägt das Tier gerade? typ -> Zubehör oder undefined
 function tierTraegt(t, typ) {
   const id = t && t.zubehoer && t.zubehoer[typ];
@@ -440,8 +445,9 @@ function waehleZubehoer(t, z) {
     return "angelegt";
   }
   if (z.season) return "gesperrt";
-  if (spiel.herzen < z.preis) return "zuTeuer";
-  spiel.herzen -= z.preis;
+  const kosten = zubehoerPreis(z);
+  if (spiel.herzen < kosten) return "zuTeuer";
+  spiel.herzen -= kosten;
   spiel.tierZubehoer = [...(spiel.tierZubehoer || []), z.id];
   t.zubehoer[z.typ] = z.id;
   return "gekauft";

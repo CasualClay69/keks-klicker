@@ -770,7 +770,7 @@ const TIER_AKTIONEN = {
     }
     if (ergebnis === "zuTeuer") {
       sound.fehler();
-      meldung("💖 Noch nicht genug Herzen", `„${z.name}“ kostet ${format(z.preis)} ${herz()}.`);
+      meldung("💖 Noch nicht genug Herzen", `„${z.name}“ kostet ${format(zubehoerPreis(z))} ${herz()}.`);
       return;
     }
     if (ergebnis === "gekauft") {
@@ -852,7 +852,7 @@ function zeigeZimmerFallsOffen() {
 let zimmerLeistbar = "";
 function pruefeZimmerPreise() {
   if ($("seiteZimmer").hidden) return;
-  const jetzt = teileFuerPlatz(zimmerPlatz).map(t => t.preis !== null && spiel.herzen >= t.preis ? 1 : 0).join("");
+  const jetzt = teileFuerPlatz(zimmerPlatz).map(t => t.preis !== null && spiel.herzen >= zimmerPreis(t) ? 1 : 0).join("");
   if (jetzt !== zimmerLeistbar) zeigeZimmer(beimZimmerTeil);
   zimmerLeistbar = jetzt;
 }
@@ -868,7 +868,7 @@ function beimZimmerTeil(teil) {
   const ergebnis = waehleZimmerTeil(teil);
   if (ergebnis === "zuTeuer") {
     sound.fehler();
-    meldung("💖 Noch nicht genug Herzen", `„${teil.name}“ kostet ${format(teil.preis)} ${herz()}. Sammle noch ein bisschen!`);
+    meldung("💖 Noch nicht genug Herzen", `„${teil.name}“ kostet ${format(zimmerPreis(teil))} ${herz()}. Sammle noch ein bisschen!`);
     return;
   }
   if (ergebnis === "gesperrt") {

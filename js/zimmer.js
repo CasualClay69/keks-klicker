@@ -197,6 +197,11 @@ function teileFuerPlatz(platzId) {
   return ZIMMER_TEILE.filter(t => t.platz === platzId);
 }
 
+// Was kostet das Teil gerade? (wächst mit, siehe mitwachsenderPreis in logik.js)
+function zimmerPreis(teil) {
+  return mitwachsenderPreis(teil.preis);
+}
+
 // Besitzt man das Teil? (gekauft, gratis oder aus dem Season-Pass)
 function zimmerTeilBesitzt(teil) {
   return teil.preis === 0 || zimmerStand().besitz.includes(teil.id) || skinStand.freigeschaltet.includes(teil.id);
@@ -243,8 +248,9 @@ function waehleZimmerTeil(teil) {
     return "hingestellt";
   }
   if (teil.preis === null) return "gesperrt";          // nur im Season-Pass
-  if (spiel.herzen < teil.preis) return "zuTeuer";
-  spiel.herzen -= teil.preis;
+  const kosten = zimmerPreis(teil);
+  if (spiel.herzen < kosten) return "zuTeuer";
+  spiel.herzen -= kosten;
   stand.besitz.push(teil.id);
   stand.platz[teil.platz] = teil.id;                     // gleich hinstellen
   return "gekauft";

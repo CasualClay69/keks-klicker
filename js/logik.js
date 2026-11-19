@@ -31,6 +31,20 @@ function preis(item, menge = 1) {
   return summe;
 }
 
+// ----- Mitwachsende Preise (Zimmer-Teile, Tier-Zubehör) -----
+// Bis 100 Mrd. Herzen aller Zeiten gelten die Preise aus den Listen. Danach wachsen sie im
+// gleichen Verhältnis wie die Herzen aller Zeiten mit – so bleibt z.B. ein 25-Mrd.-Teil immer
+// ein Sparziel von etwa einer Viertelstunde (6 Finger) bis einer Stunde (2 Finger).
+// Herzen aller Zeiten sinken nie (auch nicht beim Neustart) -> die Preise auch nicht.
+const PREIS_WACHSTUM_AB = 1e11;
+
+function mitwachsenderPreis(basis) {
+  if (!basis) return basis;   // 0 = gratis, null = gesperrt
+  const h = typeof herzenAllerZeiten === "function" ? herzenAllerZeiten() : 0;
+  const f = h > PREIS_WACHSTUM_AB ? h / PREIS_WACHSTUM_AB : 1;
+  return f === 1 ? basis : Math.min(1e307, rundeHuebsch(basis * f));
+}
+
 // Nächste Upgrade-Stufe, die für diese Sorte noch nicht freigeschaltet ist
 function naechsteStufe(gebaeude) {
   return UPGRADE_STUFEN.find(stufe => stufe.ab > anzahl(gebaeude));

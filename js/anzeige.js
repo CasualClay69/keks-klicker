@@ -616,10 +616,10 @@ function zeigeTierBereich(aktionen = tierBereichAktionen) {
       const besitzt = zubehoerBesitzt(z);
       const aktiv = tierTraegt(t, typ.id) === z;
       const status = aktiv ? "✓ Angelegt" : besitzt ? "Anlegen"
-        : z.season ? `🔒 Season-Stufe ${TIER.seasonStufeZubehoer}` : `${herz()} ${format(z.preis)}`;
+        : z.season ? `🔒 Season-Stufe ${TIER.seasonStufeZubehoer}` : `${herz()} ${format(zubehoerPreis(z))}`;
       return karte({
         html: z.svg, name: z.name, status, aktiv,
-        gesperrt: !besitzt && z.season, zuTeuer: !besitzt && !z.season && spiel.herzen < z.preis,
+        gesperrt: !besitzt && z.season, zuTeuer: !besitzt && !z.season && spiel.herzen < zubehoerPreis(z),
         beimKlick: () => aktionen.zubehoer(t, z),
       });
     }));
@@ -1395,10 +1395,10 @@ function zeigeZimmer(beimTeilWaehlen) {
     else if (teil.preis === null && teil.advent) status = `🔒 Adventstürchen ${teil.advent}`;
     else if (teil.preis === null && teil.feiertag) status = `🔒 ${FEIERTAGE.find(f => f.id === teil.feiertag).name}-Geschenk`;
     else if (teil.preis === null) status = `🔒 Season-Stufe ${Object.entries(SEASON_PAESSE.find(p => p.id === teil.season).skinBelohnungen).find(([, id]) => id === teil.id)[0]}`;
-    else status = `${herz()} ${format(teil.preis)}`;
+    else status = `${herz()} ${format(zimmerPreis(teil))}`;
     karte.classList.toggle("aktiv", steht === teil);
     karte.classList.toggle("gesperrt", !besitzt && teil.preis === null);
-    karte.classList.toggle("zuTeuer", !besitzt && teil.preis !== null && spiel.herzen < teil.preis);
+    karte.classList.toggle("zuTeuer", !besitzt && teil.preis !== null && spiel.herzen < zimmerPreis(teil));
     const icon = span("skinIcon", teil.svg ? "" : teil.icon);
     if (teil.svg) icon.innerHTML = teil.svg;
     karte.append(icon, span("skinName", teil.name), span("skinStatus", status));
