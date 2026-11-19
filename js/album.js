@@ -31,6 +31,28 @@ const STICKER_SEITEN = [
     ["🧚", "Fee"], ["🐉", "Drache"], ["🏰", "Schloss"],
     ["🦄", "Einhorn"], ["👸", "Prinzessin"] ] },
 
+  // ───── Bonus-Seiten: werden nacheinander frei (siehe bonusSeiteFrei), danach ganz normal sammelbar ─────
+  { id: "weltraum", bonus: 1, name: "Weltraum", icon: "🚀", farbe: "#e8e6ff", sticker: [
+    ["🌍", "Erde"], ["🌕", "Vollmond"], ["☀️", "Sonne"], ["🛰️", "Satellit"], ["🔭", "Fernrohr"], ["☄️", "Komet"], ["🌌", "Milchstraße"],
+    ["🚀", "Rakete"], ["🛸", "Ufo"], ["🌑", "Neumond"],
+    ["👩‍🚀", "Astronautin"], ["👽", "Außerirdischer"] ] },
+  { id: "dinos", bonus: 2, name: "Dinosaurier", icon: "🦕", farbe: "#e6f7dc", sticker: [
+    ["🦕", "Langhals"], ["🦖", "T-Rex"], ["🥚", "Dino-Ei"], ["🌋", "Vulkan"], ["🦴", "Knochen"], ["🌴", "Palme"], ["🐊", "Krokodil"],
+    ["🦎", "Eidechse"], ["🦤", "Dodo"], ["🪨", "Fossil"],
+    ["🦣", "Mammut"], ["🐲", "Urzeit-Drache"] ] },
+  { id: "berufe", bonus: 3, name: "Berufe", icon: "👩‍⚕️", farbe: "#e3f4ff", sticker: [
+    ["👩‍⚕️", "Ärztin"], ["👩‍🍳", "Köchin"], ["👩‍🏫", "Lehrerin"], ["👩‍🚒", "Feuerwehrfrau"], ["👮‍♀️", "Polizistin"], ["👩‍🌾", "Bäuerin"], ["👩‍🎨", "Malerin"],
+    ["👩‍🔬", "Forscherin"], ["👩‍✈️", "Pilotin"], ["👩‍🔧", "Mechanikerin"],
+    ["👩‍🎤", "Sängerin"], ["🦸‍♀️", "Superheldin"] ] },
+  { id: "musik", bonus: 4, name: "Musik", icon: "🎵", farbe: "#fff0f6", sticker: [
+    ["🎵", "Note"], ["🎶", "Melodie"], ["🥁", "Trommel"], ["🎺", "Trompete"], ["🎸", "Gitarre"], ["🎤", "Mikrofon"], ["🪇", "Rassel"],
+    ["🎹", "Klavier"], ["🎻", "Geige"], ["🪗", "Akkordeon"],
+    ["🎷", "Saxofon"], ["🎼", "Notenschlüssel"] ] },
+  { id: "fahrzeuge", bonus: 5, name: "Fahrzeuge", icon: "🚗", farbe: "#fff6dc", sticker: [
+    ["🚗", "Auto"], ["🚲", "Fahrrad"], ["🚌", "Bus"], ["🚂", "Lokomotive"], ["🚜", "Traktor"], ["🛴", "Roller"], ["⛵", "Segelboot"],
+    ["🚁", "Hubschrauber"], ["🚒", "Feuerwehrauto"], ["🚤", "Schnellboot"],
+    ["✈️", "Flugzeug"], ["🏎️", "Rennauto"] ] },
+
   // ───── Exklusiv: nur als Bonus der Wochen-Missionen (wochenmissionen.js), alle super-selten ─────
   { id: "wochenschaetze", exklusiv: true, name: "Wochen-Schätze", icon: "🏆", farbe: "#fff4cc", sticker: [
     ["🏆", "Pokal"], ["🥇", "Goldmedaille"], ["💎", "Diamant"], ["🪅", "Piñata"], ["🎠", "Karussell"], ["🌠", "Sternschnuppe"],
@@ -83,8 +105,8 @@ function fuegeStickerSeiteHinzu(seite) {
   ALLE_STICKER.push(...stickerDerSeite(seite));
 }
 
-// Die 60 Sticker der 5 Grundseiten (ohne Season-Seiten und ohne exklusive Wochen-Schätze)
-const GRUND_STICKER = ALLE_STICKER.filter(s => !s.seite.season && !s.seite.exklusiv);
+// Die 60 Sticker der 5 Grundseiten (ohne Season-Seiten, Bonus-Seiten und exklusive Wochen-Schätze)
+const GRUND_STICKER = ALLE_STICKER.filter(s => !s.seite.season && !s.seite.exklusiv && !s.seite.bonus);
 
 function stickerAnzahl(sticker) {
   return (spiel.sticker && spiel.sticker[sticker.id]) || 0;
@@ -94,8 +116,42 @@ function anzahlVerschiedeneSticker(liste = ALLE_STICKER) {
   return liste.filter(s => stickerAnzahl(s) > 0).length;
 }
 
-// Season-Seiten erscheinen erst, wenn ihre Season begonnen hat (und bleiben danach als Andenken)
+// ----- Bonus-Seiten -----
+// Die erste wird frei, wenn man BONUS_SEITEN.grundSticker verschiedene Sticker der 5 Grundseiten hat,
+// jede weitere, wenn man auf der vorigen Bonus-Seite BONUS_SEITEN.vorigeSeite Sticker hat.
+const BONUS_SEITEN = { grundSticker: 50, vorigeSeite: 10 };
+
+function bonusSeiten() {
+  return STICKER_SEITEN.filter(s => s.bonus).sort((a, b) => a.bonus - b.bonus);
+}
+
+function bonusSeiteFrei(seite) {
+  if (!seite.bonus) return true;
+  if (seite.bonus === 1) return anzahlVerschiedeneSticker(GRUND_STICKER) >= BONUS_SEITEN.grundSticker;
+  const vorige = bonusSeiten().find(s => s.bonus === seite.bonus - 1);
+  return Boolean(vorige) && bonusSeiteFrei(vorige) && seiteFortschritt(vorige) >= BONUS_SEITEN.vorigeSeite;
+}
+
+// Die nächste noch gesperrte Bonus-Seite und was dafür fehlt (oder null)
+function naechsteBonusSeite() {
+  const seite = bonusSeiten().find(s => !bonusSeiteFrei(s));
+  if (!seite) return null;
+  if (seite.bonus === 1) {
+    return { seite, fehlt: BONUS_SEITEN.grundSticker - anzahlVerschiedeneSticker(GRUND_STICKER), wo: "auf den Grundseiten" };
+  }
+  const vorige = bonusSeiten().find(s => s.bonus === seite.bonus - 1);
+  return { seite, fehlt: BONUS_SEITEN.vorigeSeite - seiteFortschritt(vorige), wo: `auf der Seite „${vorige.name}“` };
+}
+
+// Sticker, die beim Klicken usw. herausfallen können: Grundseiten + freie Bonus-Seiten
+function stickerVorrat() {
+  return [...GRUND_STICKER, ...ALLE_STICKER.filter(s => s.seite.bonus && bonusSeiteFrei(s.seite))];
+}
+
+// Season-Seiten erscheinen erst, wenn ihre Season begonnen hat (und bleiben danach als Andenken).
+// Bonus-Seiten erst, wenn sie frei sind.
 function seiteSichtbar(seite) {
+  if (seite.bonus) return bonusSeiteFrei(seite);
   if (!seite.season) return true;
   const pass = SEASON_PAESSE.find(p => p.id === seite.season);
   return Boolean(pass) && Date.now() >= Date.parse(pass.start);
@@ -161,7 +217,7 @@ function gibSticker(quelle = "klick", eigenerVorrat = null) {
     // Aus welchem Vorrat? Während einer Season manchmal (bei Season-Stufen immer) von der Season-Seite
     const seasonSeite = aktuelleSeasonSeite();
     const vonSeason = seasonSeite && (quelle === "season" || Math.random() < SEASON_STICKER_ANTEIL);
-    const vorrat = vonSeason ? ALLE_STICKER.filter(s => s.seite === seasonSeite) : GRUND_STICKER;
+    const vorrat = vonSeason ? ALLE_STICKER.filter(s => s.seite === seasonSeite) : stickerVorrat();
 
     const stufe = zufallGewichtet(SELTENHEITEN);
     const kandidaten = vorrat.filter(s => s.seltenheit === stufe.id);

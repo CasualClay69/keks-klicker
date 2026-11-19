@@ -130,6 +130,8 @@ const ERFOLGE = [
   { id: "advent24",   icon: "🎄", name: "Adventskind",       beschr: "Öffne alle 24 Türchen im Adventskalender", bedingung: s => Boolean(s.advent && s.advent.offen && s.advent.offen.length >= 24) },
   { id: "ausflug10",  icon: "🧭", name: "Weltenbummler",     beschr: "Dein Haustier kommt von 10 Ausflügen zurück", bedingung: s => (s.ausfluegeGesamt || 0) >= 10 },
   { id: "wunder",     icon: "🌈", name: "Wunderkind",        beschr: "Erlebe alle 3 geheimen Ereignisse",        bedingung: s => typeof WUNDER !== "undefined" && WUNDER.every(w => (s.wunderErlebt || {})[w.id]) },
+  { id: "bonusSeite", icon: "🚀", name: "Entdeckerin",       beschr: "Mache eine Bonus-Seite im Album voll (Weltraum, Dinos …)", bedingung: () => typeof bonusSeiten === "function" && bonusSeiten().some(seiteVoll) },
+  { id: "bonusAlle",  icon: "👑", name: "Album-Königin", beschr: "Mache alle 5 Bonus-Seiten im Album voll", bedingung: () => typeof bonusSeiten === "function" && bonusSeiten().every(seiteVoll) },
   { id: "seasonSeite", icon: "🎟️", name: "Season-Sammelprofi", beschr: "Mache eine Season-Sticker-Seite voll",   bedingung: () => STICKER_SEITEN.some(s => s.season && seiteVoll(s)) },
   { id: "tier1",      icon: "🐾", name: "Tierfreund",        beschr: "Adoptiere ein Haustier für Marie",         bedingung: s => Boolean(s.haustier) },
   { id: "tierGross",  icon: "🎉", name: "Groß geworden",     beschr: "Dein Haustier ist ausgewachsen (Level 10)", bedingung: s => Boolean(s.haustier) && s.haustier.level >= 10 },

@@ -763,6 +763,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   gap: 8px;
   margin-bottom: 10px;
 }
+.albumSeitenwahl button.gesperrt { opacity: 0.7; border-style: dashed; }
 .stickerFeld {
   position: relative;
   min-width: 0;

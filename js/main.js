@@ -345,6 +345,19 @@ function richteHaustierEin() {
 
 // ----- Sticker-Album -----
 
+// Neue Bonus-Seite im Album frei? -> einmal feiern (gemerkt in spiel.bonusSeiten)
+function pruefeBonusSeiten() {
+  const gemeldet = spiel.bonusSeiten || [];
+  const neu = bonusSeiten().find(s => bonusSeiteFrei(s) && !gemeldet.includes(s.id));
+  if (!neu) return;
+  spiel.bonusSeiten = [...gemeldet, neu.id];
+  sound.erfolg();
+  albumSymbolFeiern();
+  meldung(`📒 Neue Album-Seite: ${neu.name} ${neu.icon}`, "12 neue Sticker zum Sammeln – schau gleich ins Album!");
+  if (!$("seiteAlbum").hidden) zeigeAlbum();
+  speichern();
+}
+
 // Ein Sticker ist herausgefallen -> anzeigen (position = wo er aufploppt, optional)
 function meldeSticker(ergebnis, position = null) {
   if (!ergebnis) return;
@@ -956,6 +969,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeUnendlich();      // 10³⁰⁸ geschafft? (unendlich-ui.js)
   pruefeErklaerungen();   // Marie erklärt Neues beim ersten Mal (erklaerungen.js)
   pruefeBuch();           // neues Kapitel im Geschichtenbuch? (geschichte-ui.js)
+  pruefeBonusSeiten();    // neue Album-Seite frei?
   zeigeGartenKnopf();     // 💧/🧺 am Garten-Knopf, auch nach Mitternacht (garten-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"

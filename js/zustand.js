@@ -38,6 +38,7 @@ function neuerSpielstand() {
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)
     sticker: {},       // Sticker-Album: { stickerId: anzahl } (siehe album.js)
     stickerNeu: [],    // neue, noch nicht angeschaute Sticker
+    bonusSeiten: [],   // Bonus-Seiten im Album, deren Freischaltung schon gemeldet wurde
     haustier: null,    // Maries Haustier (siehe haustier.js)
     geburtstagJahr: null, // alt: Jahr, in dem Marie ihr Geburtstagsgeschenk geöffnet hat
     geburtstagJahre: {},  // pro Figur: Jahr, in dem das Geburtstagsgeschenk geöffnet wurde (siehe geburtstag.js)

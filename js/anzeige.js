@@ -1610,6 +1610,19 @@ function zeigeAlbum() {
     });
     wahl.append(knopf);
   }
+  // Die nächste Bonus-Seite als geheimnisvolles Schloss
+  const naechste = naechsteBonusSeite();
+  if (naechste) {
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.className = "gesperrt";
+    knopf.append("🔒", Object.assign(document.createElement("small"), { textContent: "???" }));
+    knopf.addEventListener("click", () => {
+      sound.klick();
+      meldung("🔒 Eine neue Album-Seite wartet!", `Sammle noch ${naechste.fehlt} ${naechste.fehlt === 1 ? "Sticker" : "verschiedene Sticker"} ${naechste.wo} – dann ist sie frei.`);
+    });
+    wahl.append(knopf);
+  }
 
   // Die aufgeschlagene Seite
   const seite = albumSeite;

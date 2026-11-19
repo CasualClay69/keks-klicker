@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.83", datum: "2026-11-19", neu: ["5 neue Album-Seiten: 🚀 Weltraum, 🦕 Dinosaurier, 👩‍⚕️ Berufe, 🎵 Musik und 🚗 Fahrzeuge", "Die erste wird frei, wenn du 50 der 60 Grund-Sticker hast – dann geht es Seite für Seite weiter", "Zwei neue Erfolge"] },
   { v: "1.82", datum: "2026-11-19", neu: ["Der Fortschritts-Ring dreht sich jetzt in einem perfekten Kreis um Marie"] },
   { v: "1.81", datum: "2026-11-19", neu: ["Der Fortschritts-Ring sitzt jetzt außen auf dem rosa Rand um Marie"] },
   { v: "1.80", datum: "2026-11-19", neu: ["Der Garten 🌱: Samen pflanzen, jeden Tag gießen, nach ein paar Tagen ernten", "Blumen, Obst (macht die Haustiere satt) und seltene Zauberpflanzen mit Zimmer-Teilen", "Bis zu 6 Beete", "Zwei neue Erfolge"] },
