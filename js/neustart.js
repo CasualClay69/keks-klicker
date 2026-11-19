@@ -12,8 +12,8 @@
 // =====================================================
 
 const NEUSTART = {
-  teiler: 2.5e10,     // Sterne insgesamt = Wurzel(Herzen aller Zeiten / 25 Mrd.)
-                      // -> erster Neustart nach ~20 Std. Spielzeit bringt ~11 Sterne
+  stellenProStern: 3,   // Sterne insgesamt = (Stellen der Herzen aller Zeiten) / 3
+                        // -> 1 Billion (10¹²) = 4 Sterne, ∞ (10³⁰⁸) = 102 Sterne – genug für die ganze Sternen-Karte (98)
 };
 
 // Alle jemals gesammelten Herzen (über alle Durchgänge) – zählt auch für die Bestenliste
@@ -28,7 +28,9 @@ function glitzersterne() {
 // So viele Sterne stehen einem insgesamt zu; neu dazu kommen nur die noch nicht erhaltenen
 function moeglicheSterne() {
   const f = typeof skillNeustartFaktor === "function" ? skillNeustartFaktor() : 1;   // "Glitzerregen" (skills.js)
-  return Math.floor(Math.sqrt(herzenAllerZeiten() / NEUSTART.teiler) * f);
+  const h = herzenAllerZeiten();
+  if (!(h >= 10)) return 0;
+  return Math.floor(Math.log10(h) / NEUSTART.stellenProStern * f + 1e-9);
 }
 
 function neueSterne() {

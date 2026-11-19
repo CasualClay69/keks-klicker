@@ -113,6 +113,7 @@ const STATISTIK_ZEILEN = [
   ["Weg zur Unendlichkeit ∞", () => spiel.unendlichAm
     ? `🏆 Geschafft am ${new Date(spiel.unendlichAm).toLocaleDateString("de-DE")}!`
     : `${(wegZurUnendlichkeit() * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % (Ziel: 10³⁰⁸)`],
+  ["Klick-Stufe ✋",           () => `${klickStufe()} (alles ×${format(klickStufeFaktor())})`],
   ["Glitzersterne",           () => `${glitzersterne()} (${sternePunkteFrei()} frei)`],
   ["Fähigkeiten gelernt",     () => `${(spiel.skills || []).length} / ${SKILLS.length - 1}`],
   ["Neustarts",               () => String(spiel.neustarts || 0)],
@@ -172,6 +173,11 @@ function zeigeKopf() {
   setzeText(ui.herzen, `${format(spiel.herzen)} ${herz()}`);
   setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
   document.title = `${format(spiel.herzen)} ${waehrung().name} – ${figurName()} Clicker`;
+
+  // Klick-Stufe: Stufe, Faktor und Fortschritt bis zur nächsten
+  setzeText($("klickStufeText"), `✋ Klick-Stufe ${klickStufe()} · noch ${format(klicksBisNaechsteStufe())} 👆`);
+  $("klickStufe").title = `Klick-Stufe ${klickStufe()}: alles ×${format(klickStufeFaktor())}. Alle ${format(KLICKSTUFE.klicksProStufe)} Klicks verdoppelt sich alles!`;
+  $("klickStufe").style.setProperty("--anteil", (klickStufeAnteil() * 100).toFixed(1) + "%");
 
   const rest = bonusRestSekunden();
   const b = aktuellerBonus();
@@ -1101,13 +1107,14 @@ function zeigeNeustart() {
   let info;
   if (fehlend > 0) {
     info = `Wenn du jeden Helfer mindestens einmal hast (bis zum 👑 Herzkönigreich), kannst du neu anfangen `
-         + `und bekommst Glitzersterne ⭐ – damit lernst du auf der Sternen-Karte tolle Fähigkeiten. Noch ${fehlend} Helfer fehlen.`;
+         + `und bekommst Glitzersterne ⭐ – damit lernst du auf der Sternen-Karte tolle Fähigkeiten. Noch ${fehlend} Helfer fehlen. `
+         + "(Je 3 Stellen deiner Herzen aller Zeiten gibt es einen Stern. Deine Klick-Stufe bleibt beim Neustart!)";
     setzeText(knopf, "🔒 Noch nicht möglich");
   } else if (neu === 0) {
     info = "Sammle noch mehr Herzen – dann gibt es beim Neustart neue Glitzersterne!";
     setzeText(knopf, "🔒 Noch keine neuen Sterne");
   } else {
-    info = `Neustart jetzt: +${neu} Glitzersterne ⭐ für die Sternen-Karte (dann ${sterne + neu}). Deine Fähigkeiten bleiben! `
+    info = `Neustart jetzt: +${neu} Glitzersterne ⭐ für die Sternen-Karte (dann ${sterne + neu}). Deine Fähigkeiten und deine Klick-Stufe bleiben! `
          + "Herzen, Helfer, Verbesserungen und Upgrades fangen wieder bei 0 an. "
          + "Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben!";
     setzeText(knopf, `🌟 Neustart: +${neu} ⭐`);

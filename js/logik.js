@@ -87,23 +87,25 @@ function hpsProStueck(gebaeude) {
   const tier = typeof haustierFaktor === "function" ? haustierFaktor() : 1;
   const skills = typeof skillProdFaktor === "function" ? skillProdFaktor() : 1;   // Sternen-Karte (skills.js)
   const zimmer = typeof zimmerFaktor === "function" ? zimmerFaktor() : 1;   // Zimmer-Teile (zimmer.js)
-  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier * skills * zimmer;
+  const stufe = typeof klickStufeFaktor === "function" ? klickStufeFaktor() : 1;   // Klick-Stufe (klickstufe.js)
+  return deckel(gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier * skills * zimmer * stufe);
 }
 
 // Herzen pro Sekunde insgesamt, ohne Sternschnuppen-Bonus
 function basisHps() {
-  return GEBAEUDE.reduce((summe, g) => summe + anzahl(g) * hpsProStueck(g), 0);
+  return deckel(GEBAEUDE.reduce((summe, g) => summe + (anzahl(g) ? anzahl(g) * hpsProStueck(g) : 0), 0));
 }
 
 // wunderProdFaktor(): Regenbogen-Tag zählt doppelt (wunder.js)
 function herzenProSekunde() {
   const wunder = typeof wunderProdFaktor === "function" ? wunderProdFaktor() : 1;
-  return basisHps() * aktuellerBonus().prodFaktor * wunder;
+  return deckel(basisHps() * aktuellerBonus().prodFaktor * wunder);
 }
 
 function herzenProKlick() {
   const basis = 1 + KLICK_ITEMS.reduce((summe, k) => summe + anzahl(k) * k.proKlick, 0);
-  const skills = typeof skillKlickFaktor === "function" ? skillKlickFaktor() : 1;   // Sternen-Karte (skills.js)
+  const skills = (typeof skillKlickFaktor === "function" ? skillKlickFaktor() : 1)   // Sternen-Karte (skills.js)
+    * (typeof klickStufeFaktor === "function" ? klickStufeFaktor() : 1);            // Klick-Stufe (klickstufe.js)
   const zimmer = typeof zimmerFaktor === "function" ? zimmerFaktor() : 1;   // Zimmer-Teile (zimmer.js)
   const wunder = typeof wunderKlickFaktor === "function" ? wunderKlickFaktor() : 1;   // Regenbogen-Tag (wunder.js)
   // Sternen-Karte: ein Anteil der Herzen pro Sekunde kommt bei jedem Klick dazu

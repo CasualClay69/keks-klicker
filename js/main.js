@@ -32,8 +32,22 @@ function beimUpgradeKaufen(upgrade) {
 
 // ----- Klick (oder Tipp mit einem Finger) auf Marie -----
 
+// Neue Klick-Stufe: alles bringt ab jetzt doppelt so viel
+function feiereKlickStufe() {
+  const stufe = klickStufe();
+  sound.erfolg();
+  meldung(`✋ Klick-Stufe ${stufe}!`, `Alles bringt jetzt doppelt so viel – zusammen ×${format(klickStufeFaktor())}!`);
+  const el = $("klickStufe");
+  el.classList.remove("feiern");
+  void el.offsetWidth;
+  el.classList.add("feiern");
+  if (stufe % 10 === 0) { konfetti(ui.spielfeld); sag("erfolg", { wichtig: true }); }
+}
+
 function klickAufMarie(position) {
+  const stufeVorher = klickStufe();
   const plus = klickeMarie();
+  if (klickStufe() > stufeVorher) feiereKlickStufe();
   sound.klick();
   marieFreutSich();
   if (letzterKlickVolltreffer) zeigeSchwebeText(position, `💥 +${format(plus)} ${herz()}`, true);   // Sternen-Karte

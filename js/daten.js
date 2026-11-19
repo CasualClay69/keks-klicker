@@ -61,6 +61,12 @@ const UPGRADE_STUFEN = [
   { ab: 10, preisFaktor: 100,   medaille: "🌸", titel: "Blütenzauber"        },
   { ab: 25, preisFaktor: 1000,  medaille: "👑", titel: "Prinzessinnen-Krone" },
   { ab: 50, preisFaktor: 20000, medaille: "💎", titel: "Diamant-Glitzer"     },
+  // Für die lange Reise zur Unendlichkeit (Preise wachsen ungefähr wie die Helfer selbst)
+  { ab: 100, preisFaktor: 1e7,  medaille: "🦋", titel: "Schmetterlingsflügel" },
+  { ab: 200, preisFaktor: 1e13, medaille: "🌈", titel: "Regenbogenglanz"      },
+  { ab: 300, preisFaktor: 1e19, medaille: "🌟", titel: "Sternenstaub"         },
+  { ab: 400, preisFaktor: 1e25, medaille: "🔮", titel: "Zauberkristall"       },
+  { ab: 500, preisFaktor: 1e31, medaille: "🪽", titel: "Engelsflügel"         },
 ];
 
 // Alle Upgrades = jede Sorte × jede Stufe, günstigste zuerst
@@ -113,6 +119,9 @@ const ERFOLGE = [
   { id: "seite1",     icon: "📗", name: "Seite voll!",       beschr: "Mache eine Album-Seite voll",              bedingung: () => STICKER_SEITEN.some(seiteVoll) },
   { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker der 5 Grundseiten", bedingung: () => anzahlVerschiedeneSticker(GRUND_STICKER) >= GRUND_STICKER.length },
   { id: "stickerPost", icon: "💌", name: "Gute Freundin",     beschr: "Verschicke 5 Sticker an andere Spieler",   bedingung: s => (s.stickerVerschickt || 0) >= 5 },
+  { id: "klickstufe10",  icon: "✋", name: "Flinke Finger",   beschr: "Erreiche Klick-Stufe 10",  bedingung: () => klickStufe() >= 10 },
+  { id: "klickstufe100", icon: "🖐️", name: "Wirbelwind-Finger", beschr: "Erreiche Klick-Stufe 100", bedingung: () => klickStufe() >= 100 },
+  { id: "klickstufe500", icon: "⚡", name: "Blitz-Finger",    beschr: "Erreiche Klick-Stufe 500", bedingung: () => klickStufe() >= 500 },
   { id: "skill5",     icon: "🗺️", name: "Sternenwanderer",   beschr: "Lerne 5 Fähigkeiten auf der Sternen-Karte", bedingung: s => (s.skills || []).length >= 5 },
   { id: "skillAlle",  icon: "🌌", name: "Kartenmeisterin",   beschr: "Lerne alle Fähigkeiten auf der Sternen-Karte", bedingung: s => typeof SKILLS !== "undefined" && (s.skills || []).length >= SKILLS.length - 1 },
   { id: "unendlich",  icon: "♾️", name: "Unendlich!",        beschr: "Sammle 10³⁰⁸ Herzen – mehr Zahlen gibt es nicht. Das ultimative Ziel!", bedingung: () => typeof unendlichErreicht === "function" && unendlichErreicht() },

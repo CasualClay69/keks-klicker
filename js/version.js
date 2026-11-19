@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.71";
-const APP_NEU = "Neu: Die Sternen-Karte! 🗺️ Deine Glitzersterne sind jetzt Skillpunkte – lerne Klick-Kraft, bessere Helfer, Automatik und Glück.";
+const APP_VERSION = "1.72";
+const APP_NEU = "Neu: Die Klick-Stufe ✋! Alle 8.000 Klicks verdoppelt sich alles – für immer. Dazu neue Upgrades und ein neues Balancing bis zur Unendlichkeit.";
