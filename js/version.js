@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.80";
-const APP_NEU = "Neu: Dein eigener Garten 🌱! Pflanze Blumen und Obst, gieß sie jeden Tag und ernte nach ein paar Tagen – mit seltenen Zauberpflanzen!";
+const APP_VERSION = "1.81";
+const APP_NEU = "Der Fortschritts-Ring sitzt jetzt schön außen auf dem rosa Rand um Marie.";

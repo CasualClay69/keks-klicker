@@ -1416,6 +1416,8 @@ function zeigeZimmer(beimTeilWaehlen) {
 if (typeof ResizeObserver === "function") {
   new ResizeObserver(([eintrag]) => {
     ui.marieBereich.style.setProperty("--marie-breite", eintrag.contentRect.width + "px");
+    // Außenbreite inkl. weißem Rand – daran richtet sich der Fortschritts-Ring aus
+    ui.marieBereich.style.setProperty("--marie-aussen", ui.marie.offsetWidth + "px");
   }).observe(ui.marie);
 }
 

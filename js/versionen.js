@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.81", datum: "2026-11-19", neu: ["Der Fortschritts-Ring sitzt jetzt außen auf dem rosa Rand um Marie"] },
   { v: "1.80", datum: "2026-11-19", neu: ["Der Garten 🌱: Samen pflanzen, jeden Tag gießen, nach ein paar Tagen ernten", "Blumen, Obst (macht die Haustiere satt) und seltene Zauberpflanzen mit Zimmer-Teilen", "Bis zu 6 Beete", "Zwei neue Erfolge"] },
   { v: "1.79", datum: "2026-11-19", neu: ["Das Geschichtenbuch 📖 „Die Reise zum Herzstern“: 36 Kapitel über Marie, Hannah und ihre Tiere", "Mit jedem neuen Symbol am Ring um Marie wird ein Kapitel frei – das letzte bei ∞", "Mit Vorlese-Knopf 🔊"] },
   { v: "1.78", datum: "2026-11-19", neu: ["Marie erklärt beim ersten Mal, was Klick-Stufe, Neustart und Sternen-Karte sind", "Unter ⚙️ Optionen: „Marie erklärt alles nochmal“"] },

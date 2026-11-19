@@ -1312,15 +1312,15 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
    --marie-breite setzt anzeige.js (ResizeObserver). */
 .fortschrittsRing {
   position: absolute; left: 50%; top: 0;
-  width: var(--marie-breite, 300px); aspect-ratio: 1;
-  margin-left: calc(var(--marie-breite, 300px) / -2);
+  width: var(--marie-aussen, 316px); aspect-ratio: 1;
+  margin-left: calc(var(--marie-aussen, 316px) / -2);
   z-index: 2; pointer-events: none;
   animation: ringDrehen 120s linear infinite;
 }
 .ringPlatz {
   position: absolute; left: 50%; top: 50%; width: 0; height: 0;
-  /* auf den rosa Rand um Marie (halber Durchmesser + ein Stück nach außen) */
-  transform: rotate(var(--winkel)) translateY(calc(var(--marie-breite, 300px) * -0.5 - 9px));
+  /* mitten auf den rosa Rand (10 px breit, direkt außen am weißen Rand) */
+  transform: rotate(var(--winkel)) translateY(calc(var(--marie-aussen, 316px) * -0.5 - 6px));
 }
 .ringSymbol {
   position: absolute; left: 0; top: 0;
