@@ -26,6 +26,7 @@ function neuerSpielstand() {
     wunderErlebt: {},
     ausfluegeGesamt: 0, // beendete Haustier-Ausflüge (siehe ausfluege.js)
     advent: null,      // Adventskalender: { jahr, offen: [Tage] } (siehe advent.js)
+    unendlichAm: null, // wann 10³⁰⁸ Herzen erreicht wurden (siehe unendlich.js)
     stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)
     gluecksrad: null,  // Glücksrad: { letzterTag, gesamt } (siehe gluecksrad.js)

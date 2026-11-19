@@ -110,6 +110,9 @@ const STATISTIK_ZEILEN = [
   ["Herzen aktuell",          () => format(spiel.herzen)],
   ["Insgesamt gesammelt",     () => format(spiel.gesamt)],
   ["Herzen aller Zeiten",     () => format(herzenAllerZeiten())],
+  ["Weg zur Unendlichkeit ∞", () => spiel.unendlichAm
+    ? `🏆 Geschafft am ${new Date(spiel.unendlichAm).toLocaleDateString("de-DE")}!`
+    : `${(wegZurUnendlichkeit() * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % (Ziel: 10³⁰⁸)`],
   ["Glitzersterne",           () => `${glitzersterne()} (+${Math.round(glitzersterne() * NEUSTART.sternBonus * 100)} %)`],
   ["Neustarts",               () => String(spiel.neustarts || 0)],
   ["Durch Klicks gesammelt",  () => format(spiel.klickHerzen)],
@@ -1351,6 +1354,7 @@ function zeigeZimmer(beimTeilWaehlen) {
     if (steht === teil) status = "✓ Im Zimmer";
     else if (besitzt) status = "Hinstellen";
     else if (teil.preis === null && teil.ausflug) status = "🔒 Ausflugs-Mitbringsel";
+    else if (teil.preis === null && teil.unendlich) status = "🔒 Erreiche ∞";
     else if (teil.preis === null && teil.advent) status = `🔒 Adventstürchen ${teil.advent}`;
     else if (teil.preis === null && teil.feiertag) status = `🔒 ${FEIERTAGE.find(f => f.id === teil.feiertag).name}-Geschenk`;
     else if (teil.preis === null) status = `🔒 Season-Stufe ${Object.entries(SEASON_PAESSE.find(p => p.id === teil.season).skinBelohnungen).find(([, id]) => id === teil.id)[0]}`;

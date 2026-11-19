@@ -45,6 +45,7 @@
   <script src="js/geburtstag.js" defer></script>
   <script src="js/feiertage.js" defer></script>
   <script src="js/advent.js" defer></script>
+  <script src="js/unendlich.js" defer></script>
   <script src="js/wunder.js" defer></script>
   <script src="js/herzregen.js" defer></script>
   <script src="js/minispiele.js" defer></script>
@@ -59,6 +60,7 @@
   <script src="js/feiertage-ui.js" defer></script>
   <script src="js/optionen-ui.js" defer></script>
   <script src="js/advent-ui.js" defer></script>
+  <script src="js/unendlich-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
   <script src="js/stickerpost-ui.js" defer></script>
@@ -668,6 +670,18 @@
           <p id="ausflugRest" class="ausflugRest"></p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ∞ Unendlich: das ultimative Ziel (unendlich-ui.js) -->
+  <div id="unendlichOverlay" class="overlay unendlichOverlay" hidden>
+    <div class="geschenkKarte unendlichKarte" role="dialog" aria-modal="true" aria-labelledby="unTitel">
+      <div class="unendlichZeichen" aria-hidden="true">∞</div>
+      <h2 id="unTitel">UNENDLICH!</h2>
+      <p id="unText" class="geschenkSerie"></p>
+      <div class="unendlichPokal" aria-hidden="true">🏆</div>
+      <p class="geschenkMorgen">Der <b>Unendlichkeits-Pokal</b> steht ab jetzt in deinem Zimmer – für immer! ♾️</p>
+      <button id="unZu" class="knopf haupt" type="button">Ich bin unendlich toll! ✨</button>
     </div>
   </div>
 

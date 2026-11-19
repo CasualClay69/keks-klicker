@@ -25,6 +25,7 @@ const SPRUECHE = {
   regenStart:    ["Schnell, fang sie alle! 💨", "Wow, es regnet! Fang sie!", "Los geht's! 🧺"],
   regenGut:      ["Wow, so viele! 🤩", "Du bist super schnell! ⚡", "Toll gefangen! 🧺"],
   regenOk:       ["Gut gemacht! 💕", "Das hat Spaß gemacht!", "Beim nächsten Mal noch mehr!"],
+  unendlich:      ["UNENDLICH! ♾️", "Wir haben es geschafft! 🏆", "Mehr geht nicht! Du bist die Beste! 👑"],
   advent:         ["Ein Türchen wartet! 🎄", "Was ist wohl heute drin? 🎁", "Bald ist Weihnachten! ✨"],
   advent24:       ["Frohe Weihnachten! 🎄", "Heiligabend! Endlich! 🎁", "Der Christbaum ist sooo schön! 🌟"],
   ausflugLos:     ["Viel Spaß auf dem Ausflug! 👋", "Pass gut auf dich auf! 🗺️", "Bring mir was mit! 🎒"],

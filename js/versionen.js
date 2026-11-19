@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.70", datum: "2026-11-19", neu: ["Das ultimative Ziel: 10³⁰⁸ Herzen – dann zeigt der Zähler ∞ UNENDLICH", "Belohnung: große Feier, der Erfolg „Unendlich!“ und der Unendlichkeits-Pokal fürs Zimmer", "In der Statistik siehst du deinen „Weg zur Unendlichkeit“", "Riesige Zahlen werden jetzt immer ordentlich angezeigt"] },
   { v: "1.69", datum: "2026-11-19", neu: ["Das Zahnrad ⚙️ sitzt jetzt oben links", "Klänge und Musik schaltest du jetzt in den Optionen an und aus"] },
   { v: "1.68", datum: "2026-11-19", neu: ["Neuer Knopf ⚙️ Optionen (rechts unter dem Zimmer)", "Große Zahlen wahlweise als Wörter (1,5 Mio.), kurz (1,5m) oder wissenschaftlich (1,5e6)"] },
   { v: "1.67", datum: "2026-11-18", neu: ["Zu Besuch: In der Bestenliste auf einen Namen tippen und Zimmer, Figur und Haustiere der anderen ansehen", "Von dort aus kann man auch gleich einen Sticker schicken"] },

@@ -856,7 +856,9 @@ function beimZimmerTeil(teil) {
   if (ergebnis === "gesperrt") {
     sound.fehler();
     const ziel = teil.ausflug && ausflugZiel(teil.ausflug);
-    meldung("🔒 Besonderes Teil", teil.advent
+    meldung("🔒 Besonderes Teil", teil.unendlich
+      ? `„${teil.name}“ bekommst du, wenn du 10³⁰⁸ Herzen gesammelt hast – das ultimative Ziel! ♾️`
+      : teil.advent
       ? `„${teil.name}“ steckt hinter Türchen ${teil.advent} im Adventskalender.`
       : ziel
       ? `„${teil.name}“ bringt dein Haustier manchmal von einem Ausflug ${ziel.wohin} mit. Tippe auf dein Haustier!`
@@ -930,6 +932,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeWunder();         // geheime Ereignisse: Regenbogen-Tag usw. (wunder-ui.js)
   pruefeAusfluege();      // Haustier vom Ausflug zurück? (ausfluege-ui.js)
   pruefeAdvent();         // Adventskalender-Knopf im Dezember (advent-ui.js)
+  pruefeUnendlich();      // 10³⁰⁸ geschafft? (unendlich-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1404,6 +1407,7 @@ function starte() {
   richteAusfluegeEin();
   richteAdventEin();
   richteOptionenEin();
+  richteUnendlichEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();

@@ -19,7 +19,7 @@ const NEUSTART = {
 
 // Alle jemals gesammelten Herzen (über alle Durchgänge) – zählt auch für die Bestenliste
 function herzenAllerZeiten() {
-  return (spiel.gesamtFrueher || 0) + spiel.gesamt;
+  return Math.min(Number.MAX_VALUE, (spiel.gesamtFrueher || 0) + spiel.gesamt);
 }
 
 function glitzersterne() {

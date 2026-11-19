@@ -99,8 +99,9 @@ begin
   if length(p_geheimnis) < 16 or length(p_geheimnis) > 64 then
     raise exception 'Ungültige Anmeldung.';
   end if;
-  -- unsinnige Werte ablehnen (NaN ist in Postgres größer als jede Zahl -> fällt hier auch raus)
-  if not (p_herzen_gesamt between 0 and 1e18) or not (p_hps between 0 and 1e15)
+  -- unsinnige Werte ablehnen (NaN ist in Postgres größer als jede Zahl -> fällt hier auch raus).
+  -- Obergrenze: die größte speicherbare Zahl (≈ 1,8 · 10³⁰⁸ – im Spiel "∞ Unendlich", seit v1.70)
+  if not (p_herzen_gesamt between 0 and 1.7976931348623157e308) or not (p_hps between 0 and 1.7976931348623157e308)
      or not (p_season_stufe between 0 and 1000) or not (p_erfolge between 0 and 1000) then
     raise exception 'Ungültige Punkte.';
   end if;

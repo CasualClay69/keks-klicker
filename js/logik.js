@@ -109,9 +109,14 @@ function herzenProKlick() {
 
 // ----- Aktionen (verändern den Spielstand) -----
 
+// Größer als Number.MAX_VALUE (≈ 1,8 · 10³⁰⁸) wird "Infinity" – das würde den Spielstand
+// kaputt machen (Infinity − Infinity = NaN, JSON speichert es als null). Darum hier deckeln.
+const deckel = x => (Number.isFinite(x) ? Math.min(x, Number.MAX_VALUE) : (x > 0 ? Number.MAX_VALUE : 0));
+
 function herzenDazu(menge) {
-  spiel.herzen += menge;
-  spiel.gesamt += menge;
+  if (!(menge > 0)) return;
+  spiel.herzen = deckel(spiel.herzen + menge);
+  spiel.gesamt = deckel(spiel.gesamt + menge);
 }
 
 // Läuft die Zeit weiter: Produktion und Spielzeit dazurechnen
@@ -139,7 +144,7 @@ function klickeMarie() {
   const plus = herzenProKlick();
   herzenDazu(plus);
   spiel.klicks++;
-  spiel.klickHerzen += plus;
+  spiel.klickHerzen = deckel(spiel.klickHerzen + plus);
   return plus;
 }
 

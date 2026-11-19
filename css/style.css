@@ -1294,6 +1294,24 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .aufgabe.woche { border-color: #f5c542; }
 .aufgabe.woche.bonus { background: linear-gradient(135deg, #fffbe6, #fff0f7); }
 
+/* ----- ∞ Unendlich ----- */
+.unendlichOverlay { z-index: 70; }
+.unendlichKarte {
+  border: 4px solid #f5c242;
+  background: linear-gradient(160deg, #fffbe8 0%, #ffe9f4 50%, #ece4ff 100%);
+  box-shadow: 0 0 0 6px rgba(245, 194, 66, 0.35), 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+.unendlichZeichen {
+  font-size: 6rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(90deg, #ff5c8a, #ff9f43, #ffe066, #5fd38d, #4fa8ff, #a07cff, #ff5c8a);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: unendlichFarben 3s linear infinite;
+}
+@keyframes unendlichFarben { to { background-position: 200% 0; } }
+.unendlichKarte h2 { font-size: 2rem; letter-spacing: 0.08em; }
+.unendlichPokal { font-size: 4rem; line-height: 1.1; animation: wunderHuepfen 1.6s ease-in-out infinite; filter: drop-shadow(0 0 12px #ffd23f); }
+
 /* ----- Optionen ----- */
 .spielKarte.optionenKarte { height: auto; max-height: min(100%, 680px); overflow-y: auto; }
 .optionenUeberschrift { margin: 14px 0 8px; font-size: 1rem; color: var(--akzent-dunkel); }
@@ -2521,7 +2539,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
+  .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
