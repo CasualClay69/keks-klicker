@@ -312,7 +312,7 @@ function adminUmfrageZeigen(inhalt) {
   ladeAktuell();
 }
 
-// ----- 🎯 Familienziel -----
+// ----- 🎯 Gemeinschaftsziel -----
 
 function adminZielZeigen(inhalt) {
   inhalt.append(el("p", "seitenInfo",
@@ -320,15 +320,15 @@ function adminZielZeigen(inhalt) {
   const aktuell = el("div", "adminAktuell", "⏳ …");
   const ladeAktuell = async () => {
     try {
-      const z = await holeFamilienziel();
+      const z = await holeGemeinschaftsziel();
       aktuell.textContent = "";
-      if (!z) { aktuell.textContent = "Gerade kein Familienziel."; return; }
+      if (!z) { aktuell.textContent = "Gerade kein Gemeinschaftsziel."; return; }
       const prozent = Math.min(100, Math.floor(z.summe / z.ziel * 100));
       aktuell.append(el("b", "", `🎯 ${z.titel}`),
         el("div", "", `${format(z.summe)} / ${format(z.ziel)} (${prozent} %)${z.erreicht_am ? " · ✓ erreicht" : ""}`),
         el("small", "", `Belohnung: ${codeBelohnungText(z.art, z.menge)}`),
-        knopf("⏹️ Familienziel beenden", () => adminVersuche(inhalt, async () => {
-          await adminFamilienzielBeenden();
+        knopf("⏹️ Gemeinschaftsziel beenden", () => adminVersuche(inhalt, async () => {
+          await adminGemeinschaftszielBeenden();
           adminStatus(inhalt, "✓ Beendet.");
           await ladeAktuell();
         })));
@@ -337,7 +337,7 @@ function adminZielZeigen(inhalt) {
 
   let ziel = 1e12;
   const groessen = el("div", "adminAuswahl");
-  for (const g of FAMILIENZIEL_GROESSEN) {
+  for (const g of GEMEINSCHAFTSZIEL_GROESSEN) {
     const k = knopf(format(g), () => { ziel = g; for (const x of groessen.children) x.classList.toggle("aktiv", x === k); }, "adminChip");
     k.classList.toggle("aktiv", g === ziel);
     groessen.append(k);
@@ -354,10 +354,10 @@ function adminZielZeigen(inhalt) {
   const titelFeld = el("label", "feld", "Titel");
   titelFeld.append(titel);
   const reihe = el("div", "knopfReihe");
-  reihe.append(knopf("🎯 Familienziel starten", () => adminVersuche(inhalt, async () => {
-    if (!confirm(`Neues Familienziel: ${format(ziel)} Herzen?
+  reihe.append(knopf("🎯 Gemeinschaftsziel starten", () => adminVersuche(inhalt, async () => {
+    if (!confirm(`Neues Gemeinschaftsziel: ${format(ziel)} Herzen?
 Ein laufendes Ziel wird dabei beendet.`)) { adminStatus(inhalt, ""); return; }
-    await adminFamilienziel(titel.value.trim() || `Zusammen ${format(ziel)} Herzen!`, ziel, belohnung.art, belohnung.menge);
+    await adminGemeinschaftsziel(titel.value.trim() || `Zusammen ${format(ziel)} Herzen!`, ziel, belohnung.art, belohnung.menge);
     sound.erfolg();
     titel.value = "";
     adminStatus(inhalt, "✓ Gestartet!");
@@ -489,11 +489,11 @@ async function beimCodeEinloesen() {
 }
 
 // =====================================================
-//  FAMILIENZIEL (Karte oben in der Bestenliste)
+//  GEMEINSCHAFTSZIEL (Karte oben in der Bestenliste)
 // =====================================================
 
-function zeigeFamilienziel(z) {
-  const box = $("familienziel");
+function zeigeGemeinschaftsziel(z) {
+  const box = $("gemeinschaftsziel");
   box.hidden = !z;
   if (!z) return;
   box.textContent = "";
@@ -520,15 +520,15 @@ function zeigeFamilienziel(z) {
   if (beitraege.children.length) box.append(beitraege);
 
   if (erreicht && mitglied) {
-    const abgeholt = familienzielAbgeholt(z);
-    const k = knopf(abgeholt ? "✓ Belohnung abgeholt" : "🎁 Belohnung abholen", () => beimFamilienBelohnung(z), "knopf haupt");
+    const abgeholt = gemeinschaftszielAbgeholt(z);
+    const k = knopf(abgeholt ? "✓ Belohnung abgeholt" : "🎁 Belohnung abholen", () => beimGemeinschaftsBelohnung(z), "knopf haupt");
     k.disabled = abgeholt;
     box.append(k);
   }
 }
 
-function beimFamilienBelohnung(z) {
-  const e = holeFamilienBelohnung(z);
+function beimGemeinschaftsBelohnung(z) {
+  const e = holeGemeinschaftsBelohnung(z);
   if (!e) return;
   sound.stern();
   setTimeout(() => sound.erfolg(), 350);
@@ -537,29 +537,29 @@ function beimFamilienBelohnung(z) {
   if (e.herzen) teile.push(`+${format(e.herzen)} ${herz()}`);
   if (e.seasonPunkte) teile.push(`+${format(e.seasonPunkte)} Season-Punkte`);
   if (e.sticker.length) teile.push(`${e.sticker.length} Sticker: ${e.sticker.map(s => s.sticker.emoji).join(" ")}`);
-  meldung("🎉 Familienziel geschafft!", teile.join(" · "));
+  meldung("🎉 Gemeinschaftsziel geschafft!", teile.join(" · "));
   for (const s of e.sticker) if (s.seiteFertig) meldeSticker(s);
   for (const stufe of e.stufen) meldeSeasonStufe(stufe);
   pruefeErfolgeUndStatistik();
   speichern();
   aktualisiereAnzeige();
-  zeigeFamilienziel(z);
+  zeigeGemeinschaftsziel(z);
 }
 
 // Wird mit der Bestenliste aufgerufen (main.js)
-async function ladeFamilienziel() {
+async function ladeGemeinschaftsziel() {
   if (!verwaltungMoeglich()) return;
-  try { zeigeFamilienziel(await holeFamilienziel()); } catch (e) { /* ohne Familienziel-Tabellen: Karte bleibt weg */ }
+  try { zeigeGemeinschaftsziel(await holeGemeinschaftsziel()); } catch (e) { /* ohne Gemeinschaftsziel-Tabellen: Karte bleibt weg */ }
 }
 
 // Kurz nach dem Start: Ziel erreicht und Belohnung noch nicht abgeholt? Dann Bescheid sagen.
-async function pruefeFamilienziel() {
+async function pruefeGemeinschaftsziel() {
   if (!verwaltungMoeglich() || !mitglied) return;
   try {
-    const z = await holeFamilienziel();
-    if (familienzielAbholbar(z)) {
+    const z = await holeGemeinschaftsziel();
+    if (gemeinschaftszielAbholbar(z)) {
       sound.erfolg();
-      meldung(`🎉 Familienziel geschafft: ${z.titel}`, "Alle zusammen haben es geschafft! Hol dir deine Belohnung in der Bestenliste 🏅");
+      meldung(`🎉 Gemeinschaftsziel geschafft: ${z.titel}`, "Alle zusammen haben es geschafft! Hol dir deine Belohnung in der Bestenliste 🏅");
     }
   } catch (e) { /* offline */ }
 }
@@ -612,7 +612,7 @@ function richteVerwaltungEin() {
   $("codeEinloesen").addEventListener("click", beimCodeEinloesen);
   $("codeEingabe").addEventListener("keydown", e => { if (e.key === "Enter") beimCodeEinloesen(); });
 
-  setTimeout(pruefeFamilienziel, 12000);
+  setTimeout(pruefeGemeinschaftsziel, 12000);
 
   // Neuigkeiten: kurz nach dem Start, beim Zurückkommen und alle 30 Minuten
   setTimeout(pruefeNeuigkeiten, 6000);

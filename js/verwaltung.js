@@ -96,7 +96,7 @@ function merkeNachrichtGesehen(id) {
   try { localStorage.setItem(VERWALTUNG.gesehenSchluessel, String(id)); } catch (e) { /* egal */ }
 }
 
-// Eine Belohnung gutschreiben (für Codes und das Familienziel).
+// Eine Belohnung gutschreiben (für Codes und das Gemeinschaftsziel).
 // art: herzen (Stunden Produktion) | sticker (Anzahl) | season (Punkte)
 // Rückgabe: { herzen, sticker: [Ergebnisse von gibSticker], stufen: [Season-Stufen], seasonPunkte }
 function wendeBelohnungAn(art, menge, stickerQuelle = "code") {
@@ -139,27 +139,27 @@ async function pruefeSchneeEreignis() {
   if (e && e.tag) setzeSchneeTag(e.tag);
 }
 
-// ----- Familienziel -----
+// ----- Gemeinschaftsziel -----
 
-const holeFamilienziel = () => rufeBestenlisteAuf("hole_familienziel", {});
-const adminFamilienziel = (titel, ziel, art, menge) =>
+const holeGemeinschaftsziel = () => rufeBestenlisteAuf("hole_familienziel", {});
+const adminGemeinschaftsziel = (titel, ziel, art, menge) =>
   adminAufruf("admin_familienziel", { p_titel: titel, p_ziel: ziel, p_art: art, p_menge: menge });
-const adminFamilienzielBeenden = () => adminAufruf("admin_familienziel_beenden");
+const adminGemeinschaftszielBeenden = () => adminAufruf("admin_familienziel_beenden");
 
 // Mögliche Zielgrößen im Admin-Menü
-const FAMILIENZIEL_GROESSEN = [1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
+const GEMEINSCHAFTSZIEL_GROESSEN = [1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
 
-function familienzielAbgeholt(z) {
+function gemeinschaftszielAbgeholt(z) {
   return (spiel.familienziele || []).includes(z.id);
 }
 
 // Darf dieses Gerät die Belohnung abholen? (Ziel erreicht, in der Bestenliste dabei, noch nicht abgeholt)
-function familienzielAbholbar(z) {
-  return Boolean(z && z.erreicht_am && mitglied && !familienzielAbgeholt(z));
+function gemeinschaftszielAbholbar(z) {
+  return Boolean(z && z.erreicht_am && mitglied && !gemeinschaftszielAbgeholt(z));
 }
 
-function holeFamilienBelohnung(z) {
-  if (!familienzielAbholbar(z)) return null;
+function holeGemeinschaftsBelohnung(z) {
+  if (!gemeinschaftszielAbholbar(z)) return null;
   spiel.familienziele = [...(spiel.familienziele || []), z.id];
-  return wendeBelohnungAn(z.art, z.menge, "familie");
+  return wendeBelohnungAn(z.art, z.menge, "gemeinschaft");
 }

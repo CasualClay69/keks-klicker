@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.74", datum: "2026-11-19", neu: ["Das gemeinsame Ziel heißt jetzt „Gemeinschaftsziel“ 🎯"] },
   { v: "1.73", datum: "2026-11-19", neu: ["Fortschritts-Ring: Je mehr Herzen du insgesamt gesammelt hast, desto mehr Symbole drehen sich um Marie", "Bei ∞ ist der Ring einmal rundherum voll", "In jeder Season mit dem passenden Symbol (z. B. 🍂 an Thanksgiving)"] },
   { v: "1.72", datum: "2026-11-19", neu: ["Klick-Stufe ✋: Alle 8.000 Klicks verdoppelt sich alles – für immer, auch nach dem Neustart", "5 neue Upgrade-Stufen für jeden Helfer (ab 100 bis 500 Stück)", "Glitzersterne: je 3 Stellen deiner Herzen ein Stern – bis ∞ genug für die ganze Sternen-Karte", "Neues Balancing: Mit fleißigem Klicken erreichst du ∞ in ein paar Monaten", "Drei neue Erfolge für die Klick-Stufe"] },
   { v: "1.71", datum: "2026-11-19", neu: ["Die Sternen-Karte 🗺️: Glitzersterne sind jetzt Skillpunkte", "Vier Wege: 👆 Klick-Kraft, 🏡 Helfer, 🤖 Automatik (Klick-Roboter, Auto-Einkauf, Sternen-Netz, Futter-Automat) und 🍀 Glück", "Neu verteilen geht jederzeit kostenlos", "Zwei neue Erfolge"] },
@@ -22,7 +23,7 @@ const VERSIONEN = [
   { v: "1.60", datum: "2026-11-18", neu: ["Die Herzschenker heißen jetzt Helfer", "Ein ⭐ am Shop zeigt, wenn du dir einen Meilenstein leisten kannst", "Danke an Selina für die Season-Idee :)"] },
   { v: "1.59", datum: "2026-11-18", neu: ["Feiertage: Nikolaus mit Stiefel-Geschenk, Silvester mit Feuerwerk", "Erster Schnee: dann schneit es auf allen Geräten", "Neue Andenken fürs Zimmer"] },
   { v: "1.58", datum: "2026-11-18", neu: ["Alle Haustiere neu gemalt – Hüte und Halsbänder sitzen jetzt richtig", "Kein Zoomen mehr, wenn man mit mehreren Fingern tippt"] },
-  { v: "1.57", datum: "2026-11-18", neu: ["Familienziel: Alle sammeln zusammen – und alle bekommen eine Belohnung"] },
+  { v: "1.57", datum: "2026-11-18", neu: ["Gemeinschaftsziel: Alle sammeln zusammen – und alle bekommen eine Belohnung"] },
   { v: "1.56", datum: "2026-11-18", neu: ["Wochen-Missionen: 3 große Aufgaben pro Woche", "Exklusive Wochen-Schätze im Album"] },
   { v: "1.55", datum: "2026-11-18", neu: ["Kleine Verbesserung im Hintergrund"] },
   { v: "1.54", datum: "2026-11-18", neu: ["Kleine Reparatur im Hintergrund"] },

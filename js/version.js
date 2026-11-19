@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.73";
-const APP_NEU = "Neu: Der Fortschritts-Ring! Je weiter du kommst, desto mehr Symbole drehen sich um Marie. Bei ∞ ist der Ring voll.";
+const APP_VERSION = "1.74";
+const APP_NEU = "Das Familienziel heißt jetzt Gemeinschaftsziel – alle sammeln zusammen! 🎯";

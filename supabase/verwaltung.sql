@@ -1,5 +1,5 @@
 -- =====================================================
---  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Familienziel, Ereignisse
+--  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Gemeinschaftsziel, Ereignisse
 --
 --  Einmal im Supabase-Dashboard unter "SQL Editor" einfügen und auf "Run" klicken.
 --  Kann gefahrlos mehrmals ausgeführt werden. Braucht vorher supabase/bestenliste.sql.
@@ -350,7 +350,7 @@ $$;
 
 
 -- =====================================================
---  FAMILIENZIEL: alle in der Bestenliste sammeln zusammen auf ein großes Ziel
+--  GEMEINSCHAFTSZIEL: alle in der Bestenliste sammeln zusammen auf ein großes Ziel
 --  Beim Start merkt sich die Datenbank für jeden Spieler den Stand (bl_ziel_basis).
 --  Fortschritt = Summe aller Herzen, die seitdem dazugekommen sind.
 --  Wer später dazukommt, zählt ab seinem ersten Erscheinen.
@@ -395,7 +395,7 @@ begin
   end if;
   update bl_familienziel set aktiv = false where aktiv;
   insert into bl_familienziel (titel, ziel, art, menge)
-  values (left(coalesce(nullif(trim(p_titel), ''), 'Unser Familienziel'), 60), p_ziel, p_art, p_menge)
+  values (left(coalesce(nullif(trim(p_titel), ''), 'Unser Gemeinschaftsziel'), 60), p_ziel, p_art, p_menge)
   returning id into v_id;
   -- Startstand aller Spieler merken
   insert into bl_ziel_basis (ziel_id, spieler_id, basis)
@@ -418,7 +418,7 @@ begin
 end;
 $$;
 
--- Das aktuelle Familienziel mit Summe und Beiträgen (für alle).
+-- Das aktuelle Gemeinschaftsziel mit Summe und Beiträgen (für alle).
 -- Trägt dabei neue Spieler mit ihrem jetzigen Stand ein und merkt sich, wann das Ziel erreicht wurde.
 create or replace function public.hole_familienziel()
 returns json

@@ -87,7 +87,7 @@ Unter **📊 Statistik → 💾 Spielstand sichern**:
   erstellen (Kinder lösen sie unter Statistik ein), Nachricht an alle, Umfragen, Bestenliste moderieren.
   Datenbank: `supabase/verwaltung.sql` einmal ausführen, danach die PIN separat setzen:
   `select public.admin_pin_setzen('…');` – die PIN gehört NIE in eine Datei im Repository
-- Familienziel 🎯: Im Admin-Menü (Reiter „Ziel“) ein gemeinsames Ziel starten, z. B. 1 Billion Herzen. Gezählt wird, was alle
+- Gemeinschaftsziel 🎯: Im Admin-Menü (Reiter „Ziel“) ein gemeinsames Ziel starten, z. B. 1 Billion Herzen. Gezählt wird, was alle
   in der Bestenliste ab dann sammeln; die Karte steht oben in der Bestenliste. Erreicht -> jedes Gerät holt die Belohnung einmal ab
   (Tabellen und Funktionen in `supabase/verwaltung.sql`)
 - Wochen-Wettbewerb 📅: In der Bestenliste umschalten zwischen „Gesamt“ und „Diese Woche“. Wer von Montag 0 Uhr
