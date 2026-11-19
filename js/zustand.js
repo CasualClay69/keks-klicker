@@ -76,7 +76,15 @@ function laden() {
   if (!daten) return;
 
   // Neue Felder behalten ihren Startwert, falls der Spielstand sie noch nicht kennt
-  spiel = Object.assign(neuerSpielstand(), daten);
+  const standard = neuerSpielstand();
+  spiel = Object.assign(standard, daten);
+
+  // Reparatur: Zahlen, die kaputt gespeichert wurden (null/NaN), bekommen ihren Startwert zurück
+  for (const [schluessel, start] of Object.entries(neuerSpielstand())) {
+    if (typeof start === "number" && !Number.isFinite(spiel[schluessel])) {
+      spiel[schluessel] = spiel[schluessel] === Infinity ? Number.MAX_VALUE : start;
+    }
+  }
 
   if (!KONFIG.kaufModi.includes(spiel.kaufModus)) spiel.kaufModus = "1";
 }

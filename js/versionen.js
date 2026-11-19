@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.77", datum: "2026-11-19", neu: ["Reparatur: Bei riesigen Zahlen gehen Wochen-Missionen, Tagesaufgaben und Belohnungen nicht mehr kaputt", "Kaputte Zahlen im Spielstand werden beim Start automatisch repariert"] },
   { v: "1.76", datum: "2026-11-19", neu: ["Gemeinschaftsziele passen jetzt zu dem, was alle in der Bestenliste schon gesammelt haben", "Je größer das Ziel, desto besser die Belohnung"] },
   { v: "1.75", datum: "2026-11-19", neu: ["Die Preise für Zimmer-Teile und Tier-Zubehör wachsen jetzt mit deinem Fortschritt mit – so bleiben sie tolle Sparziele"] },
   { v: "1.74", datum: "2026-11-19", neu: ["Das gemeinsame Ziel heißt jetzt „Gemeinschaftsziel“ 🎯"] },

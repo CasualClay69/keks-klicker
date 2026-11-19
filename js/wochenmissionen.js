@@ -40,6 +40,7 @@ const WOCHEN_VORLAGEN = [
   { typ: "spielzeit",     icon: "⏰", wert: () => spiel.spielzeit,
     ziel: () => zufallAus([45, 60, 90]) * 60,          text: z => `Spiele ${z / 60} Minuten` },
   { typ: "herzen",        icon: "🍯", wert: () => herzenAllerZeiten(),
+    moeglich: () => herzenAllerZeiten() < 1e300,   // kurz vor ∞ wäre das Ziel nicht mehr zu schaffen
     ziel: () => {
       const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
       return rundeHuebsch(Math.max(20000, basisHps() * 3600 * 3 + proKlick * 3000));

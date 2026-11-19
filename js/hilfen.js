@@ -43,6 +43,7 @@ function formatWissenschaftlich(zahl) {
 
 // Ab 10³⁰⁸ ist Schluss: Unendlich (siehe unendlich.js)
 function format(zahl) {
+  if (zahl == null || Number.isNaN(zahl)) return "0";   // kaputte Zahl -> lieber 0 als ∞
   if (!Number.isFinite(zahl) || zahl >= 1e308) return "∞";
   if (zahl >= 1e3 && zahlenArt === "kurz") return zahl < 1e66 ? formatKurz(zahl) : formatWissenschaftlich(zahl);
   if (zahl >= 1e3 && zahlenArt === "wiss") return formatWissenschaftlich(zahl);

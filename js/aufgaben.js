@@ -41,7 +41,7 @@ const AUFGABEN_VORLAGEN = [
     erstelle: () => ({ ziel: zufallAus([1, 1, 2]) }) },
 
   { typ: "herzen", icon: "💖",
-    moeglich: () => true,
+    moeglich: () => herzenAllerZeiten() < 1e300,   // kurz vor ∞ wäre das Ziel nicht mehr zu schaffen
     erstelle: () => {
       const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
       return { ziel: rundeHuebsch(Math.max(1000, basisHps() * 900 + proKlick * 300)), start: spiel.gesamt };

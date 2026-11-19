@@ -507,9 +507,13 @@ function klicksFuerStufe(pass, n) {
 }
 
 // Rundet auf 2 "schöne" Stellen: 1234 -> 1200, 56789 -> 57000
+// Auf zwei gültige Stellen runden (12.345 -> 12.000). Robust auch bei riesigen Zahlen:
+// zu groß / unendlich -> größte speicherbare Zahl, ungültig -> 0 (sonst entstünde NaN).
 function rundeHuebsch(x) {
+  if (Number.isNaN(x) || x <= 0) return 0;
+  if (!Number.isFinite(x) || x >= Number.MAX_VALUE) return Number.MAX_VALUE;
   const stufe = Math.pow(10, Math.max(0, Math.floor(Math.log10(x)) - 1));
-  return Math.round(x / stufe) * stufe;
+  return Math.min(Number.MAX_VALUE, Math.round(x / stufe) * stufe);
 }
 
 // Herz-Belohnung für Stufe n – wächst mit dem aktuellen Fortschritt:
