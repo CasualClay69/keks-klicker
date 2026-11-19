@@ -32,6 +32,8 @@ function neuerSpielstand() {
     buch: null,        // Geschichtenbuch: { gelesen, bekannt } (siehe geschichte.js)
     garten: null,      // Garten: { beete, frei, zaubersamen, ernte } (siehe garten.js)
     ernten: 0,
+    besuchsHerzen: 0,  // bekommene Besuchs-Herzen (siehe besuch.js)
+    herzenVerschenkt: 0,
     monster: null,     // Wolken-Monster: { besiegt, entkommen, schnellste } (siehe monster.js)
     automatik: {},     // Automatik an/aus: { klick, kaufen, helfer, sterne, fuettern }
     stickerBekommen: 0,

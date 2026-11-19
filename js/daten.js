@@ -119,6 +119,8 @@ const ERFOLGE = [
   { id: "seite1",     icon: "📗", name: "Seite voll!",       beschr: "Mache eine Album-Seite voll",              bedingung: () => STICKER_SEITEN.some(seiteVoll) },
   { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker der 5 Grundseiten", bedingung: () => anzahlVerschiedeneSticker(GRUND_STICKER) >= GRUND_STICKER.length },
   { id: "stickerPost", icon: "💌", name: "Gute Freundin",     beschr: "Verschicke 5 Sticker an andere Spieler",   bedingung: s => (s.stickerVerschickt || 0) >= 5 },
+  { id: "besuchHerz10", icon: "💖", name: "Gern besucht",  beschr: "Bekomme 10 Besuchs-Herzen", bedingung: s => (s.besuchsHerzen || 0) >= 10 },
+  { id: "herzVerschenkt10", icon: "💝", name: "Herzens-Gast", beschr: "Lass 10 Herzen in anderen Zimmern da", bedingung: s => (s.herzenVerschenkt || 0) >= 10 },
   { id: "monster1",   icon: "☁️", name: "Kitzel-Kind",       beschr: "Kitzle ein Wolken-Monster weg", bedingung: s => Boolean(s.monster && s.monster.besiegt >= 1) },
   { id: "monster25",  icon: "🤣", name: "Kitzel-Profi",      beschr: "Kitzle 25 Wolken-Monster weg", bedingung: s => Boolean(s.monster && s.monster.besiegt >= 25) },
   { id: "monsterBlitz", icon: "⚡", name: "Blitz-Finger",    beschr: "Kitzle ein Wolken-Monster in 10 Sekunden weg", bedingung: s => Boolean(s.monster && s.monster.schnellste !== null && s.monster.schnellste <= 10) },

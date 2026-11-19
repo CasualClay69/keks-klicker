@@ -1223,6 +1223,7 @@ function richteBestenlisteEin() {
         feiereWochenSieg(await holeBestenliste());
       } catch (e) { /* offline – dann beim nächsten Mal */ }
       pruefeStickerPost();
+      pruefeBesuchsHerzen();
       sendeProfil().catch(() => {});
     }, 8000);
   }
@@ -1256,6 +1257,7 @@ function richteBestenlisteEin() {
     if (!$("seiteBestenliste").hidden) aktualisiereBestenliste();
     else sendePunkte().catch(() => {});
     pruefeStickerPost();
+    pruefeBesuchsHerzen();
     sendeProfil().catch(() => {});   // nur wenn sich Figur, Zimmer oder Tiere geändert haben
   }, BESTENLISTE.sendenAlleSek * 1000);
 

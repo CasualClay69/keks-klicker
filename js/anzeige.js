@@ -115,6 +115,7 @@ const STATISTIK_ZEILEN = [
     : `${(wegZurUnendlichkeit() * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % (Ziel: 10³⁰⁸)`],
   ["Klick-Stufe ✋",           () => `${klickStufe()} (alles ×${format(klickStufeFaktor())})`],
   ["Glitzersterne",           () => `${glitzersterne()} (${sternePunkteFrei()} frei)`],
+  ["Besuchs-Herzen 💖",        () => `${spiel.besuchsHerzen || 0} bekommen · ${spiel.herzenVerschenkt || 0} dagelassen`],
   ["Wolken-Monster ☁️",       () => `${(spiel.monster && spiel.monster.besiegt) || 0} weggekitzelt${spiel.monster && spiel.monster.schnellste !== null ? ` · Rekord ${String(spiel.monster.schnellste).replace(".", ",")} s` : ""}`],
   ["Garten-Ernten 🧺",         () => String(spiel.ernten || 0)],
   ["Fähigkeiten gelernt",     () => `${(spiel.skills || []).length} / ${SKILLS.length - 1}`],

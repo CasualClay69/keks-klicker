@@ -48,6 +48,35 @@ async function holeProfil(spielerId) {
   return rufeBestenlisteAuf("hole_profil", { p_gruppe: mitglied.gruppe, p_spieler_id: spielerId });
 }
 
+// ----- Besuchs-Herzen -----
+
+// Ein Herz im besuchten Zimmer dalassen (1× pro Zimmer und Tag). Wirft Fehler mit verständlicher Meldung.
+async function lasseHerz(spielerId) {
+  const antwort = await rufeBestenlisteAuf("lasse_herz", {
+    p_gruppe: mitglied.gruppe, p_spieler_id: mitglied.spielerId, p_geheimnis: mitglied.geheimnis, p_an: spielerId,
+  });
+  if (!antwort || antwort.fehler) throw new Error((antwort && antwort.fehler) || "Das hat leider nicht geklappt.");
+  spiel.herzenVerschenkt = (spiel.herzenVerschenkt || 0) + 1;
+  speichern();
+  return antwort.an;
+}
+
+// Neue Besuchs-Herzen abholen. Jedes bringt eine kleine Freude: ~5 Min. Produktion.
+// Rückgabe: { von: [Namen], herzen }
+async function holeBesuchsHerzen() {
+  if (!mitglied) return { von: [], herzen: 0 };
+  const neu = (await rufeBestenlisteAuf("hole_besuchsherzen", {
+    p_gruppe: mitglied.gruppe, p_spieler_id: mitglied.spielerId, p_geheimnis: mitglied.geheimnis,
+  })) || [];
+  if (!neu.length) return { von: [], herzen: 0 };
+  const proKlick = herzenProKlick() / aktuellerBonus().klickFaktor;
+  const herzen = rundeHuebsch(Math.max(500, basisHps() * 300 + proKlick * 50) * neu.length);
+  herzenDazu(herzen);
+  spiel.besuchsHerzen = (spiel.besuchsHerzen || 0) + neu.length;
+  speichern();
+  return { von: neu.map(h => String(h.von || "Jemand")), herzen };
+}
+
 // ----- Fremde Daten sicher in Spiel-Dinge übersetzen (alles Unbekannte -> Standard) -----
 
 function profilSkin(kategorie, id) {

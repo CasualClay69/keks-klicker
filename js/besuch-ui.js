@@ -72,6 +72,7 @@ async function zeigeBesuch(spielerId, name) {
   $("besuchZimmer").hidden = true;
   $("besuchInfo").textContent = "⏳ Klopf, klopf …";
   $("besuchPost").hidden = true;
+  $("besuchHerz").hidden = true;
   $("besuchOverlay").hidden = false;
 
   try {
@@ -94,19 +95,62 @@ async function zeigeBesuch(spielerId, name) {
     const sticker = Math.max(0, Math.floor(Number(profil.sticker) || 0));
     const teile = Math.max(0, Math.floor(Number(profil.zimmerTeile) || 0));
     zeilen.push(`📒 ${sticker} Sticker · 🏠 ${teile} Zimmer-Teile`);
+    const besuchsHerzen = Math.max(0, Math.floor(Number(antwort.besuchsherzen) || 0));
+    if (besuchsHerzen) zeilen.push(`💖 ${besuchsHerzen} Besuchs-${besuchsHerzen === 1 ? "Herz" : "Herzen"}`);
     $("besuchInfo").textContent = zeilen.join("\n");
 
     const post = $("besuchPost");
     post.hidden = istDu;
     post.dataset.id = spielerId;
     post.dataset.name = name;
+    const herzKnopf = $("besuchHerz");
+    herzKnopf.hidden = istDu;
+    herzKnopf.disabled = false;
+    herzKnopf.dataset.id = spielerId;
+    herzKnopf.dataset.name = name;
+    herzKnopf.textContent = "💖 Herz dalassen";
   } catch (fehler) {
     if (nr !== besuchNr) return;
     $("besuchInfo").textContent = "⚠️ " + fehler.message;
   }
 }
 
+async function beimHerzDalassen() {
+  const knopf = $("besuchHerz");
+  knopf.disabled = true;
+  try {
+    const an = await lasseHerz(knopf.dataset.id);
+    sound.erfolg();
+    konfetti($("besuchOverlay").querySelector(".besuchKarte"));
+    knopf.textContent = "💖 Herz dagelassen!";
+    meldung(`💖 ${an || knopf.dataset.name} freut sich!`, "Dein Herz kommt beim nächsten Öffnen an.", true);
+    pruefeErfolgeUndStatistik();
+  } catch (fehler) {
+    sound.fehler();
+    knopf.textContent = fehler.message;
+  }
+}
+
+// Beim Start und jede Minute (aus main.js): hat jemand mein Zimmer besucht?
+async function pruefeBesuchsHerzen() {
+  let e;
+  try { e = await holeBesuchsHerzen(); } catch (fehler) { return; }   // offline oder Datenbank noch alt
+  if (!e.von.length) return;
+  sound.stern();
+  // Eine einzige Meldung (sonst schieben spätere Meldungen die wichtigste weg)
+  const plus = `+${format(e.herzen)} ${herz()}`;
+  const namen = [...new Set(e.von)];
+  const wer = namen.length === 1 ? namen[0]
+    : namen.length <= 3 ? `${namen.slice(0, -1).join(", ")} und ${namen[namen.length - 1]}`
+    : `${namen.slice(0, 3).join(", ")} und ${namen.length - 3} weitere`;
+  meldung(`💖 ${wer} ${namen.length === 1 ? "hat" : "haben"} dein Zimmer besucht!`,
+    `${e.von.length === 1 ? "Ein Herz" : `${e.von.length} Herzen`} für dich – ${plus}`, true);
+  pruefeErfolgeUndStatistik();
+  aktualisiereAnzeige();
+}
+
 function richteBesuchEin() {
+  $("besuchHerz").addEventListener("click", beimHerzDalassen);
   // Tippen auf eine Zeile der Bestenliste (der 🎁-Knopf hat seinen eigenen Empfänger)
   $("blListe").addEventListener("click", e => {
     if (e.target.closest(".blPost")) return;

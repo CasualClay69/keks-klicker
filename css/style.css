@@ -897,7 +897,8 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .spielKarte.besuchKarte { height: auto; max-height: min(100%, 720px); overflow-y: auto; }
 .besuchZimmer { margin-top: 10px; }
 .besuchInfo { margin: 8px 0; white-space: pre-line; text-align: center; font-weight: bold; line-height: 1.5; color: var(--akzent-dunkel); }
-.besuchKarte #besuchPost { flex: none; align-self: center; }
+.besuchKnoepfe { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; flex: none; }
+.besuchKnoepfe .knopf { margin: 0; }
 
 /* 🎁 Sticker schicken (Sticker-Post) */
 .blZeile.mitPost { grid-template-columns: 40px 1fr auto 44px; }

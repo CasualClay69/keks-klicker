@@ -20,6 +20,9 @@
 --
 --  Zu Besuch (seit v1.67): Jeder meldet ein kleines Profil (Figur, Zimmer, Haustiere – nur IDs),
 --  die anderen können es sich in der Liste ansehen.
+--
+--  Besuchs-Herzen (seit v1.86): Beim Besuch kann man ein Herz dalassen (1× pro Zimmer und Tag),
+--  der Besitzer sieht dann "Hannah hat dein Zimmer besucht 💖".
 -- =====================================================
 
 create table if not exists public.bestenliste (
@@ -124,9 +127,11 @@ begin
       update bestenliste set spieler_id = p_spieler_id, geheimnis = p_geheimnis
       where gruppe = v_gruppe and spieler_id = v_anderer.spieler_id;
     end if;
-    -- noch nicht abgeholte Sticker-Post wandert mit
+    -- noch nicht abgeholte Sticker-Post und Besuchs-Herzen wandern mit
     update bl_sticker_post set an_id = p_spieler_id
     where gruppe = v_gruppe and an_id = v_anderer.spieler_id and abgeholt is null;
+    update bl_besuchsherzen set an_id = p_spieler_id
+    where gruppe = v_gruppe and an_id = v_anderer.spieler_id;
   end if;
 
   -- höchstens 50 Spieler pro Gruppe
@@ -308,6 +313,88 @@ $$;
 
 
 -- =====================================================
+--  BESUCHS-HERZEN: beim Besuch ein Herz dalassen (1× pro Zimmer und Tag)
+-- =====================================================
+
+create table if not exists public.bl_besuchsherzen (
+  id        bigint generated always as identity primary key,
+  gruppe    text        not null,
+  von_id    uuid        not null,
+  von_name  text        not null,
+  an_id     uuid        not null,
+  tag       date        not null default ((now() at time zone 'Europe/Berlin')::date),
+  erstellt  timestamptz not null default now(),
+  abgeholt  timestamptz
+);
+create unique index if not exists bl_besuchsherzen_einmal on public.bl_besuchsherzen (gruppe, von_id, an_id, tag);
+create index if not exists bl_besuchsherzen_an on public.bl_besuchsherzen (gruppe, an_id);
+alter table public.bl_besuchsherzen enable row level security;
+revoke all on public.bl_besuchsherzen from anon, authenticated;
+
+-- Herz dalassen. Antwort: {ok, an} oder {fehler}
+create or replace function public.lasse_herz(p_gruppe text, p_spieler_id uuid, p_geheimnis text, p_an uuid)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_gruppe  text := lower(trim(p_gruppe));
+  v_name    text;
+  v_an_name text;
+begin
+  select name into v_name from bestenliste
+  where gruppe = v_gruppe and spieler_id = p_spieler_id and geheimnis = p_geheimnis;
+  if not found then
+    return json_build_object('fehler', 'Bitte mach erst bei der Bestenliste mit.');
+  end if;
+  if p_an = p_spieler_id then
+    return json_build_object('fehler', 'In deinem eigenen Zimmer kannst du kein Herz dalassen.');
+  end if;
+  select name into v_an_name from bestenliste where gruppe = v_gruppe and spieler_id = p_an;
+  if not found then
+    return json_build_object('fehler', 'Diesen Spieler gibt es nicht mehr in der Bestenliste.');
+  end if;
+  insert into bl_besuchsherzen (gruppe, von_id, von_name, an_id)
+  values (v_gruppe, p_spieler_id, v_name, p_an)
+  on conflict do nothing;
+  if not found then
+    return json_build_object('fehler', 'Heute hast du bei ' || v_an_name || ' schon ein Herz dagelassen – morgen wieder! 💖');
+  end if;
+  -- sehr alte, abgeholte Herzen aufräumen (die Anzahl pro Spieler bleibt in "gesamt" unten erhalten)
+  delete from bl_besuchsherzen where abgeholt < now() - interval '400 days';
+  return json_build_object('ok', true, 'an', v_an_name);
+end;
+$$;
+
+-- Neue Besuchs-Herzen abholen (jedes kommt genau einmal an). Antwort: [{von}, …]
+create or replace function public.hole_besuchsherzen(p_gruppe text, p_spieler_id uuid, p_geheimnis text)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_gruppe text := lower(trim(p_gruppe));
+  v_neu    json;
+begin
+  if not exists (select 1 from bestenliste
+                 where gruppe = v_gruppe and spieler_id = p_spieler_id and geheimnis = p_geheimnis) then
+    return '[]'::json;
+  end if;
+  with geholt as (
+    update bl_besuchsherzen set abgeholt = now()
+    where gruppe = v_gruppe and an_id = p_spieler_id and abgeholt is null
+    returning von_name, erstellt
+  )
+  select coalesce(json_agg(json_build_object('von', von_name) order by erstellt), '[]'::json)
+  into v_neu from geholt;
+  return v_neu;
+end;
+$$;
+
+
+-- =====================================================
 --  ZU BESUCH: eigenes Profil melden, fremdes ansehen
 -- =====================================================
 
@@ -333,8 +420,9 @@ stable
 security definer
 set search_path = public
 as $$
-  select json_build_object('name', name, 'profil', profil)
-  from bestenliste where gruppe = lower(trim(p_gruppe)) and spieler_id = p_spieler_id;
+  select json_build_object('name', b.name, 'profil', b.profil,
+         'besuchsherzen', (select count(*) from bl_besuchsherzen h where h.gruppe = b.gruppe and h.an_id = b.spieler_id))
+  from bestenliste b where b.gruppe = lower(trim(p_gruppe)) and b.spieler_id = p_spieler_id;
 $$;
 
 
@@ -356,3 +444,8 @@ revoke all on function public.melde_profil(text, uuid, text, jsonb) from public;
 revoke all on function public.hole_profil(text, uuid) from public;
 grant execute on function public.melde_profil(text, uuid, text, jsonb) to anon, authenticated;
 grant execute on function public.hole_profil(text, uuid) to anon, authenticated;
+
+revoke all on function public.lasse_herz(text, uuid, text, uuid) from public;
+revoke all on function public.hole_besuchsherzen(text, uuid, text) from public;
+grant execute on function public.lasse_herz(text, uuid, text, uuid) to anon, authenticated;
+grant execute on function public.hole_besuchsherzen(text, uuid, text) to anon, authenticated;
