@@ -44,6 +44,7 @@
   <script src="js/haustier.js" defer></script>
   <script src="js/ausfluege.js" defer></script>
   <script src="js/garten.js" defer></script>
+  <script src="js/monster.js" defer></script>
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
   <script src="js/feiertage.js" defer></script>
@@ -68,6 +69,7 @@
   <script src="js/unendlich-ui.js" defer></script>
   <script src="js/geschichte-ui.js" defer></script>
   <script src="js/garten-ui.js" defer></script>
+  <script src="js/monster-ui.js" defer></script>
   <script src="js/skills-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
@@ -243,6 +245,16 @@
     </div>
 
     <button id="stern" type="button" aria-label="Sternschnuppe fangen" hidden>🌟</button>
+
+    <!-- Wolken-Monster: schnell antippen = wegkitzeln (monster-ui.js) -->
+    <div id="monster" class="monster" role="button" aria-label="Wolken-Monster wegkitzeln" hidden>
+      <div class="monsterKoerper">
+        <span id="monsterWolke" class="monsterWolke">🌥️</span>
+        <span id="monsterGesicht" class="monsterGesicht">😠</span>
+      </div>
+      <div class="monsterBalken"><div id="monsterBalken"></div></div>
+      <div id="monsterInfo" class="monsterInfo"></div>
+    </div>
   </main>
 
   <!-- Rechte Seite: Shop, Erfolge, Statistik -->

@@ -26,6 +26,7 @@ const SPRUECHE = {
   regenGut:      ["Wow, so viele! 🤩", "Du bist super schnell! ⚡", "Toll gefangen! 🧺"],
   regenOk:       ["Gut gemacht! 💕", "Das hat Spaß gemacht!", "Beim nächsten Mal noch mehr!"],
   unendlich:      ["UNENDLICH! ♾️", "Wir haben es geschafft! 🏆", "Mehr geht nicht! Du bist die Beste! 👑"],
+  monsterWeg:     ["Hihi, die Wolke hat gekichert! 🤭", "Weggekitzelt! ☁️", "Das war lustig! 😆"],
   giessen:        ["Wachst schön! 🌱", "Schluck, schluck! 💧", "Bald blüht es! 🌸"],
   ernte:          ["Was für eine Ernte! 🧺", "Mmmh, lecker! 🍓", "Wie schön das wächst! 🌷"],
   advent:         ["Ein Türchen wartet! 🎄", "Was ist wohl heute drin? 🎁", "Bald ist Weihnachten! ✨"],

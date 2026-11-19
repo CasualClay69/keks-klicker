@@ -1442,6 +1442,43 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .unendlichKarte h2 { font-size: 2rem; letter-spacing: 0.08em; }
 .unendlichPokal { font-size: 4rem; line-height: 1.1; animation: wunderHuepfen 1.6s ease-in-out infinite; filter: drop-shadow(0 0 12px #ffd23f); }
 
+/* ----- Wolken-Monster ----- */
+.monster {
+  position: absolute; left: 50%; top: 56%; z-index: 9;
+  width: min(70%, 300px);
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  cursor: pointer;
+  animation: monsterKommt 0.6s ease-out, monsterSchweben 2.4s ease-in-out 0.6s infinite;
+}
+.monsterKoerper { position: relative; display: grid; place-items: center; pointer-events: none; }
+.monsterWolke { font-size: clamp(140px, 40vmin, 230px); line-height: 1; filter: drop-shadow(0 6px 8px rgba(80, 60, 120, 0.35)); }
+.monsterWolke.zuckt { animation: monsterZuckt 0.15s ease-out; }
+.monsterGesicht { position: absolute; left: 50%; top: 56%; transform: translate(-50%, -50%); font-size: clamp(34px, 9vmin, 56px); line-height: 1; }
+.monster.regenbogen .monsterWolke { filter: drop-shadow(0 0 10px #ffd23f) drop-shadow(0 6px 8px rgba(80, 60, 120, 0.35)); }
+.monsterBalken {
+  width: 80%; height: 14px; overflow: hidden; pointer-events: none;
+  border: 2px solid #fff; border-radius: 999px; background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.monsterBalken > div { height: 100%; width: 0; background: linear-gradient(90deg, #ffd23f, #ff7eb6); transition: width 0.1s; }
+.monsterInfo {
+  padding: 3px 10px; border-radius: 999px; pointer-events: none;
+  background: rgba(255, 255, 255, 0.9); color: var(--akzent-dunkel);
+  font-weight: 900; font-size: 0.85rem; white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.monster.eilig .monsterInfo { color: #c0392b; animation: monsterEilig 0.5s ease-in-out infinite alternate; }
+.monster.weg { animation: monsterPlatzt 1.2s ease-in forwards; pointer-events: none; }
+.monster.fliegtWeg { animation: monsterFliegt 1.3s ease-in forwards; pointer-events: none; }
+@keyframes monsterKommt { from { transform: translate(-50%, -150%) scale(0.4); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@keyframes monsterSchweben { 0%, 100% { transform: translate(-50%, -50%) rotate(-3deg); } 50% { transform: translate(-50%, -56%) rotate(3deg); } }
+@keyframes monsterZuckt { 0% { transform: scale(1); } 50% { transform: scale(0.9, 1.08); } 100% { transform: scale(1); } }
+@keyframes monsterEilig { from { transform: scale(1); } to { transform: scale(1.08); } }
+@keyframes monsterPlatzt { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 40% { transform: translate(-50%, -50%) scale(1.25); } 100% { transform: translate(-50%, -50%) scale(0); opacity: 0; } }
+@keyframes monsterFliegt { to { transform: translate(120%, -160%) scale(0.5); opacity: 0; } }
+
 /* ----- Garten ----- */
 #gartenBtn.feiern { animation: feiern 0.9s ease-out; }
 #gartenBadge {

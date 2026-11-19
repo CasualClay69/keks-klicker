@@ -125,6 +125,7 @@ function adminEreignisse(inhalt) {
   for (const w of WUNDER) {
     ereignis(`${w.icon} ${w.name} (Test)`, () => { wunderTest = w.id; pruefeWunder(); sag(w.id, { wichtig: true }); });
   }
+  ereignis("☁️ Wolken-Monster jetzt", () => { schliesseAdmin(); setTimeout(() => starteMonster(), 300); });
   ereignis("♾️ Unendlich-Feier ansehen (Test)", () => zeigeUnendlichFeier());
   ereignis("🎄 Adventskalender ansehen (Test)", () => {
     const tag = Number(prompt("So tun, als wäre heute der … Dezember (1–24)? Es wird nichts gutgeschrieben.", "6"));

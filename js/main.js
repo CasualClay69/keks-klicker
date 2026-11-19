@@ -971,6 +971,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeBuch();           // neues Kapitel im Geschichtenbuch? (geschichte-ui.js)
   pruefeBonusSeiten();    // neue Album-Seite frei?
   zeigeGartenKnopf();     // 💧/🧺 am Garten-Knopf, auch nach Mitternacht (garten-ui.js)
+  pruefeMonster();        // Zeit für ein Wolken-Monster? (monster-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1449,6 +1450,7 @@ function starte() {
   richteSkillsEin();
   richteBuchEin();
   richteGartenEin();
+  richteMonsterEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();
