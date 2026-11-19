@@ -330,7 +330,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 
 /* ----- Obere Zeile: Optionen – Titel – Installieren ----- */
-#optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn, #installBtn {
+#optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #buchBtn, #adventBtn, #installBtn {
   position: absolute; top: max(12px, env(safe-area-inset-top));
   z-index: 7;
   padding: 6px 12px;
@@ -339,13 +339,14 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-#optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+#optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #buchBtn, #adventBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
 
 /* Links untereinander: Optionen, Aufgaben, Bestenliste, Minispiele, (Dezember) Adventskalender */
 #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
 #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
 #spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 144px); }
-#adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 192px); }
+#buchBtn        { top: calc(max(12px, env(safe-area-inset-top)) + 192px); }
+#adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 240px); }
 #aufgabenBtn.feiern { animation: feiern 0.9s ease-out; }
 
 /* Grüne Zahl: so viele Belohnungen liegen zum Abholen bereit */
@@ -1435,6 +1436,33 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 @keyframes unendlichFarben { to { background-position: 200% 0; } }
 .unendlichKarte h2 { font-size: 2rem; letter-spacing: 0.08em; }
 .unendlichPokal { font-size: 4rem; line-height: 1.1; animation: wunderHuepfen 1.6s ease-in-out infinite; filter: drop-shadow(0 0 12px #ffd23f); }
+
+/* ----- Geschichtenbuch ----- */
+#buchBtn.feiern { animation: feiern 0.9s ease-out; }
+#buchBadge {
+  position: absolute; right: -6px; top: -6px;
+  min-width: 22px; height: 22px; padding: 0 5px;
+  border: 2px solid #fff; border-radius: 11px;
+  background: #8a5cf6; color: #fff;
+  font-size: 0.72rem; line-height: 18px; font-weight: 900; text-align: center;
+  animation: badgeHuepfen 1.2s ease-in-out infinite;
+}
+.spielKarte.buchKarte { height: min(100%, 720px); }
+.buchSeite {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  margin: 8px 0; padding: 14px 16px;
+  border: 2px solid #ead9c0; border-radius: 16px;
+  background: linear-gradient(180deg, #fffaf0, #fff3e0);
+  box-shadow: inset 0 0 18px rgba(180, 140, 80, 0.15);
+  text-align: center;
+}
+.buchKapitel { font-size: 0.8rem; font-weight: bold; color: #a0763f; letter-spacing: 0.04em; }
+.buchBild { margin: 8px 0 4px; font-size: 3.4rem; line-height: 1.15; letter-spacing: 0.06em; }
+.buchTitel { margin: 4px 0 8px; font-size: 1.3rem; color: var(--akzent-dunkel); }
+.buchText { margin: 0; font-size: 1.08rem; line-height: 1.6; color: #4a3a2a; text-align: left; hyphens: auto; -webkit-hyphens: auto; }
+.buchHinweis { margin: 14px 0 0; padding: 8px 10px; border-radius: 12px; background: #f3ecff; color: #6b4fb0; font-weight: bold; font-size: 0.9rem; }
+.buchLeiste { display: grid; grid-template-columns: 56px 1fr 56px; gap: 8px; }
+.buchLeiste .knopf { margin: 0; }
 
 /* ----- Optionen ----- */
 .spielKarte.optionenKarte { height: auto; max-height: min(100%, 680px); overflow-y: auto; }
@@ -2586,11 +2614,12 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   .logo-krone   { font-size: 2rem; }
   #herzen       { font-size: 3.4rem; }
   #hps          { font-size: 1.25rem; }
-  #optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn { font-size: 1.6rem; }
+  #optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #buchBtn, #adventBtn { font-size: 1.6rem; }
   #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
   #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
   #spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
-  #adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 224px); }
+  #buchBtn        { top: calc(max(12px, env(safe-area-inset-top)) + 224px); }
+  #adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 280px); }
   #seasonBtn    { width: 64px; height: 64px; }
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }
@@ -2664,7 +2693,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  .fortschrittsRing, .ringSymbol, .skillKnoten.lernbar, #skillBadge, .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
+  #buchBadge, .fortschrittsRing, .ringSymbol, .skillKnoten.lernbar, #skillBadge, .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,

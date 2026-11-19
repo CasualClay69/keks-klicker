@@ -29,6 +29,7 @@ function neuerSpielstand() {
     unendlichAm: null, // wann 10³⁰⁸ Herzen erreicht wurden (siehe unendlich.js)
     skills: [],        // gelernte Fähigkeiten der Sternen-Karte (siehe skills.js)
     erklaert: [],      // welche Erklärungen Marie schon gegeben hat (siehe erklaerungen.js)
+    buch: null,        // Geschichtenbuch: { gelesen, bekannt } (siehe geschichte.js)
     automatik: {},     // Automatik an/aus: { klick, kaufen, helfer, sterne, fuettern }
     stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)

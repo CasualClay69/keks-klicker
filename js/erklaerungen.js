@@ -6,6 +6,8 @@
 // =====================================================
 
 const ERKLAERUNGEN = [
+  { id: "buch", wann: () => true, hinweis: "buchBtn",
+    text: () => "Psst! Links im 📖 Buch wartet eine Geschichte über Hannah und mich – mit einer kleinen Sternschnuppe!" },
   { id: "klickstufe", wann: () => klickStufe() >= 1, hinweis: "klickStufe",
     text: () => `Alle ${format(KLICKSTUFE.klicksProStufe)} Klicks steigt deine Klick-Stufe – dann gibt es alles doppelt! ✋` },
   { id: "neustart", wann: () => neustartMoeglich(),

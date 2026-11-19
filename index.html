@@ -48,6 +48,7 @@
   <script src="js/feiertage.js" defer></script>
   <script src="js/advent.js" defer></script>
   <script src="js/unendlich.js" defer></script>
+  <script src="js/geschichte.js" defer></script>
   <script src="js/wunder.js" defer></script>
   <script src="js/herzregen.js" defer></script>
   <script src="js/minispiele.js" defer></script>
@@ -64,6 +65,7 @@
   <script src="js/optionen-ui.js" defer></script>
   <script src="js/advent-ui.js" defer></script>
   <script src="js/unendlich-ui.js" defer></script>
+  <script src="js/geschichte-ui.js" defer></script>
   <script src="js/skills-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
@@ -80,6 +82,8 @@
     <button id="aufgabenBtn" type="button" title="Tagesaufgaben" aria-label="Tagesaufgaben öffnen">📋<b id="aufgabenBadge" hidden></b></button>
     <button id="bestenlisteBtn" type="button" title="Bestenliste" aria-label="Bestenliste öffnen" hidden>🏅</button>
     <button id="spieleBtn" type="button" title="Minispiele" aria-label="Minispiele öffnen">🎮</button>
+    <!-- Geschichtenbuch: Zahl = ungelesene Kapitel (geschichte-ui.js) -->
+    <button id="buchBtn" type="button" title="Geschichtenbuch" aria-label="Geschichtenbuch öffnen">📖<b id="buchBadge" hidden></b></button>
     <!-- Adventskalender: nur im Dezember. "!" = ein Türchen wartet (advent-ui.js) -->
     <button id="adventBtn" type="button" title="Adventskalender" aria-label="Adventskalender öffnen" hidden>🎄<b id="adventBadge" hidden>!</b></button>
     <h1 id="titel" aria-label="Marie Clicker">
@@ -684,6 +688,28 @@
           <div class="tierBalken ausflug"><div id="ausflugBalken"></div></div>
           <p id="ausflugRest" class="ausflugRest"></p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Geschichtenbuch „Die Reise zum Herzstern“ (geschichte-ui.js) -->
+  <div id="buchOverlay" class="overlay" hidden>
+    <div class="spielKarte buchKarte" role="dialog" aria-modal="true" aria-labelledby="buchTitel">
+      <div class="spielKopf">
+        <h2>📖 Die Reise zum Herzstern</h2>
+        <button id="buchZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <div class="buchSeite">
+        <div id="buchKapitel" class="buchKapitel"></div>
+        <div id="buchBild" class="buchBild" aria-hidden="true"></div>
+        <h3 id="buchTitel" class="buchTitel"></h3>
+        <p id="buchText" class="buchText"></p>
+        <p id="buchHinweis" class="buchHinweis" hidden></p>
+      </div>
+      <div class="buchLeiste">
+        <button id="buchZurueck" type="button" class="knopf" aria-label="Seite zurück">◀</button>
+        <button id="buchVorlesen" type="button" class="knopf haupt">🔊 Vorlesen</button>
+        <button id="buchWeiter" type="button" class="knopf" aria-label="Seite weiter">▶</button>
       </div>
     </div>
   </div>

@@ -953,6 +953,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeAdvent();         // Adventskalender-Knopf im Dezember (advent-ui.js)
   pruefeUnendlich();      // 10³⁰⁸ geschafft? (unendlich-ui.js)
   pruefeErklaerungen();   // Marie erklärt Neues beim ersten Mal (erklaerungen.js)
+  pruefeBuch();           // neues Kapitel im Geschichtenbuch? (geschichte-ui.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());
@@ -1429,6 +1430,7 @@ function starte() {
   richteOptionenEin();
   richteUnendlichEin();
   richteSkillsEin();
+  richteBuchEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();
