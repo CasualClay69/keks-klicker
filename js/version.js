@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.88";
-const APP_NEU = "Neu: 21 neue Season-Pässe bis 2029 – mit der neuen Season Wind & Drachen im September! Und nach drei Jahren kommen alle Seasons wieder, damit du Verpasstes nachholen kannst.";
+const APP_VERSION = "1.89";
+const APP_NEU = "Neu: ein hübscher Startbildschirm mit Ladebalken und schwebenden Herzen!";

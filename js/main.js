@@ -221,6 +221,7 @@ let letzterHungerHinweis = 0;
 // Kann Marie gerade sprechen? (nicht bei offenen Fenstern oder offenem Handy-Menü)
 function marieDarfSprechen() {
   if (document.hidden) return false;
+  if (document.getElementById("splash")) return false;   // Startbildschirm ist noch da
   if ([...document.querySelectorAll(".overlay")].some(el => !el.hidden)) return false;
   const handyMenue = document.body.classList.contains("menue-offen") && getComputedStyle($("untenNav")).display !== "none";
   return !handyMenue;
