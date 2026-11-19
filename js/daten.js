@@ -124,6 +124,8 @@ const ERFOLGE = [
   { id: "monster1",   icon: "☁️", name: "Kitzel-Kind",       beschr: "Kitzle ein Wolken-Monster weg", bedingung: s => Boolean(s.monster && s.monster.besiegt >= 1) },
   { id: "monster25",  icon: "🤣", name: "Kitzel-Profi",      beschr: "Kitzle 25 Wolken-Monster weg", bedingung: s => Boolean(s.monster && s.monster.besiegt >= 25) },
   { id: "monsterBlitz", icon: "⚡", name: "Blitz-Finger",    beschr: "Kitzle ein Wolken-Monster in 10 Sekunden weg", bedingung: s => Boolean(s.monster && s.monster.schnellste !== null && s.monster.schnellste <= 10) },
+  { id: "backen10",   icon: "🧁", name: "Kleine Bäckerin",   beschr: "Backe 10 Leckereien in der Backstube", bedingung: s => Object.values(s.gebacken || {}).reduce((a, b) => a + b, 0) >= 10 },
+  { id: "backenAlle", icon: "🎂", name: "Meister-Konditorin", beschr: "Backe jedes Rezept mindestens einmal", bedingung: s => typeof REZEPTE !== "undefined" && REZEPTE.every(r => (s.gebacken || {})[r.id] > 0) },
   { id: "garten10",   icon: "🧺", name: "Grüner Daumen",     beschr: "Ernte 10-mal im Garten", bedingung: s => (s.ernten || 0) >= 10 },
   { id: "zaubergarten", icon: "🪻", name: "Zaubergärtnerin", beschr: "Ernte alle 4 Zauberpflanzen", bedingung: s => typeof PFLANZEN !== "undefined" && PFLANZEN.filter(p => p.art === "zauber").every(p => s.garten && s.garten.ernte && s.garten.ernte[p.id] > 0) },
   { id: "klickstufe10",  icon: "✋", name: "Flinke Finger",   beschr: "Erreiche Klick-Stufe 10",  bedingung: () => klickStufe() >= 10 },

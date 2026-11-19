@@ -34,7 +34,9 @@ function neuerSpielstand() {
     ernten: 0,
     besuchsHerzen: 0,  // bekommene Besuchs-Herzen (siehe besuch.js)
     herzenVerschenkt: 0,
-    monster: null,     // Wolken-Monster: { besiegt, entkommen, schnellste } (siehe monster.js)
+    monster: null,
+    backBoni: {},      // Backstube: { klick, prod, stern, zauber: Ende (ms) } (siehe backstube.js)
+    gebacken: {},      // wie oft welches Rezept gebacken wurde     // Wolken-Monster: { besiegt, entkommen, schnellste } (siehe monster.js)
     automatik: {},     // Automatik an/aus: { klick, kaufen, helfer, sterne, fuettern }
     stickerBekommen: 0,
     geschenk: null,    // tägliches Geschenk: { letzterTag, serie, beste } (siehe geschenk.js)

@@ -44,6 +44,7 @@
   <script src="js/haustier.js" defer></script>
   <script src="js/ausfluege.js" defer></script>
   <script src="js/garten.js" defer></script>
+  <script src="js/backstube.js" defer></script>
   <script src="js/monster.js" defer></script>
   <script src="js/sprechen.js" defer></script>
   <script src="js/geburtstag.js" defer></script>
@@ -125,6 +126,8 @@
     <!-- Klick-Stufe: alle paar tausend Klicks verdoppelt sich alles (klickstufe.js) -->
     <div id="klickStufe" class="klickStufe" title="Alle paar tausend Klicks: alles ×2!"><span id="klickStufeText"></span></div>
     <div id="bonus" aria-live="polite"></div>
+    <!-- Laufende Boni aus der Backstube, z.B. "🧁 Klicks ×2 9:41" (backstube.js) -->
+    <div id="backBoni" class="backBoni" hidden></div>
 
     <!-- Herzregen-Minispiel: hier fallen die Teile, unten die Anzeige -->
     <div id="regenFeld" class="regenFeld" hidden></div>
@@ -718,6 +721,11 @@
         <h2 id="gartenTitel">🌱 Garten</h2>
         <button id="gartenZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
       </div>
+      <div id="gartenReiter" class="albumSeitenwahl gartenReiter">
+        <button type="button" data-reiter="beete" class="aktiv">🌱<small>Beete</small></button>
+        <button type="button" data-reiter="backen">🧁<small>Backstube</small></button>
+      </div>
+      <div id="gartenBeeteBereich">
       <p class="seitenInfo">Pflanze Samen, gieß sie jeden Tag einmal – nach ein paar Tagen kannst du ernten!</p>
       <div class="gartenLeiste">
         <span id="gartenSamen" class="gartenSamen"></span>
@@ -727,6 +735,12 @@
       <div id="gartenSamenwahl" class="gartenSamenwahl" hidden>
         <div class="gartenSamenKopf"><b>Was möchtest du pflanzen?</b><button id="gartenAbbrechen" type="button" class="skillZurueck">Abbrechen</button></div>
         <div id="gartenSamenListe" class="gartenSamenListe"></div>
+      </div>
+      </div>
+      <div id="backstubeBereich" hidden>
+        <p class="seitenInfo">Alles, was du erntest, kommt in deine Vorratskammer. Daraus kannst du Leckereien backen – die geben tolle Boni!</p>
+        <div id="vorratskammer" class="vorratskammer"></div>
+        <div id="rezepte" class="rezepte"></div>
       </div>
     </div>
   </div>

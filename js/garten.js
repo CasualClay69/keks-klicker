@@ -129,6 +129,7 @@ function ernte(i) {
   const p = pflanzeNachId(beet.pflanze);
   Object.assign(beet, { pflanze: null, gegossen: 0, letzterGuss: "" });
   g.ernte = { ...(g.ernte || {}), [p.id]: ((g.ernte || {})[p.id] || 0) + 1 };
+  g.vorrat = { ...(g.vorrat || {}), [p.id]: ((g.vorrat || {})[p.id] || 0) + 1 };   // für die Backstube (backstube.js)
   spiel.ernten = (spiel.ernten || 0) + 1;
 
   const herzen = ernteHerzen(p);

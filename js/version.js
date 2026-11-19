@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.86";
-const APP_NEU = "Neu: Besuchs-Herzen! 💖 Wenn du ein anderes Zimmer besuchst, kannst du ein Herz dalassen – und siehst, wer dich besucht hat.";
+const APP_VERSION = "1.87";
+const APP_NEU = "Neu: Die Backstube 🧁! Aus deiner Garten-Ernte backst du Muffins, Kuchen, Eis und Blumentee – mit tollen Boni.";

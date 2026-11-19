@@ -69,7 +69,8 @@ function wunderStickerFaktor() { const w = aktivesWunder(); return (w && w.stick
 function sternWartezeit() {
   const w = aktivesWunder();
   if (w && w.sternWarten) return w.sternWarten;
-  const f = typeof skillSternWarteFaktor === "function" ? skillSternWarteFaktor() : 1;   // "Sternenstaub" (skills.js)
+  const f = (typeof skillSternWarteFaktor === "function" ? skillSternWarteFaktor() : 1)   // "Sternenstaub" (skills.js)
+    * (typeof backSternFaktor === "function" ? backSternFaktor() : 1);                   // Melonen-Eis (backstube.js)
   return [KONFIG.stern.minWartenSek * f, KONFIG.stern.maxWartenSek * f];
 }
 

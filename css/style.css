@@ -1531,6 +1531,32 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .samen.zauber { border-color: #b48cff; background: linear-gradient(180deg, #fff, #f3ecff); }
 .samen:disabled { opacity: 0.45; }
 
+/* ----- Backstube ----- */
+.gartenReiter { grid-template-columns: 1fr 1fr; margin: 6px 0 4px; }
+.backBoni {
+  margin: -4px auto 4px; padding: 2px 10px; max-width: calc(100% - 140px);
+  border-radius: 999px; background: rgba(255, 244, 214, 0.9); border: 2px solid #f5c242;
+  font-size: 0.72rem; font-weight: bold; color: #8a5a00; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; z-index: 2;
+}
+.vorratskammer { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+.vorratFach {
+  display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px;
+  border: 2px solid #ead9c0; border-radius: 999px; background: #fffaf0; font-weight: bold;
+}
+.vorratFach .bild { font-size: 1.2rem; }
+.vorratFach.leer { opacity: 0.4; }
+.rezepte { display: grid; gap: 8px; }
+.rezept {
+  display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 8px;
+  padding: 8px 10px; border: 2px solid var(--rand); border-radius: 16px; background: var(--karte);
+}
+.rezept .bild { font-size: 2.2rem; text-align: center; }
+.rezept .text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rezept .wirkung { font-size: 0.78rem; color: var(--text); }
+.rezept .zutaten { font-size: 0.75rem; color: var(--text-sanft); font-weight: bold; }
+.rezept .knopf { margin: 0; padding: 8px 12px; font-size: 0.9rem; }
+
 /* ----- Geschichtenbuch ----- */
 #buchBtn.feiern { animation: feiern 0.9s ease-out; }
 #buchBadge {

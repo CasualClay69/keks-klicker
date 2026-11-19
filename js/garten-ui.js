@@ -6,6 +6,68 @@
 // =====================================================
 
 let gartenAuswahlBeet = null;   // für welches Beet gerade ein Samen gewählt wird
+let gartenReiter = "beete";     // "beete" | "backen"
+
+// ----- Backstube (Regeln: backstube.js) -----
+
+function zeigeBackstube() {
+  const kammer = $("vorratskammer");
+  kammer.textContent = "";
+  const v = vorrat();
+  for (const p of PFLANZEN) {
+    const n = v[p.id] || 0;
+    if (!n && p.art === "zauber") continue;   // Zauberpflanzen erst zeigen, wenn man welche hat
+    const fach = span("vorratFach" + (n ? "" : " leer"));
+    fach.append(span("bild", p.icon), span("zahl", `${n}`));
+    fach.title = p.name;
+    kammer.append(fach);
+  }
+  const liste = $("rezepte");
+  liste.textContent = "";
+  for (const r of REZEPTE) {
+    const karte = document.createElement("div");
+    karte.className = "rezept";
+    const zutaten = r.zutaten.map(z => {
+      const p = z.id ? pflanzeNachId(z.id) : null;
+      const name = p ? p.icon : z.art === "blume" ? "🌸" : z.art === "zauber" ? "✨" : "🍓";
+      const hat = vorratVon(z) >= z.n;
+      return `${hat ? "" : "❌"}${z.n}× ${name}${z.art ? (z.art === "blume" ? " (Blume)" : z.art === "zauber" ? " (Zauberpflanze)" : "") : ""}`;
+    }).join("  ");
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.className = "knopf haupt";
+    knopf.disabled = !kannBacken(r);
+    knopf.textContent = "Backen!";
+    knopf.addEventListener("click", () => backeHier(r.id));
+    const aktiv = r.bonus && backBonusAktiv(r.bonus) ? ` · läuft noch ${Math.ceil(backBonusRestSek(r.bonus) / 60)} Min.` : "";
+    karte.append(span("bild", r.icon),
+      Object.assign(document.createElement("div"), { className: "text" }));
+    karte.lastChild.append(Object.assign(document.createElement("b"), { textContent: r.name }),
+      span("wirkung", r.wirkung + aktiv), span("zutaten", zutaten));
+    karte.append(knopf);
+    liste.append(karte);
+  }
+}
+
+function backeHier(id) {
+  const e = backe(id);
+  if (!e) { sound.fehler(); return; }
+  sound.erfolg();
+  konfetti($("gartenOverlay").querySelector(".gartenKarte"));
+  meldung(`${e.rezept.icon} ${e.rezept.name} gebacken!`, e.rezept.wirkung);
+  if (e.rezept.bonus === "stern" && ui.stern.hidden) planeStern();   // Sternschnuppen-Party sofort spürbar
+  zeigeBackstube();
+  zeigeHaustier();
+  pruefeErfolgeUndStatistik();
+  aktualisiereAnzeige();
+}
+
+function zeigeGartenReiter() {
+  for (const b of $("gartenReiter").children) b.classList.toggle("aktiv", b.dataset.reiter === gartenReiter);
+  $("gartenBeeteBereich").hidden = gartenReiter !== "beete";
+  $("backstubeBereich").hidden = gartenReiter !== "backen";
+  if (gartenReiter === "backen") zeigeBackstube();
+}
 
 function beetBild(beet) {
   const p = pflanzeNachId(beet.pflanze);
@@ -154,9 +216,13 @@ function richteGartenEin() {
     sound.klick();
     gartenAuswahlBeet = null;
     zeigeGarten();
+    zeigeGartenReiter();
     $("gartenOverlay").hidden = false;
   });
   $("gartenZu").addEventListener("click", () => { $("gartenOverlay").hidden = true; sound.klick(); });
+  for (const b of $("gartenReiter").children) {
+    b.addEventListener("click", () => { gartenReiter = b.dataset.reiter; sound.klick(); zeigeGartenReiter(); });
+  }
   $("gartenGiessen").addEventListener("click", () => {
     const n = giesse();
     if (!n) return;

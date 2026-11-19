@@ -211,6 +211,14 @@ function zeigeKopf() {
   $("klickStufe").title = `Klick-Stufe ${klickStufe()}: alles ×${format(klickStufeFaktor())}. Alle ${format(KLICKSTUFE.klicksProStufe)} Klicks verdoppelt sich alles!`;
   $("klickStufe").style.setProperty("--anteil", (klickStufeAnteil() * 100).toFixed(1) + "%");
 
+  // Laufende Boni aus der Backstube
+  if (typeof backBoniText === "function") {
+    const back = backBoniText();
+    $("backBoni").hidden = !back;
+    setzeText($("backBoni"), back);
+    $("backBoni").title = backBoniText(true);
+  }
+
   const rest = bonusRestSekunden();
   const b = aktuellerBonus();
   const wunder = typeof aktivesWunder === "function" ? aktivesWunder() : null;   // geheime Ereignisse (wunder.js)

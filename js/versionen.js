@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.87", datum: "2026-11-19", neu: ["Die Backstube 🧁 im Garten: Aus der Ernte backst du Leckereien", "Blumentee macht die Tiere satt, Muffin = doppelte Klicks, Apfelkuchen = doppelte Helfer, Melonen-Eis = Sternschnuppen-Party, Zauberkuchen = alles ×3", "Zwei neue Erfolge"] },
   { v: "1.86", datum: "2026-11-19", neu: ["Besuchs-Herzen 💖: Beim Besuch in einem anderen Zimmer ein Herz dalassen (1× am Tag)", "Du siehst, wer dein Zimmer besucht hat – und bekommst dafür eine kleine Freude", "Zwei neue Erfolge"] },
   { v: "1.85", datum: "2026-11-19", neu: ["Die Wolken-Monster sind jetzt viel größer – leichter mit vielen Fingern zu treffen"] },
   { v: "1.84", datum: "2026-11-19", neu: ["Wolken-Monster ☁️: Ab und zu taucht eine Wolke auf – in 30 Sekunden wegkitzeln!", "Belohnung: Herzen und ein Sticker, das seltene Regenbogen-Wölkchen bringt einen Zaubersamen", "⚡ Blitz-Bonus, wenn du es in der halben Zeit schaffst", "Drei neue Erfolge"] },

@@ -113,7 +113,8 @@ function basisHps() {
 // wunderProdFaktor(): Regenbogen-Tag zählt doppelt (wunder.js)
 function herzenProSekunde() {
   const wunder = typeof wunderProdFaktor === "function" ? wunderProdFaktor() : 1;
-  return deckel(basisHps() * aktuellerBonus().prodFaktor * wunder);
+  const backen = typeof backProdFaktor === "function" ? backProdFaktor() : 1;   // Apfelkuchen/Zauberkuchen (backstube.js)
+  return deckel(basisHps() * aktuellerBonus().prodFaktor * wunder * backen);
 }
 
 function herzenProKlick() {
@@ -121,7 +122,8 @@ function herzenProKlick() {
   const skills = (typeof skillKlickFaktor === "function" ? skillKlickFaktor() : 1)   // Sternen-Karte (skills.js)
     * (typeof klickStufeFaktor === "function" ? klickStufeFaktor() : 1);            // Klick-Stufe (klickstufe.js)
   const zimmer = typeof zimmerFaktor === "function" ? zimmerFaktor() : 1;   // Zimmer-Teile (zimmer.js)
-  const wunder = typeof wunderKlickFaktor === "function" ? wunderKlickFaktor() : 1;   // Regenbogen-Tag (wunder.js)
+  const wunder = (typeof wunderKlickFaktor === "function" ? wunderKlickFaktor() : 1)   // Regenbogen-Tag (wunder.js)
+    * (typeof backKlickFaktor === "function" ? backKlickFaktor() : 1);                // Muffin/Zauberkuchen (backstube.js)
   // Sternen-Karte: ein Anteil der Herzen pro Sekunde kommt bei jedem Klick dazu
   const anteil = typeof skillKlickAnteil === "function" ? skillKlickAnteil() : 0;
   return deckel(basis * skills * zimmer * aktuellerBonus().klickFaktor * wunder + (anteil ? anteil * herzenProSekunde() : 0));
