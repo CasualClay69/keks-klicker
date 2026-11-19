@@ -49,6 +49,12 @@ function richteOptionenEin() {
     $("optionenOverlay").hidden = false;
   });
   const schliessen = () => { $("optionenOverlay").hidden = true; };
+  $("erklaerungenNochmal").addEventListener("click", () => {
+    erklaerungenZuruecksetzen();
+    sound.klick();
+    schliessen();
+    meldung("💬 Gleich erklärt Marie alles nochmal", "Hör gut zu!");
+  });
   $("optionenZu").addEventListener("click", () => { sound.klick(); schliessen(); });
   $("optionenOverlay").addEventListener("click", e => { if (e.target.id === "optionenOverlay") schliessen(); });
 }

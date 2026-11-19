@@ -230,6 +230,7 @@ function marieDarfSprechen() {
 // Gibt true zurück, wenn Marie wirklich etwas gesagt hat.
 function sag(art, { chance = 1, wichtig = false } = {}) {
   if (Math.random() > chance || !marieDarfSprechen()) return false;
+  if (typeof letzteErklaerung === "number" && Date.now() - letzteErklaerung < ERKLAERUNG_DAUER_MS) return false;   // Marie erklärt gerade etwas
   if (!wichtig && Date.now() - letzteSprechblase < 8000) return false;
   marieSagt(spruch(art));
   letzteSprechblase = Date.now();
@@ -951,6 +952,7 @@ function pruefeErfolgeUndStatistik() {
   pruefeAusfluege();      // Haustier vom Ausflug zurück? (ausfluege-ui.js)
   pruefeAdvent();         // Adventskalender-Knopf im Dezember (advent-ui.js)
   pruefeUnendlich();      // 10³⁰⁸ geschafft? (unendlich-ui.js)
+  pruefeErklaerungen();   // Marie erklärt Neues beim ersten Mal (erklaerungen.js)
   pruefeGeschenk();       // auch nach Mitternacht, wenn das Spiel noch offen ist
   meldeAufgaben(aktualisiereZeitAufgaben());   // "Sammle X Herzen", "Spiele 10 Minuten"
   meldeWochenMissionen(aktualisiereWochenMissionen());

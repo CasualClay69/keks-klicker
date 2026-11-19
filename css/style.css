@@ -988,6 +988,8 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 #albumBtn { top: calc(max(12px, env(safe-area-inset-top)) + 128px); }
 #zimmerBtn { top: calc(max(12px, env(safe-area-inset-top)) + 190px); }
+#skillBtn.feiern { animation: feiern 0.9s ease-out; }
+#erklaerungenNochmal { width: 100%; }
 #skillBtn  { top: calc(max(12px, env(safe-area-inset-top)) + 252px); font-size: 1.5rem; }
 #skillBadge {
   position: absolute; right: -4px; top: -4px;
