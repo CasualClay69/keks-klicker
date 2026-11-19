@@ -60,11 +60,11 @@ const STICKER_SEITEN = [
     ["🧸", "Goldener Teddy"], ["💫", "Sternenstaub"] ] },
 
   // ───── Season-Seiten: erscheinen erst, wenn ihre Season beginnt, und sind nur dann sammelbar ─────
-  { id: "s1-thanksgiving", season: "s1", name: "Thanksgiving", icon: "🦃", farbe: "#ffe9d2", sticker: [
+  { id: "s1-thanksgiving", season: "s1", thema: "thanksgiving", name: "Thanksgiving", icon: "🦃", farbe: "#ffe9d2", sticker: [
     ["🍂", "Herbstblatt"], ["🍁", "Ahornblatt"], ["🎃", "Kürbis"], ["🌽", "Maiskolben"], ["🍎", "Apfel"], ["🥧", "Kuchen"], ["🌰", "Kastanie"],
     ["🦃", "Truthahn"], ["🐿️", "Eichhörnchen"], ["🧺", "Erntekorb"],
     ["🎩", "Pilgerhut"], ["🍽️", "Festessen"] ] },
-  { id: "s2-weihnachten", season: "s2", name: "Weihnachten", icon: "🎅", farbe: "#e6f0ff", sticker: [
+  { id: "s2-weihnachten", season: "s2", thema: "weihnachten", name: "Weihnachten", icon: "🎅", farbe: "#e6f0ff", sticker: [
     ["❄️", "Schneeflocke"], ["🔔", "Glöckchen"], ["🕯️", "Kerze"], ["🧦", "Strumpf"], ["🧤", "Handschuhe"], ["⛸️", "Schlittschuh"], ["🎀", "Schleife"],
     ["⛄", "Schneemann"], ["🦌", "Rentier"], ["🎁", "Geschenk"],
     ["🎅", "Weihnachtsmann"], ["🎄", "Tannenbaum"] ] },
@@ -168,7 +168,8 @@ function sichtbareSticker() {
 // Die Sticker-Seite der gerade laufenden Season (oder undefined)
 function aktuelleSeasonSeite() {
   const pass = aktiverSeasonPass();
-  return pass && STICKER_SEITEN.find(s => s.season === pass.id);
+  // Jahres-Varianten (z.B. "Ostern 2028") benutzen die Sticker-Seite ihres Themas
+  return pass && STICKER_SEITEN.find(s => s.season === pass.id || (s.thema && s.thema === pass.thema));
 }
 
 function seiteFortschritt(seite) {

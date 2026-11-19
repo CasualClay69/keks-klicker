@@ -714,7 +714,8 @@ function zeigeSeason() {
   ui.seasonBtn.style.setProperty("--fortschritt", anteil.toFixed(3));
 
   // Season-Seite (das Logo wird unten nur beim Wechsel der Season gesetzt)
-  setzeText($("seasonZeit"), `⏳ ${formatRestzeit(seasonRestMs(pass))} · bis ${seasonLetzterTag(pass)}`);
+  setzeText($("seasonZeit"), `⏳ ${formatRestzeit(seasonRestMs(pass))} · bis ${seasonLetzterTag(pass)}`
+    + (seasonWiederholung() ? " · 🔁 Wiederholung – hol dir, was du verpasst hast!" : ""));
   setzeText($("seasonStufe"), String(stand.stufe));
   setzeText($("seasonMax"), String(pass.stufen));
   $("seasonBalkenFuellung").style.width = (anteil * 100).toFixed(1) + "%";
@@ -1640,7 +1641,7 @@ function zeigeAlbum() {
   if (seite.season) {
     const pass = SEASON_PAESSE.find(p => p.id === seite.season);
     if (seiteVoll(seite)) titel += "  ·  ✓";
-    else if (aktiverSeasonPass() === pass) titel += `  ·  ⏳ nur bis ${seasonLetzterTag(pass)}`;
+    else if (aktuelleSeasonSeite() === seite) titel += `  ·  ⏳ nur bis ${seasonLetzterTag(aktiverSeasonPass())}`;
     else titel += "  ·  Season vorbei";
   }
   setzeText($("albumSeitenTitel"), titel);

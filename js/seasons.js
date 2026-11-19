@@ -1,6 +1,6 @@
 "use strict";
 // =====================================================
-//  JAHRES-KALENDER 2027: Seasons 3 bis 8
+//  JAHRES-KALENDER 2027: Seasons 3 bis 7 und 9 (Season 8 "Wind & Drachen" steht in seasonjahre.js)
 //
 //  Jede Season ist hier EIN Datenblock. registriereSeason() erzeugt daraus:
 //  • 5 Skins (Hut, Musik, HUD, Logo, animierter Hintergrund) – Stufe 10/20/30/40/50
@@ -21,6 +21,7 @@ function seasonLogo(o) {
   const groesse = Math.min(35, Math.floor(262 / (0.6 * o.titel.length)));   // lange Titel etwas kleiner
   const titel = o.titel.replace(/&/g, "&amp;");
   const textY = o.schnee ? 110 : 105;
+  const schild = o.schild || `SEASON ${o.nr}`;
   const deko = o.deko.map(([emoji, x, y, g]) => `<text x="${x}" y="${y}" font-size="${g}">${emoji}</text>`).join("");
   return `
 <svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season ${o.nr}: ${titel}">
@@ -41,7 +42,7 @@ function seasonLogo(o) {
   <text x="180" y="${textY}" text-anchor="middle" ${LOGO_SCHRIFT} font-size="${groesse}" font-weight="900"
         fill="url(#${o.id}-schrift)" stroke="${o.rand}" stroke-width="7" stroke-linejoin="round" paint-order="stroke">${titel}</text>
   <rect x="124" y="31" width="112" height="28" rx="14" fill="#ffffff" stroke="${o.rand}" stroke-width="3"/>
-  <text x="180" y="50.5" text-anchor="middle" ${LOGO_SCHRIFT} font-size="14" font-weight="900" fill="${o.schildText}" letter-spacing="3">SEASON ${o.nr}</text>
+  <text x="180" y="50.5" text-anchor="middle" ${LOGO_SCHRIFT} font-size="14" font-weight="900" fill="${o.schildText}" letter-spacing="3">${schild}</text>
   ${deko}
 </svg>`;
 }
@@ -226,8 +227,11 @@ const GESPENSTERCHEN = {   // 4/4, lieb-gruselig in Moll · Am – Dm – E – 
 };
 
 // ----- Registrieren: aus einem Datenblock Skins, Season-Pass und Sticker-Seite machen -----
+// s.jahr: Jahr des Season-Starts (steht im Titel, z.B. "Ostern 2027") · s.thema: siehe SEASON_THEMEN (seasonjahre.js)
+// s.sticker fehlt -> keine eigene Sticker-Seite (Jahres-Varianten benutzen die Seite ihres Themas)
 function registriereSeason(s) {
   const id = k => `${k}-${s.id}`;
+  const titelMitJahr = s.jahr ? `${s.titel} ${s.jahr}` : s.titel;
   const d = s.skins;
   SKINS.push(
     { id: id("hut"),         kategorie: "hut",         season: s.id, ...d.hut },
@@ -238,9 +242,10 @@ function registriereSeason(s) {
   );
   SEASON_PAESSE.push({
     id: s.id,
-    name: `Season ${s.nr}: ${s.titel}`,
+    nr: s.nr, thema: s.thema, jahr: s.jahr,
+    name: `Season ${s.nr}: ${titelMitJahr}`,
     icon: s.icon,
-    logo: seasonLogo({ id: s.id, nr: s.nr, titel: s.titel, ...s.logo }),
+    logo: seasonLogo({ id: s.id, nr: s.nr, titel: titelMitJahr, ...s.logo }),
     start: s.start,
     ende: s.ende,
     stufen: 50,
@@ -255,7 +260,7 @@ function registriereSeason(s) {
   });
   if (KLEIDERSCHRANK[s.id]) registriereKleiderschrank(s.id, KLEIDERSCHRANK[s.id]);   // Kleid (Stufe 25) usw.
   if (ZIMMER_SEASON[s.id]) registriereZimmerSeason(s.id);                            // Zimmer (Stufe 15 und 45)
-  fuegeStickerSeiteHinzu({ id: `${s.id}-sticker`, season: s.id, name: s.titel, icon: s.icon, farbe: s.stickerFarbe, sticker: s.sticker });
+  if (s.sticker) fuegeStickerSeiteHinzu({ id: `${s.id}-sticker`, season: s.id, thema: s.thema, name: s.titel, icon: s.icon, farbe: s.stickerFarbe, sticker: s.sticker });
 }
 
 // HUD-Farben kompakt: [hintergrund, hintergrund-2, panel, karte-hover, karte-upgrade, rand,
@@ -283,7 +288,7 @@ function logoFarben(f) {
 // =====================================================
 
 registriereSeason({
-  id: "s3", nr: 3, titel: "Winterwunderland", icon: "⛸️",
+  id: "s3", nr: 3, jahr: 2027, thema: "winter", titel: "Winterwunderland", icon: "⛸️",
   start: "2027-01-01T00:00:00", ende: "2027-02-01T00:00:00",
   design: ["#eef7ff", "#d6ebff", "#1e3a56", "#2f78c4", "#9fd0f5", "#4aa3df"],
   logo: { band: ["#d6efff", "#5aa9e6"], rand: "#2c6ea8", enden: "#8ec5ff", endenSchatten: "#4f86bf",
@@ -310,7 +315,7 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s4", nr: 4, titel: "Valentinstag", icon: "💝",
+  id: "s4", nr: 4, jahr: 2027, thema: "valentin", titel: "Valentinstag", icon: "💝",
   start: "2027-02-01T00:00:00", ende: "2027-03-01T00:00:00",
   design: ["#fff0f4", "#ffd9e4", "#5a1a2c", "#b0173f", "#ff9db5", "#e8345f"],
   logo: { band: ["#ff9db5", "#e8345f"], rand: "#9b1b4a", enden: "#ffb6c8", endenSchatten: "#d97a93",
@@ -337,7 +342,7 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s5", nr: 5, titel: "Ostern", icon: "🐰",
+  id: "s5", nr: 5, jahr: 2027, thema: "ostern", titel: "Ostern", icon: "🐰",
   start: "2027-03-01T00:00:00", ende: "2027-05-01T00:00:00",
   design: ["#f6fdea", "#fff6cf", "#2f4a28", "#3f8a33", "#c3eaa0", "#7cc36b"],
   logo: { band: ["#fff27a", "#9ad97a"], rand: "#3f8a33", enden: "#b48be0", endenSchatten: "#8a64b8",
@@ -364,7 +369,7 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s6", nr: 6, titel: "Einhornwiese", icon: "🦄",
+  id: "s6", nr: 6, jahr: 2027, thema: "einhorn", titel: "Einhornwiese", icon: "🦄",
   start: "2027-05-01T00:00:00", ende: "2027-07-01T00:00:00",
   design: ["#fbf0ff", "#e5f2ff", "#3e2257", "#7a3bbd", "#ff9fd0", "#b06ef0"],
   logo: { band: ["#ffc4e4", "#b06ef0"], rand: "#6a2fa8", enden: "#8ec5ff", endenSchatten: "#5a8fc9",
@@ -391,7 +396,7 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s7", nr: 7, titel: "Sommer & Meer", icon: "🏖️",
+  id: "s7", nr: 7, jahr: 2027, thema: "sommer", titel: "Sommer & Meer", icon: "🏖️",
   start: "2027-07-01T00:00:00", ende: "2027-09-01T00:00:00",
   design: ["#e9fbf9", "#fff4cc", "#234a47", "#d4572a", "#ffd166", "#ff8a5c"],
   logo: { band: ["#ffe066", "#ff8a5c"], rand: "#c4471c", enden: "#2bb3a8", endenSchatten: "#1f857c",
@@ -418,7 +423,7 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s8", nr: 8, titel: "Halloween", icon: "🎃",
+  id: "s8", nr: 9, jahr: 2027, thema: "halloween", titel: "Halloween", icon: "🎃",
   start: "2027-10-01T00:00:00", ende: "2027-11-01T00:00:00",
   design: ["#f4ecff", "#ffe6cc", "#3a2456", "#7a3fb5", "#ffb86b", "#ff8a2a"],
   logo: { band: ["#ffb86b", "#7a3fb5"], rand: "#3f1d6b", enden: "#ff8a2a", endenSchatten: "#c25f12",

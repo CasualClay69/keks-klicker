@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.88", datum: "2026-11-19", neu: ["Neue Season im September: 🪁 Wind & Drachen – mit Drachenbaby, Federn und eigener Melodie", "Die Pässe heißen jetzt mit Jahr, z. B. „Thanksgiving 2026“ – jede Season gibt es 2027, 2028 und 2029 mit ganz neuen Belohnungen (Season 1 bis 27)", "Nach drei Jahren kommen alle Seasons wieder – dein Fortschritt bleibt, so kannst du Verpasstes nachholen"] },
   { v: "1.87", datum: "2026-11-19", neu: ["Die Backstube 🧁 im Garten: Aus der Ernte backst du Leckereien", "Blumentee macht die Tiere satt, Muffin = doppelte Klicks, Apfelkuchen = doppelte Helfer, Melonen-Eis = Sternschnuppen-Party, Zauberkuchen = alles ×3", "Zwei neue Erfolge"] },
   { v: "1.86", datum: "2026-11-19", neu: ["Besuchs-Herzen 💖: Beim Besuch in einem anderen Zimmer ein Herz dalassen (1× am Tag)", "Du siehst, wer dein Zimmer besucht hat – und bekommst dafür eine kleine Freude", "Zwei neue Erfolge"] },
   { v: "1.85", datum: "2026-11-19", neu: ["Die Wolken-Monster sind jetzt viel größer – leichter mit vielen Fingern zu treffen"] },

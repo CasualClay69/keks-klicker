@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.87";
-const APP_NEU = "Neu: Die Backstube 🧁! Aus deiner Garten-Ernte backst du Muffins, Kuchen, Eis und Blumentee – mit tollen Boni.";
+const APP_VERSION = "1.88";
+const APP_NEU = "Neu: 21 neue Season-Pässe bis 2029 – mit der neuen Season Wind & Drachen im September! Und nach drei Jahren kommen alle Seasons wieder, damit du Verpasstes nachholen kannst.";

@@ -42,6 +42,7 @@ const DATEIEN = [
   "js/album.js",
   "js/seasons.js",
   "js/haustier.js",
+  "js/seasonjahre.js",
   "js/ausfluege.js",
   "js/garten.js",
   "js/backstube.js",

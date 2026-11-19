@@ -284,7 +284,7 @@ const SKINS = [
 const LOGO_SCHRIFT = `font-family="ui-rounded, 'Arial Rounded MT Bold', Nunito, 'Segoe UI', sans-serif"`;
 
 const LOGO_THANKSGIVING = `
-<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season 1: Thanksgiving">
+<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season 1: Thanksgiving 2026">
   <defs>
     <linearGradient id="s1-band" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ffc56b"/><stop offset="1" stop-color="#e06a22"/>
@@ -301,8 +301,8 @@ const LOGO_THANKSGIVING = `
   <!-- Hauptband -->
   <rect x="42" y="52" width="276" height="70" rx="18" fill="url(#s1-band)" stroke="#8f3d14" stroke-width="4"/>
   <path d="M62 62 H298" stroke="#fff" stroke-opacity=".45" stroke-width="5" stroke-linecap="round"/>
-  <text x="180" y="105" text-anchor="middle" ${LOGO_SCHRIFT} font-size="35" font-weight="900"
-        fill="url(#s1-schrift)" stroke="#8f3d14" stroke-width="7" stroke-linejoin="round" paint-order="stroke">Thanksgiving</text>
+  <text x="180" y="103" text-anchor="middle" ${LOGO_SCHRIFT} font-size="25" font-weight="900"
+        fill="url(#s1-schrift)" stroke="#8f3d14" stroke-width="7" stroke-linejoin="round" paint-order="stroke">Thanksgiving 2026</text>
   <!-- Schild "SEASON 1" -->
   <rect x="124" y="33" width="112" height="28" rx="14" fill="#fff8ef" stroke="#8f3d14" stroke-width="3"/>
   <text x="180" y="52.5" text-anchor="middle" ${LOGO_SCHRIFT} font-size="14" font-weight="900" fill="#b4521b" letter-spacing="3">SEASON 1</text>
@@ -316,7 +316,7 @@ const LOGO_THANKSGIVING = `
 </svg>`;
 
 const LOGO_WEIHNACHTEN = `
-<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season 2: Weihnachten">
+<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Season 2: Weihnachten 2026">
   <defs>
     <linearGradient id="s2-band" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ff6b6b"/><stop offset="1" stop-color="#c0182b"/>
@@ -337,8 +337,8 @@ const LOGO_WEIHNACHTEN = `
            C308 62 300 72 290 66 C280 74 268 63 258 69 C248 75 236 63 226 69
            C214 75 204 63 192 69 C180 75 170 63 158 69 C146 75 136 63 124 69
            C112 75 100 63 90 69 C80 75 70 63 60 69 C54 73 47 72 44 68 Z" fill="#ffffff"/>
-  <text x="180" y="110" text-anchor="middle" ${LOGO_SCHRIFT} font-size="35" font-weight="900"
-        fill="url(#s2-schrift)" stroke="#7d1220" stroke-width="7" stroke-linejoin="round" paint-order="stroke">Weihnachten</text>
+  <text x="180" y="108" text-anchor="middle" ${LOGO_SCHRIFT} font-size="27" font-weight="900"
+        fill="url(#s2-schrift)" stroke="#7d1220" stroke-width="7" stroke-linejoin="round" paint-order="stroke">Weihnachten 2026</text>
   <!-- Schild "SEASON 2" -->
   <rect x="124" y="31" width="112" height="28" rx="14" fill="#ffffff" stroke="#1f7a45" stroke-width="3"/>
   <text x="180" y="50.5" text-anchor="middle" ${LOGO_SCHRIFT} font-size="14" font-weight="900" fill="#1f7a45" letter-spacing="3">SEASON 2</text>
@@ -354,10 +354,34 @@ const LOGO_WEIHNACHTEN = `
 
 // ----- Season-Pässe -----
 // start/ende in Ortszeit des Geräts. "ende" ist der erste Moment, an dem der Pass NICHT mehr läuft.
+//
+// KREISLAUF: Die Pässe decken 3 Season-Jahre ab (November 2026 bis Oktober 2029, Season 1–27,
+// siehe seasons.js und seasonjahre.js). Danach geht es wieder von vorne los – mit denselben Pässen.
+// Der Fortschritt bleibt dabei erhalten: Wer etwas verpasst hat, kann es beim nächsten Mal holen.
+const SEASON_KREIS = { start: "2026-11-01T00:00:00", jahre: 3 };
+
+function verschiebeJahre(ms, jahre) {
+  const d = new Date(ms);
+  d.setFullYear(d.getFullYear() + jahre);
+  return d.getTime();
+}
+
+// Um wie viele Jahre liegt der aktuelle Durchlauf hinter dem ersten? 0, 3, 6, …
+function seasonVersatz(jetzt = Date.now()) {
+  const start = Date.parse(SEASON_KREIS.start);
+  let versatz = 0;
+  while (jetzt >= verschiebeJahre(start, versatz + SEASON_KREIS.jahre) && versatz < 3000) versatz += SEASON_KREIS.jahre;
+  return versatz;
+}
+
+// Ist das gerade eine Wiederholung (ab November 2029)?
+function seasonWiederholung(jetzt = Date.now()) {
+  return seasonVersatz(jetzt) > 0;
+}
 const SEASON_PAESSE = [
   {
-    id: "s1",
-    name: "Season 1: Thanksgiving",
+    id: "s1", nr: 1, thema: "thanksgiving", jahr: 2026,
+    name: "Season 1: Thanksgiving 2026",
     icon: "🦃",
     logo: LOGO_THANKSGIVING,
     start: "2026-11-01T00:00:00",
@@ -379,8 +403,8 @@ const SEASON_PAESSE = [
     },
   },
   {
-    id: "s2",
-    name: "Season 2: Weihnachten",
+    id: "s2", nr: 2, thema: "weihnachten", jahr: 2026,
+    name: "Season 2: Weihnachten 2026",
     icon: "🎅",
     logo: LOGO_WEIHNACHTEN,
     start: "2026-12-01T00:00:00",
@@ -484,16 +508,22 @@ function seasonName(seasonId) {
 
 // Der Pass, der gerade (laut Uhr des Geräts) läuft – oder undefined
 function aktiverSeasonPass(jetzt = Date.now()) {
-  return SEASON_PAESSE.find(p => jetzt >= Date.parse(p.start) && jetzt < Date.parse(p.ende));
+  const z = verschiebeJahre(jetzt, -seasonVersatz(jetzt));   // auf den ersten Durchlauf zurückrechnen
+  return SEASON_PAESSE.find(p => z >= Date.parse(p.start) && z < Date.parse(p.ende));
+}
+
+// Ende des aktuellen Durchlaufs dieses Passes (ms)
+function seasonEndeMs(pass) {
+  return verschiebeJahre(Date.parse(pass.ende), seasonVersatz());
 }
 
 function seasonRestMs(pass) {
-  return Math.max(0, Date.parse(pass.ende) - Date.now());
+  return Math.max(0, seasonEndeMs(pass) - Date.now());
 }
 
 // Letzter Tag der Season als Text, z.B. "31. Dezember"
 function seasonLetzterTag(pass) {
-  return new Date(Date.parse(pass.ende) - 1).toLocaleDateString("de-DE", { day: "numeric", month: "long" });
+  return new Date(seasonEndeMs(pass) - 1).toLocaleDateString("de-DE", { day: "numeric", month: "long" });
 }
 
 // Fortschritt eines Passes: erreichte Stufe + Klicks in der aktuellen Stufe
