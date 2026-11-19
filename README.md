@@ -45,7 +45,8 @@ Ein Klickspiel im Browser: Klick auf Marie und sammle Herzen! Reines HTML, CSS u
   Ab Level 50 darf ein zweites Tier einziehen (links neben der Figur).
   Zubehör: Halsbänder, Schleifen, Körbchen (mit Herzen kaufen). Unter Skins → Reiter „🐾 Tiere“ Tierart und Zubehör wählen.
   Season-Pass: Stufe 5 = Zubehör zum Thema, Stufe 33 = neue Tierart (Truthahn, Rentier, Pinguin, Kuschelbär, Küken,
-  Igel, Schildkröte, Fledermaus)
+  Igel, Schildkröte, Fledermaus, Drachenbaby, Schmetterlingsbaby, Rehkitz, Robbenbaby). 12 Seasons pro Jahr,
+  Season 1–36 von Nov. 2026 bis Okt. 2029, danach von vorn (`js/seasonjahre.js`)
 - Sticker-Album 📒: 60 Sticker auf 5 Seiten (Tiere, Blumen, Süßes, Meer, Fantasie), normal/selten/super-selten,
   dazu pro Season eine eigene Sticker-Seite, die nur während der Season sammelbar ist (🦃 Thanksgiving, 🎅 Weihnachten)
 - Glücksrad 🎡: einmal am Tag drehen – Herzen, Boni, Sternschnuppe, Season-Punkte oder Jackpot

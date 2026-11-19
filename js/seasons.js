@@ -343,7 +343,7 @@ registriereSeason({
 
 registriereSeason({
   id: "s5", nr: 5, jahr: 2027, thema: "ostern", titel: "Ostern", icon: "🐰",
-  start: "2027-03-01T00:00:00", ende: "2027-05-01T00:00:00",
+  start: "2027-03-01T00:00:00", ende: "2027-04-01T00:00:00",
   design: ["#f6fdea", "#fff6cf", "#2f4a28", "#3f8a33", "#c3eaa0", "#7cc36b"],
   logo: { band: ["#fff27a", "#9ad97a"], rand: "#3f8a33", enden: "#b48be0", endenSchatten: "#8a64b8",
           schrift: ["#ffffff", "#fff9d6"], schildText: "#3f8a33",
@@ -369,8 +369,8 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s6", nr: 6, jahr: 2027, thema: "einhorn", titel: "Einhornwiese", icon: "🦄",
-  start: "2027-05-01T00:00:00", ende: "2027-07-01T00:00:00",
+  id: "s6", nr: 7, jahr: 2027, thema: "einhorn", titel: "Einhornwiese", icon: "🦄",
+  start: "2027-05-01T00:00:00", ende: "2027-06-01T00:00:00",
   design: ["#fbf0ff", "#e5f2ff", "#3e2257", "#7a3bbd", "#ff9fd0", "#b06ef0"],
   logo: { band: ["#ffc4e4", "#b06ef0"], rand: "#6a2fa8", enden: "#8ec5ff", endenSchatten: "#5a8fc9",
           schrift: ["#ffffff", "#fff1fb"], schildText: "#7a3bbd",
@@ -396,8 +396,8 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s7", nr: 7, jahr: 2027, thema: "sommer", titel: "Sommer & Meer", icon: "🏖️",
-  start: "2027-07-01T00:00:00", ende: "2027-09-01T00:00:00",
+  id: "s7", nr: 9, jahr: 2027, thema: "sommer", titel: "Sommer & Meer", icon: "🏖️",
+  start: "2027-07-01T00:00:00", ende: "2027-08-01T00:00:00",
   design: ["#e9fbf9", "#fff4cc", "#234a47", "#d4572a", "#ffd166", "#ff8a5c"],
   logo: { band: ["#ffe066", "#ff8a5c"], rand: "#c4471c", enden: "#2bb3a8", endenSchatten: "#1f857c",
           schrift: ["#ffffff", "#fff4d6"], schildText: "#d4572a",
@@ -423,7 +423,7 @@ registriereSeason({
 });
 
 registriereSeason({
-  id: "s8", nr: 9, jahr: 2027, thema: "halloween", titel: "Halloween", icon: "🎃",
+  id: "s8", nr: 12, jahr: 2027, thema: "halloween", titel: "Halloween", icon: "🎃",
   start: "2027-10-01T00:00:00", ende: "2027-11-01T00:00:00",
   design: ["#f4ecff", "#ffe6cc", "#3a2456", "#7a3fb5", "#ffb86b", "#ff8a2a"],
   logo: { band: ["#ffb86b", "#7a3fb5"], rand: "#3f1d6b", enden: "#ff8a2a", endenSchatten: "#c25f12",

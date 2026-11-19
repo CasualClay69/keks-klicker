@@ -355,7 +355,7 @@ const LOGO_WEIHNACHTEN = `
 // ----- Season-Pässe -----
 // start/ende in Ortszeit des Geräts. "ende" ist der erste Moment, an dem der Pass NICHT mehr läuft.
 //
-// KREISLAUF: Die Pässe decken 3 Season-Jahre ab (November 2026 bis Oktober 2029, Season 1–27,
+// KREISLAUF: Die Pässe decken 3 Season-Jahre ab (November 2026 bis Oktober 2029, Season 1–36 – jeden Monat eine,
 // siehe seasons.js und seasonjahre.js). Danach geht es wieder von vorne los – mit denselben Pässen.
 // Der Fortschritt bleibt dabei erhalten: Wer etwas verpasst hat, kann es beim nächsten Mal holen.
 const SEASON_KREIS = { start: "2026-11-01T00:00:00", jahre: 3 };
