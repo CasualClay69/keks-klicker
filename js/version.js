@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.70";
-const APP_NEU = "Neu: Das ultimative Ziel! Wer 10³⁰⁸ Herzen sammelt, erreicht ∞ UNENDLICH – und bekommt den Unendlichkeits-Pokal.";
+const APP_VERSION = "1.71";
+const APP_NEU = "Neu: Die Sternen-Karte! 🗺️ Deine Glitzersterne sind jetzt Skillpunkte – lerne Klick-Kraft, bessere Helfer, Automatik und Glück.";

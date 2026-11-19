@@ -972,7 +972,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* Ausgeschaltet: blass und durchgestrichen */
 
 /* Glücksrad- und Album-Knopf rechts, unter dem Season-Symbol */
-#radBtn, #albumBtn, #zimmerBtn {
+#radBtn, #albumBtn, #zimmerBtn, #skillBtn {
   position: absolute;
   top: calc(max(12px, env(safe-area-inset-top)) + 66px);
   right: max(12px, env(safe-area-inset-right));
@@ -988,6 +988,15 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 #albumBtn { top: calc(max(12px, env(safe-area-inset-top)) + 128px); }
 #zimmerBtn { top: calc(max(12px, env(safe-area-inset-top)) + 190px); }
+#skillBtn  { top: calc(max(12px, env(safe-area-inset-top)) + 252px); font-size: 1.5rem; }
+#skillBadge {
+  position: absolute; right: -4px; top: -4px;
+  min-width: 22px; height: 22px; padding: 0 5px;
+  border: 2px solid #fff; border-radius: 11px;
+  background: #f5b400; color: #fff;
+  font-size: 0.72rem; line-height: 18px; text-align: center; font-weight: 900;
+  animation: badgeHuepfen 1.2s ease-in-out infinite;
+}
 #albumBadge {
   position: absolute;
   right: -4px; top: -4px;
@@ -1018,7 +1027,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 
 #installBtn {
-  top: calc(max(12px, env(safe-area-inset-top)) + 254px);   /* unter Season, Glücksrad, Album und Zimmer */
+  top: calc(max(12px, env(safe-area-inset-top)) + 316px);   /* unter Season, Glücksrad, Album, Zimmer und Sternen-Karte */
   right: 12px;
   border-color: var(--akzent);
   background: var(--akzent);
@@ -1293,6 +1302,78 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .wochenKopf { margin-top: 18px; background: linear-gradient(135deg, #fff4cc, #ffe0f0); }
 .aufgabe.woche { border-color: #f5c542; }
 .aufgabe.woche.bonus { background: linear-gradient(135deg, #fffbe6, #fff0f7); }
+
+/* ----- Sternen-Karte (Skillbaum) ----- */
+.neustartKarte #neustartKarteBtn { margin-top: 8px; width: 100%; }
+.spielKarte.skillKarte { height: min(100%, 760px); }
+.skillLeiste { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0; }
+.skillPunkte { font-weight: 900; color: #b07a00; }
+.skillZurueck {
+  padding: 4px 10px; border: 2px solid var(--rand); border-radius: 999px;
+  background: var(--karte); color: var(--text-sanft); font: inherit; font-size: 0.8rem; cursor: pointer;
+}
+.karteRahmen {
+  flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain;
+  border: 2px solid var(--rand); border-radius: 18px;
+  background: #1d1b3a;
+  touch-action: pan-x pan-y;
+}
+.karteFlaeche {
+  position: relative;
+  /* vier Gebiete: oben Klick (rosa), rechts Helfer (grün), unten Automatik (blau), links Glück (gold) */
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.5) 0 1.5px, transparent 2px) 0 0 / 33px 33px,
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18), transparent 22%),
+    conic-gradient(from -45deg at 50% 50%, #4a2147 0 90deg, #1f4535 90deg 180deg, #1f2f57 180deg 270deg, #4d3c14 270deg 360deg);
+}
+.karteWege { position: absolute; inset: 0; pointer-events: none; }
+.karteWege line { stroke: rgba(255, 255, 255, 0.25); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 2 10; }
+.karteWege line.gelernt { stroke: var(--farbe); stroke-dasharray: none; filter: drop-shadow(0 0 4px var(--farbe)); }
+.karteSchild {
+  position: absolute; transform: translate(-50%, -50%);
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  background: rgba(0, 0, 0, 0.35); color: #fff; border: 2px solid var(--farbe);
+  font-size: 0.75rem; font-weight: 900; pointer-events: none;
+}
+.skillKnoten {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 50px; height: 50px; padding: 0;
+  display: grid; place-items: center;
+  border: 3px solid rgba(255, 255, 255, 0.35); border-radius: 50%;
+  background: #3a375c; color: #fff; font: inherit; cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+.skillKnoten .icon { font-size: 1.45rem; line-height: 1; }
+.skillKnoten .kosten {
+  position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%);
+  padding: 0 5px; border-radius: 999px; background: #fff; color: #7a5600;
+  font-size: 0.62rem; font-weight: 900; white-space: nowrap;
+}
+.skillKnoten.start { width: 58px; height: 58px; background: radial-gradient(#fff6c8, #f5b400); border-color: #fff; }
+.skillKnoten.start .icon { font-size: 1.8rem; }
+.skillKnoten.gesperrt .icon { filter: grayscale(1); opacity: 0.45; }
+.skillKnoten.zuTeuer { border-color: var(--farbe); }
+.skillKnoten.zuTeuer .icon { opacity: 0.7; }
+.skillKnoten.lernbar { border-color: var(--farbe); animation: knotenLeuchten 1.3s ease-in-out infinite alternate; }
+.skillKnoten.gelernt { background: var(--farbe); border-color: #fff; }
+.skillKnoten.gelernt .kosten { display: none; }
+.skillKnoten.gewaehlt { outline: 3px solid #fff; outline-offset: 3px; }
+@keyframes knotenLeuchten { from { box-shadow: 0 0 0 0 var(--farbe); } to { box-shadow: 0 0 14px 4px var(--farbe); } }
+.skillDetail {
+  margin-top: 8px; padding: 10px 12px;
+  border: 2px solid var(--rand); border-radius: 16px; background: var(--karte);
+  display: grid; gap: 6px;
+}
+.skillDetailKopf { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.skillDetailKopf b { font-size: 1.05rem; color: var(--akzent-dunkel); }
+.skillDetailKopf small { color: var(--text-sanft); font-weight: bold; white-space: nowrap; }
+.skillDetail p { margin: 0; line-height: 1.35; }
+.skillGelernt { font-weight: 900; color: #2fa35a; text-align: center; }
+.skillSchalter {
+  padding: 8px 12px; border: 2px solid #2fa35a; border-radius: 999px;
+  background: #e9f9ef; color: #1d6b3b; font: inherit; font-weight: bold; cursor: pointer;
+}
+.skillSchalter.aus { border-color: var(--rand); background: var(--karte); color: var(--text-sanft); }
 
 /* ----- ∞ Unendlich ----- */
 .unendlichOverlay { z-index: 70; }
@@ -2471,7 +2552,8 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }
   #zimmerBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 222px); width: 64px; height: 64px; font-size: 2rem; }
-  #installBtn   { top: calc(max(12px, env(safe-area-inset-top)) + 296px); }
+  #skillBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 294px); width: 64px; height: 64px; font-size: 1.8rem; }
+  #installBtn   { top: calc(max(12px, env(safe-area-inset-top)) + 368px); }
   #seasonBtnIcon { font-size: 2rem; }
 
   #marie {
@@ -2539,7 +2621,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
+  .skillKnoten.lernbar, #skillBadge, .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,

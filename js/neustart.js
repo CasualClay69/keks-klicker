@@ -2,7 +2,7 @@
 // =====================================================
 //  NEUSTART MIT BONUS ("Prestige")
 //  Wer jeden Helfer mindestens einmal hat, kann neu anfangen und bekommt
-//  dafür Glitzersterne ⭐. Jeder Stern gibt für immer +10 % Herzen (Produktion und Klicks).
+//  dafür Glitzersterne ⭐. Die Sterne sind Skillpunkte für die Sternen-Karte (skills.js).
 //
 //  Zurückgesetzt: Herzen, Helfer, Verbesserungen, Upgrades.
 //  Bleibt: Erfolge, Skins, Sticker, Haustier, Season-Pass, Tagesaufgaben, Statistik.
@@ -12,9 +12,8 @@
 // =====================================================
 
 const NEUSTART = {
-  sternBonus: 0.10,   // +10 % Herzen pro Glitzerstern
   teiler: 2.5e10,     // Sterne insgesamt = Wurzel(Herzen aller Zeiten / 25 Mrd.)
-                      // -> erster Neustart nach ~20 Std. Spielzeit bringt ~11 Sterne (+110 %)
+                      // -> erster Neustart nach ~20 Std. Spielzeit bringt ~11 Sterne
 };
 
 // Alle jemals gesammelten Herzen (über alle Durchgänge) – zählt auch für die Bestenliste
@@ -26,13 +25,10 @@ function glitzersterne() {
   return spiel.sterne || 0;
 }
 
-function sternFaktor() {
-  return 1 + glitzersterne() * NEUSTART.sternBonus;
-}
-
 // So viele Sterne stehen einem insgesamt zu; neu dazu kommen nur die noch nicht erhaltenen
 function moeglicheSterne() {
-  return Math.floor(Math.sqrt(herzenAllerZeiten() / NEUSTART.teiler));
+  const f = typeof skillNeustartFaktor === "function" ? skillNeustartFaktor() : 1;   // "Glitzerregen" (skills.js)
+  return Math.floor(Math.sqrt(herzenAllerZeiten() / NEUSTART.teiler) * f);
 }
 
 function neueSterne() {

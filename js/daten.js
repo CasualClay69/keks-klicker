@@ -113,6 +113,8 @@ const ERFOLGE = [
   { id: "seite1",     icon: "📗", name: "Seite voll!",       beschr: "Mache eine Album-Seite voll",              bedingung: () => STICKER_SEITEN.some(seiteVoll) },
   { id: "albumVoll",  icon: "📚", name: "Album komplett",    beschr: "Sammle alle 60 Sticker der 5 Grundseiten", bedingung: () => anzahlVerschiedeneSticker(GRUND_STICKER) >= GRUND_STICKER.length },
   { id: "stickerPost", icon: "💌", name: "Gute Freundin",     beschr: "Verschicke 5 Sticker an andere Spieler",   bedingung: s => (s.stickerVerschickt || 0) >= 5 },
+  { id: "skill5",     icon: "🗺️", name: "Sternenwanderer",   beschr: "Lerne 5 Fähigkeiten auf der Sternen-Karte", bedingung: s => (s.skills || []).length >= 5 },
+  { id: "skillAlle",  icon: "🌌", name: "Kartenmeisterin",   beschr: "Lerne alle Fähigkeiten auf der Sternen-Karte", bedingung: s => typeof SKILLS !== "undefined" && (s.skills || []).length >= SKILLS.length - 1 },
   { id: "unendlich",  icon: "♾️", name: "Unendlich!",        beschr: "Sammle 10³⁰⁸ Herzen – mehr Zahlen gibt es nicht. Das ultimative Ziel!", bedingung: () => typeof unendlichErreicht === "function" && unendlichErreicht() },
   { id: "advent24",   icon: "🎄", name: "Adventskind",       beschr: "Öffne alle 24 Türchen im Adventskalender", bedingung: s => Boolean(s.advent && s.advent.offen && s.advent.offen.length >= 24) },
   { id: "ausflug10",  icon: "🧭", name: "Weltenbummler",     beschr: "Dein Haustier kommt von 10 Ausflügen zurück", bedingung: s => (s.ausfluegeGesamt || 0) >= 10 },

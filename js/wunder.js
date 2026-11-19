@@ -69,7 +69,8 @@ function wunderStickerFaktor() { const w = aktivesWunder(); return (w && w.stick
 function sternWartezeit() {
   const w = aktivesWunder();
   if (w && w.sternWarten) return w.sternWarten;
-  return [KONFIG.stern.minWartenSek, KONFIG.stern.maxWartenSek];
+  const f = typeof skillSternWarteFaktor === "function" ? skillSternWarteFaktor() : 1;   // "Sternenstaub" (skills.js)
+  return [KONFIG.stern.minWartenSek * f, KONFIG.stern.maxWartenSek * f];
 }
 
 // Soll das Überraschungs-Fenster kommen? (einmal pro Ereignis und Tag)

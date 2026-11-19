@@ -579,7 +579,7 @@ function seasonKlick(anzahl = 1) {
   const stand = seasonStand(pass);
   if (stand.stufe >= pass.stufen) return [];
 
-  stand.xp += anzahl;
+  stand.xp += anzahl * (typeof skillSeasonFaktor === "function" ? skillSeasonFaktor() : 1);   // "Season-Turbo" (skills.js)
   const neu = [];
   while (stand.stufe < pass.stufen && stand.xp >= klicksFuerStufe(pass, stand.stufe + 1)) {
     stand.xp -= klicksFuerStufe(pass, stand.stufe + 1);

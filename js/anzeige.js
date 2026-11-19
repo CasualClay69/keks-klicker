@@ -113,7 +113,8 @@ const STATISTIK_ZEILEN = [
   ["Weg zur Unendlichkeit ∞", () => spiel.unendlichAm
     ? `🏆 Geschafft am ${new Date(spiel.unendlichAm).toLocaleDateString("de-DE")}!`
     : `${(wegZurUnendlichkeit() * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % (Ziel: 10³⁰⁸)`],
-  ["Glitzersterne",           () => `${glitzersterne()} (+${Math.round(glitzersterne() * NEUSTART.sternBonus * 100)} %)`],
+  ["Glitzersterne",           () => `${glitzersterne()} (${sternePunkteFrei()} frei)`],
+  ["Fähigkeiten gelernt",     () => `${(spiel.skills || []).length} / ${SKILLS.length - 1}`],
   ["Neustarts",               () => String(spiel.neustarts || 0)],
   ["Durch Klicks gesammelt",  () => format(spiel.klickHerzen)],
   ["Klicks auf Marie",        () => spiel.klicks.toLocaleString("de-DE")],
@@ -1080,7 +1081,7 @@ function zeigeOfflineFenster(ergebnis) {
   setzeText($("offlineZeit"), `Du warst ${formatDauer(ergebnis.sekunden)} weg. In der Zeit haben deine Helfer fleißig gesammelt:`);
   setzeText($("offlineBetrag"), `+${format(ergebnis.herzen)} ${herz()}`);
   setzeText($("offlineHinweis"), ergebnis.gekappt
-    ? `💡 Dein Herzkorb fasst höchstens ${KONFIG.offline.maxStunden} Stunden – komm öfter vorbei, dann geht nichts verloren!`
+    ? `💡 Dein Herzkorb fasst höchstens ${skillOfflineStunden()} Stunden – komm öfter vorbei, dann geht nichts verloren!`
     : "Schön, dass du wieder da bist! 💕");
   $("offlineOverlay").hidden = false;
 }
@@ -1089,10 +1090,10 @@ function zeigeOfflineFenster(ergebnis) {
 
 function zeigeNeustart() {
   const sterne = glitzersterne();
-  const prozent = Math.round(sterne * NEUSTART.sternBonus * 100);
   setzeText($("neustartSterne"), sterne
-    ? `⭐ ${sterne} Glitzersterne · +${prozent} % Herzen für immer`
+    ? `⭐ ${sterne} Glitzersterne · ${sternePunkteFrei()} frei für die Sternen-Karte`
     : "⭐ Noch keine Glitzersterne");
+  $("neustartKarteBtn").hidden = sterne <= 0;
 
   const fehlend = GEBAEUDE.filter(g => anzahl(g) < 1).length;
   const neu = neueSterne();
@@ -1100,13 +1101,13 @@ function zeigeNeustart() {
   let info;
   if (fehlend > 0) {
     info = `Wenn du jeden Helfer mindestens einmal hast (bis zum 👑 Herzkönigreich), kannst du neu anfangen `
-         + `und bekommst Glitzersterne. Jeder ⭐ gibt für immer +${NEUSTART.sternBonus * 100} % Herzen. Noch ${fehlend} Helfer fehlen.`;
+         + `und bekommst Glitzersterne ⭐ – damit lernst du auf der Sternen-Karte tolle Fähigkeiten. Noch ${fehlend} Helfer fehlen.`;
     setzeText(knopf, "🔒 Noch nicht möglich");
   } else if (neu === 0) {
     info = "Sammle noch mehr Herzen – dann gibt es beim Neustart neue Glitzersterne!";
     setzeText(knopf, "🔒 Noch keine neuen Sterne");
   } else {
-    info = `Neustart jetzt: +${neu} Glitzersterne ⭐ (dann ${sterne + neu} = +${Math.round((sterne + neu) * NEUSTART.sternBonus * 100)} % Herzen für immer). `
+    info = `Neustart jetzt: +${neu} Glitzersterne ⭐ für die Sternen-Karte (dann ${sterne + neu}). Deine Fähigkeiten bleiben! `
          + "Herzen, Helfer, Verbesserungen und Upgrades fangen wieder bei 0 an. "
          + "Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben!";
     setzeText(knopf, `🌟 Neustart: +${neu} ⭐`);

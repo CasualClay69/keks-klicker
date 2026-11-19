@@ -20,11 +20,13 @@ function istGebaeude(item) {
 }
 
 // Preis für "menge" Stück: Jedes weitere Stück kostet 15 % mehr, die Einzelpreise werden addiert
+// skillHelferRabatt(): Helfer werden mit der Sternen-Karte billiger (skills.js)
 function preis(item, menge = 1) {
   const n = anzahl(item);
+  const rabatt = istGebaeude(item) && typeof skillHelferRabatt === "function" ? skillHelferRabatt() : 1;
   let summe = 0;
   for (let i = 0; i < menge; i++) {
-    summe += Math.ceil(item.basisPreis * Math.pow(KONFIG.preisAnstieg, n + i));
+    summe += Math.ceil(item.basisPreis * Math.pow(KONFIG.preisAnstieg, n + i) * rabatt);
   }
   return summe;
 }
@@ -83,9 +85,9 @@ function gebaeudeFaktor(gebaeude) {
 // haustierFaktor(): ein sattes Haustier gibt +1 % pro Level (siehe haustier.js)
 function hpsProStueck(gebaeude) {
   const tier = typeof haustierFaktor === "function" ? haustierFaktor() : 1;
-  const sterne = typeof sternFaktor === "function" ? sternFaktor() : 1;   // Glitzersterne (neustart.js)
+  const skills = typeof skillProdFaktor === "function" ? skillProdFaktor() : 1;   // Sternen-Karte (skills.js)
   const zimmer = typeof zimmerFaktor === "function" ? zimmerFaktor() : 1;   // Zimmer-Teile (zimmer.js)
-  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier * sterne * zimmer;
+  return gebaeude.hps * gebaeudeFaktor(gebaeude) * erfolgFaktor() * tier * skills * zimmer;
 }
 
 // Herzen pro Sekunde insgesamt, ohne Sternschnuppen-Bonus
@@ -101,10 +103,12 @@ function herzenProSekunde() {
 
 function herzenProKlick() {
   const basis = 1 + KLICK_ITEMS.reduce((summe, k) => summe + anzahl(k) * k.proKlick, 0);
-  const sterne = typeof sternFaktor === "function" ? sternFaktor() : 1;   // Glitzersterne (neustart.js)
+  const skills = typeof skillKlickFaktor === "function" ? skillKlickFaktor() : 1;   // Sternen-Karte (skills.js)
   const zimmer = typeof zimmerFaktor === "function" ? zimmerFaktor() : 1;   // Zimmer-Teile (zimmer.js)
   const wunder = typeof wunderKlickFaktor === "function" ? wunderKlickFaktor() : 1;   // Regenbogen-Tag (wunder.js)
-  return basis * sterne * zimmer * aktuellerBonus().klickFaktor * wunder;
+  // Sternen-Karte: ein Anteil der Herzen pro Sekunde kommt bei jedem Klick dazu
+  const anteil = typeof skillKlickAnteil === "function" ? skillKlickAnteil() : 0;
+  return deckel(basis * skills * zimmer * aktuellerBonus().klickFaktor * wunder + (anteil ? anteil * herzenProSekunde() : 0));
 }
 
 // ----- Aktionen (verändern den Spielstand) -----
@@ -126,10 +130,10 @@ function produziere(sekunden) {
 }
 
 // Offline-Fortschritt: Was haben die Helfer in "sekunden" Abwesenheit gesammelt?
-// Höchstens KONFIG.offline.maxStunden. Ohne Sternschnuppen-Bonus, zählt nicht als Spielzeit.
+// Höchstens KONFIG.offline.maxStunden (mit "Traumkissen" 16). Ohne Sternschnuppen-Bonus, zählt nicht als Spielzeit.
 // Rückgabe: { sekunden (gesamt weg), gezaehlt (angerechnet), herzen, gekappt }
 function berechneOffline(sekunden) {
-  const max = KONFIG.offline.maxStunden * 3600;
+  const max = (typeof skillOfflineStunden === "function" ? skillOfflineStunden() : KONFIG.offline.maxStunden) * 3600;
   const gezaehlt = Math.min(Math.max(0, sekunden), max);
   return {
     sekunden,
@@ -139,9 +143,13 @@ function berechneOffline(sekunden) {
   };
 }
 
-// Gibt zurück, wie viele Herzen der Klick gebracht hat
+// Gibt zurück, wie viele Herzen der Klick gebracht hat.
+// "Volltreffer" (Sternen-Karte): manchmal 10× so viel – dann ist letzterKlickVolltreffer = true
+let letzterKlickVolltreffer = false;
 function klickeMarie() {
-  const plus = herzenProKlick();
+  const chance = typeof skillVolltrefferChance === "function" ? skillVolltrefferChance() : 0;
+  letzterKlickVolltreffer = chance > 0 && Math.random() < chance;
+  const plus = deckel(herzenProKlick() * (letzterKlickVolltreffer ? 10 : 1));
   herzenDazu(plus);
   spiel.klicks++;
   spiel.klickHerzen = deckel(spiel.klickHerzen + plus);
@@ -180,7 +188,8 @@ function fangeStern() {
     return { effekt, gewinn };
   }
 
-  bonus = { ...effekt, ende: Date.now() + effekt.dauerSek * 1000 };
+  const dauer = typeof skillBonusDauerFaktor === "function" ? skillBonusDauerFaktor() : 1;   // "Lange Wünsche"
+  bonus = { ...effekt, ende: Date.now() + effekt.dauerSek * dauer * 1000 };
   return { effekt, gewinn: 0 };
 }
 

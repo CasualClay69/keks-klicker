@@ -32,6 +32,7 @@
   <script src="js/zustand.js" defer></script>
   <script src="js/logik.js"   defer></script>
   <script src="js/neustart.js" defer></script>
+  <script src="js/skills.js" defer></script>
   <script src="js/sicherung.js" defer></script>
   <script src="js/aufgaben.js" defer></script>
   <script src="js/wochenmissionen.js" defer></script>
@@ -61,6 +62,7 @@
   <script src="js/optionen-ui.js" defer></script>
   <script src="js/advent-ui.js" defer></script>
   <script src="js/unendlich-ui.js" defer></script>
+  <script src="js/skills-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
   <script src="js/stickerpost-ui.js" defer></script>
@@ -97,6 +99,8 @@
     <button id="albumBtn" type="button" title="Sticker-Album" aria-label="Sticker-Album öffnen">📒<b id="albumBadge" hidden></b></button>
     <!-- Zimmer einrichten -->
     <button id="zimmerBtn" type="button" title="Zimmer" aria-label="Zimmer öffnen">🏠</button>
+    <!-- Sternen-Karte (Skillbaum): erst mit Glitzersternen. Zahl = freie Sterne (skills-ui.js) -->
+    <button id="skillBtn" type="button" title="Sternen-Karte" aria-label="Sternen-Karte öffnen" hidden>🗺️<b id="skillBadge" hidden></b></button>
 
     <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
     <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
@@ -264,6 +268,7 @@
         <div id="neustartSterne" class="neustartSterne"></div>
         <p id="neustartInfo" class="neustartInfo"></p>
         <button id="neustartBtn" type="button" class="knopf haupt">🌟 Neustart mit Bonus</button>
+        <button id="neustartKarteBtn" type="button" class="knopf" hidden>🗺️ Sternen-Karte öffnen</button>
       </div>
     </section>
 
@@ -669,6 +674,28 @@
           <div class="tierBalken ausflug"><div id="ausflugBalken"></div></div>
           <p id="ausflugRest" class="ausflugRest"></p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sternen-Karte: Skillbaum mit Glitzersternen (skills-ui.js) -->
+  <div id="skillOverlay" class="overlay" hidden>
+    <div class="spielKarte skillKarte" role="dialog" aria-modal="true" aria-labelledby="skillTitel">
+      <div class="spielKopf">
+        <h2 id="skillTitel">🗺️ Sternen-Karte</h2>
+        <button id="skillZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <div class="skillLeiste">
+        <span id="skillPunkte" class="skillPunkte"></span>
+        <button id="skillZurueck" type="button" class="skillZurueck" title="Alle Fähigkeiten vergessen und Sterne zurückbekommen">↺ Neu verteilen</button>
+      </div>
+      <div id="karteRahmen" class="karteRahmen"><div id="karteFlaeche" class="karteFlaeche"></div></div>
+      <div class="skillDetail">
+        <div class="skillDetailKopf"><b id="skillName"></b><small id="skillWeg"></small></div>
+        <p id="skillText"></p>
+        <button id="skillLernen" type="button" class="knopf haupt"></button>
+        <p id="skillGelernt" class="skillGelernt" hidden></p>
+        <button id="skillSchalter" type="button" class="skillSchalter" role="switch" hidden></button>
       </div>
     </div>
   </div>

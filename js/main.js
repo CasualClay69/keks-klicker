@@ -36,7 +36,8 @@ function klickAufMarie(position) {
   const plus = klickeMarie();
   sound.klick();
   marieFreutSich();
-  zeigeSchwebeText(position, `+${format(plus)} ${herz()}`);
+  if (letzterKlickVolltreffer) zeigeSchwebeText(position, `💥 +${format(plus)} ${herz()}`, true);   // Sternen-Karte
+  else zeigeSchwebeText(position, `+${format(plus)} ${herz()}`);
 
   // Season-Pass: jeder Klick zählt
   for (const neueStufe of seasonKlick(1)) meldeSeasonStufe(neueStufe);
@@ -69,7 +70,7 @@ function richteNeustartEin() {
     const neu = neueSterne();
     if (!neustartMoeglich()) return;
     const frage = `🌟 Neustart mit Bonus?\n\n`
-      + `Du bekommst ${neu} Glitzersterne – jeder gibt für immer +${NEUSTART.sternBonus * 100} % Herzen.\n\n`
+      + `Du bekommst ${neu} Glitzersterne für die Sternen-Karte. Deine Fähigkeiten bleiben.\n\n`
       + `Deine Herzen, Helfer, Verbesserungen und Upgrades fangen wieder bei 0 an.\n`
       + `Erfolge, Skins, Sticker, Haustier und Season-Pass bleiben.`;
     if (!confirm(frage)) return;
@@ -77,7 +78,8 @@ function richteNeustartEin() {
     macheNeustart();
     sound.erfolg();
     setTimeout(() => sound.stern(), 400);
-    meldung(`🌟 Neustart! +${neu} Glitzersterne`, `Jetzt +${Math.round(glitzersterne() * NEUSTART.sternBonus * 100)} % Herzen für immer. Viel Spaß!`);
+    meldung(`🌟 Neustart! +${neu} Glitzersterne`, "Tippe auf 🗺️ und lerne neue Fähigkeiten auf der Sternen-Karte!");
+    zeigeSkillKnopf();
     konfetti(ui.spielfeld);
     sag("erfolg", { wichtig: true });
     zeigeAlles();
@@ -486,6 +488,8 @@ function planeStern() {
 function sternErscheint() {
   zeigeStern();
   sag("sternDa", { wichtig: true });
+  // Sternen-Netz (Sternen-Karte): fängt sie nach kurzer Zeit von selbst
+  if (automatikAn("sterne")) setTimeout(() => { if (!ui.stern.hidden) ui.stern.click(); }, 1500);
   sternTimer = setTimeout(() => {
     versteckeStern();
     planeStern();
@@ -1408,6 +1412,7 @@ function starte() {
   richteAdventEin();
   richteOptionenEin();
   richteUnendlichEin();
+  richteSkillsEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();
