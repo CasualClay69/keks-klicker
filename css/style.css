@@ -90,7 +90,7 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 130px 20px 20px;   /* oben: Platz für das Logo */
+  padding: calc(130px + var(--lauf, 0px)) 20px 20px;   /* oben: Platz für das Logo (und den Lauftext) */
   padding-left:  max(20px, env(safe-area-inset-left));
   padding-right: max(20px, env(safe-area-inset-right));
   position: relative;
@@ -1235,7 +1235,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .adminKarte { overflow: hidden; }
 .adminKarte #adminMenue { display: flex; flex-direction: column; min-height: 0; flex: 1; }
 .adminKarte #adminMenue[hidden] { display: none; }
-.adminReiter { grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 8px 0; }
+.adminReiter { grid-template-columns: repeat(7, minmax(0, 1fr)); margin: 8px 0; }
 .adminReiter button small { font-size: 0.55rem; }
 
 /* Gemeinschaftsziel in der Bestenliste */
@@ -1978,7 +1978,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
    Das Logo beginnt immer darunter. */
 #titel {
   position: absolute;
-  top: calc(max(8px, env(safe-area-inset-top)) + 12px);   /* +12px: Platz für das Krönchen, das oben übersteht */
+  top: calc(max(8px, env(safe-area-inset-top)) + 12px + var(--lauf, 0px));   /* +12px: Platz für das Krönchen, das oben übersteht */
   left: 50%;
   z-index: 6;
   display: flex;
@@ -2575,7 +2575,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #spielfeld {
     flex: 1;
     min-height: 0;
-    padding: var(--oben) 12px var(--unten);
+    padding: calc(var(--oben) + var(--lauf, 0px)) 12px var(--unten);
     transition: padding 0.3s ease;
   }
 
@@ -2592,7 +2592,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #marie {
     width: clamp(70px,
                  min(88vw, calc(var(--bildschirm) - var(--nav-hoehe) - env(safe-area-inset-bottom)
-                                - var(--oben) - var(--unten) - var(--text-platz))),
+                                - var(--oben) - var(--lauf, 0px) - var(--unten) - var(--text-platz))),
                  440px);
     border-width: 8px;
     transition: transform 0.08s, width 0.3s ease;   /* wächst/schrumpft mit dem Menü */
@@ -2752,7 +2752,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   #marie {
     width: clamp(70px,
                  min(78vw, calc(var(--bildschirm) - var(--nav-hoehe) - env(safe-area-inset-bottom)
-                                - var(--oben) - var(--unten) - var(--text-platz))),
+                                - var(--oben) - var(--lauf, 0px) - var(--unten) - var(--text-platz))),
                  620px);
     border-width: 10px;
   }
@@ -2920,4 +2920,38 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 @media (prefers-reduced-motion: reduce) {
   .splashSymbol, .splashBalken span { animation: none; }
   .splashHerzen { display: none; }
+}
+
+/* ----- Lauftext über dem Logo (lauftext.js) ----- */
+:root.lauftext-an { --lauf: 42px; }   /* so weit rücken Logo und Marie nach unten */
+.lauftext {
+  position: absolute; z-index: 8;
+  top: calc(max(12px, env(safe-area-inset-top)) + 6px);
+  left: calc(max(12px, env(safe-area-inset-left)) + 66px);
+  right: calc(max(12px, env(safe-area-inset-right)) + 64px);
+  height: 30px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 4px 0 8px;
+  border: 2px solid var(--rand); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--schatten);
+  pointer-events: none;
+}
+.lauftext[hidden] { display: none; }
+.lauftextIcon { flex: none; font-size: 0.95rem; }
+.lauftextFenster {
+  position: relative; flex: 1; min-width: 0; height: 100%; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.lauftextInhalt {
+  position: absolute; left: 0; top: 50%;
+  white-space: nowrap;
+  color: var(--akzent-dunkel); font-weight: 800; font-size: 1rem; line-height: 1;
+  transform: translate(var(--lauf-start, 100%), -50%);
+}
+.lauftextInhalt.laeuft { animation: lauftextLaufen 10s linear infinite; }
+@keyframes lauftextLaufen {
+  from { transform: translate(var(--lauf-start, 100%), -50%); }
+  to   { transform: translate(var(--lauf-ende, -100%), -50%); }
 }

@@ -66,7 +66,7 @@ function zeigeAdminReiter(reiter) {
   for (const b of $("adminReiter").children) b.classList.toggle("aktiv", b.dataset.reiter === reiter);
   const inhalt = $("adminInhalt");
   inhalt.textContent = "";
-  ({ ereignisse: adminEreignisse, codes: adminCodesZeigen, nachricht: adminNachrichtZeigen,
+  ({ ereignisse: adminEreignisse, codes: adminCodesZeigen, nachricht: adminNachrichtZeigen, lauftext: adminLauftextZeigen,
      umfrage: adminUmfrageZeigen, ziel: adminZielZeigen, liste: adminListeZeigen })[reiter](inhalt);
 }
 

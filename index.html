@@ -65,6 +65,7 @@
   <script src="js/anzeige.js" defer></script>
   <script src="js/spielhalle.js" defer></script>
   <script src="js/verwaltung-ui.js" defer></script>
+  <script src="js/lauftext.js" defer></script>
   <script src="js/feiertage-ui.js" defer></script>
   <script src="js/erklaerungen.js" defer></script>
   <script src="js/optionen-ui.js" defer></script>
@@ -111,6 +112,11 @@
     <button id="gartenBtn" type="button" title="Garten" aria-label="Garten öffnen">🌱<b id="gartenBadge" hidden></b></button>
     <!-- Adventskalender: nur im Dezember. "!" = ein Türchen wartet (advent-ui.js) -->
     <button id="adventBtn" type="button" title="Adventskalender" aria-label="Adventskalender öffnen" hidden>🎄<b id="adventBadge" hidden>!</b></button>
+    <!-- Lauftext vom Admin: nur sichtbar, wenn es gerade einen gibt (lauftext.js) -->
+    <div id="lauftext" class="lauftext" role="marquee" hidden>
+      <span class="lauftextIcon" aria-hidden="true">📢</span>
+      <div id="lauftextFenster" class="lauftextFenster"><span id="lauftextInhalt" class="lauftextInhalt"></span></div>
+    </div>
     <h1 id="titel" aria-label="Marie Clicker">
       <span class="logo-krone" aria-hidden="true">👑</span>
       <span class="logo-deko" aria-hidden="true"></span>
@@ -674,6 +680,7 @@
           <button type="button" data-reiter="ereignisse" class="aktiv">⚡<small>Ereignisse</small></button>
           <button type="button" data-reiter="codes">🎁<small>Codes</small></button>
           <button type="button" data-reiter="nachricht">📢<small>Nachricht</small></button>
+          <button type="button" data-reiter="lauftext">📜<small>Lauftext</small></button>
           <button type="button" data-reiter="umfrage">📊<small>Umfrage</small></button>
           <button type="button" data-reiter="ziel">🎯<small>Ziel</small></button>
           <button type="button" data-reiter="liste">🏅<small>Liste</small></button>

@@ -1,5 +1,5 @@
 -- =====================================================
---  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Gemeinschaftsziel, Ereignisse
+--  Marie Clicker – Admin-Menü, Belohnungs-Codes, Nachricht an alle, Umfragen, Gemeinschaftsziel, Ereignisse, Lauftext
 --
 --  Einmal im Supabase-Dashboard unter "SQL Editor" einfügen und auf "Run" klicken.
 --  Kann gefahrlos mehrmals ausgeführt werden. Braucht vorher supabase/bestenliste.sql.
@@ -504,6 +504,49 @@ $$;
 
 
 -- =====================================================
+--  LAUFTEXT über dem Logo: der Admin setzt ihn, er bleibt auf allen Geräten,
+--  bis der Admin ihn wieder entfernt (es gibt immer höchstens einen)
+-- =====================================================
+
+create table if not exists public.bl_lauftext (
+  id       integer primary key default 1 check (id = 1),
+  text     text not null,
+  erstellt timestamptz not null default now()
+);
+alter table public.bl_lauftext enable row level security;
+revoke all on public.bl_lauftext from anon, authenticated;
+
+-- p_text leer = Lauftext entfernen
+create or replace function public.admin_lauftext(p_pin text, p_text text)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare f text := admin_fehler(p_pin);
+begin
+  if f is not null then return json_build_object('fehler', f); end if;
+  if length(trim(coalesce(p_text, ''))) = 0 then
+    delete from bl_lauftext where id = 1;
+  else
+    insert into bl_lauftext (id, text, erstellt) values (1, left(trim(p_text), 200), now())
+    on conflict (id) do update set text = excluded.text, erstellt = excluded.erstellt;
+  end if;
+  return json_build_object('ok', true);
+end;
+$$;
+
+create or replace function public.hole_lauftext()
+returns json
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select json_build_object('text', text, 'erstellt', erstellt) from bl_lauftext where id = 1;
+$$;
+
+-- =====================================================
 --  RECHTE: Besucher dürfen nur diese Funktionen aufrufen
 -- =====================================================
 revoke all on function public.admin_anmelden(text) from public;
@@ -541,3 +584,7 @@ grant execute on function public.admin_familienziel_beenden(text) to anon, authe
 grant execute on function public.hole_familienziel() to anon, authenticated;
 grant execute on function public.admin_ereignis(text, text) to anon, authenticated;
 grant execute on function public.hole_ereignis(text) to anon, authenticated;
+revoke all on function public.admin_lauftext(text, text) from public;
+revoke all on function public.hole_lauftext() from public;
+grant execute on function public.admin_lauftext(text, text) to anon, authenticated;
+grant execute on function public.hole_lauftext() to anon, authenticated;

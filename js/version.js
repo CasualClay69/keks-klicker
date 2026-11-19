@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.90";
-const APP_NEU = "Jetzt gibt es jeden Monat eine eigene Season! Neu: Schmetterlingsgarten im April, Feenwald im Juni und Meerjungfrauen im August – mit Schmetterlingsbaby, Rehkitz und Robbenbaby.";
+const APP_VERSION = "1.91";
+const APP_NEU = "Neu: ein Lauftext über dem Logo – für besondere Nachrichten an alle.";
