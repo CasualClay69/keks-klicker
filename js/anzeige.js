@@ -167,9 +167,38 @@ function baueOberflaeche(aktionen) {
   erstelleStatistik();
 }
 
+// ----- Fortschritts-Ring um Marie -----
+// RING_PLAETZE Symbole einmal rundherum = ∞. Wie viele schon da sind, richtet sich nach den
+// Stellen der Herzen aller Zeiten (wegZurUnendlichkeit, unendlich.js): alle ~8,5 Stellen eins mehr.
+const RING_PLAETZE = 36;
+let ringSchluessel = "";
+
+function zeigeFortschrittsRing() {
+  const anzahl = Math.min(RING_PLAETZE, Math.floor(wegZurUnendlichkeit() * RING_PLAETZE + 1e-9));
+  const symbol = herz();
+  const schluessel = `${anzahl}|${symbol}`;
+  if (schluessel === ringSchluessel) return;
+  const neuDazu = ringSchluessel && anzahl > Number(ringSchluessel.split("|")[0]);
+  ringSchluessel = schluessel;
+
+  const ring = $("fortschrittsRing");
+  ring.textContent = "";
+  ring.classList.toggle("voll", anzahl >= RING_PLAETZE);
+  ring.title = `${anzahl} von ${RING_PLAETZE} – bei ∞ ist der Ring voll`;
+  for (let i = 0; i < anzahl; i++) {
+    const platz = span("ringPlatz");
+    platz.style.setProperty("--winkel", `${(i / RING_PLAETZE) * 360}deg`);
+    const zeichen = span("ringSymbol", symbol);
+    if (neuDazu && i === anzahl - 1) zeichen.classList.add("neu");
+    platz.append(zeichen);
+    ring.append(platz);
+  }
+}
+
 // ----- Aktualisieren -----
 
 function zeigeKopf() {
+  zeigeFortschrittsRing();
   setzeText(ui.herzen, `${format(spiel.herzen)} ${herz()}`);
   setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
   document.title = `${format(spiel.herzen)} ${waehrung().name} – ${figurName()} Clicker`;

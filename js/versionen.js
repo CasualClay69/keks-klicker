@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.73", datum: "2026-11-19", neu: ["Fortschritts-Ring: Je mehr Herzen du insgesamt gesammelt hast, desto mehr Symbole drehen sich um Marie", "Bei ∞ ist der Ring einmal rundherum voll", "In jeder Season mit dem passenden Symbol (z. B. 🍂 an Thanksgiving)"] },
   { v: "1.72", datum: "2026-11-19", neu: ["Klick-Stufe ✋: Alle 8.000 Klicks verdoppelt sich alles – für immer, auch nach dem Neustart", "5 neue Upgrade-Stufen für jeden Helfer (ab 100 bis 500 Stück)", "Glitzersterne: je 3 Stellen deiner Herzen ein Stern – bis ∞ genug für die ganze Sternen-Karte", "Neues Balancing: Mit fleißigem Klicken erreichst du ∞ in ein paar Monaten", "Drei neue Erfolge für die Klick-Stufe"] },
   { v: "1.71", datum: "2026-11-19", neu: ["Die Sternen-Karte 🗺️: Glitzersterne sind jetzt Skillpunkte", "Vier Wege: 👆 Klick-Kraft, 🏡 Helfer, 🤖 Automatik (Klick-Roboter, Auto-Einkauf, Sternen-Netz, Futter-Automat) und 🍀 Glück", "Neu verteilen geht jederzeit kostenlos", "Zwei neue Erfolge"] },
   { v: "1.70", datum: "2026-11-19", neu: ["Das ultimative Ziel: 10³⁰⁸ Herzen – dann zeigt der Zähler ∞ UNENDLICH", "Belohnung: große Feier, der Erfolg „Unendlich!“ und der Unendlichkeits-Pokal fürs Zimmer", "In der Statistik siehst du deinen „Weg zur Unendlichkeit“", "Riesige Zahlen werden jetzt immer ordentlich angezeigt"] },

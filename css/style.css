@@ -1303,6 +1303,35 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .aufgabe.woche { border-color: #f5c542; }
 .aufgabe.woche.bonus { background: linear-gradient(135deg, #fffbe6, #fff0f7); }
 
+/* ----- Fortschritts-Ring um Marie -----
+   Der Ring dreht sich langsam; jedes Symbol dreht sich gegenläufig mit, damit es aufrecht bleibt.
+   --marie-breite setzt anzeige.js (ResizeObserver). */
+.fortschrittsRing {
+  position: absolute; left: 50%; top: 0;
+  width: var(--marie-breite, 300px); aspect-ratio: 1;
+  margin-left: calc(var(--marie-breite, 300px) / -2);
+  z-index: 2; pointer-events: none;
+  animation: ringDrehen 120s linear infinite;
+}
+.ringPlatz {
+  position: absolute; left: 50%; top: 50%; width: 0; height: 0;
+  /* auf den rosa Rand um Marie (halber Durchmesser + ein Stück nach außen) */
+  transform: rotate(var(--winkel)) translateY(calc(var(--marie-breite, 300px) * -0.5 - 9px));
+}
+.ringSymbol {
+  position: absolute; left: 0; top: 0;
+  display: block; transform: translate(-50%, -50%);
+  font-size: calc(var(--marie-breite, 300px) * 0.075);
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+  animation: ringGegen 120s linear infinite;
+}
+.ringSymbol.neu { animation: ringGegen 120s linear infinite, ringNeu 1.2s ease-out; }
+.fortschrittsRing.voll .ringSymbol { filter: drop-shadow(0 0 4px #ffd23f) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25)); }
+@keyframes ringDrehen { to { transform: rotate(360deg); } }
+@keyframes ringGegen { from { rotate: 0deg; } to { rotate: -360deg; } }
+@keyframes ringNeu { 0% { scale: 3; opacity: 0; } 60% { scale: 1.3; opacity: 1; } 100% { scale: 1; } }
+
 /* ----- Klick-Stufe (unter dem Zähler) ----- */
 .klickStufe {
   position: relative; z-index: 2;
@@ -2633,7 +2662,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 /* System-Einstellung "Bewegung reduzieren" respektieren */
 @media (prefers-reduced-motion: reduce) {
   #marie svg, #marie .auge, #stern, .meldung, .item.upgrade.neu,
-  .skillKnoten.lernbar, #skillBadge, .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
+  .fortschrittsRing, .ringSymbol, .skillKnoten.lernbar, #skillBadge, .unendlichZeichen, .unendlichPokal, .lichterkette .birne, .nachtFunkeln, .regenbogenBogen, .wunderIcon, #adventBadge, .adventTuer.heute,
   #spielfeld::before, #spielfeld::after, .logo-marie, .logo-deko, .funkeln, #seasonBtn.feiern,
   #aufgabenBtn.feiern, #aufgabenBadge, .aufgabe .abholen,
   .geschenkBox, .geschenkKarte, .geschenkInhalt, .updateIcon, #radBadge, #albumBadge,
