@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.68";
-const APP_NEU = "Neu: Optionen ⚙️ – du kannst jetzt wählen, wie große Zahlen aussehen: 1,5 Mio., 1,5m oder 1,5e6.";
+const APP_VERSION = "1.69";
+const APP_NEU = "Neu: Das Zahnrad ⚙️ ist jetzt oben links – und dort findest du auch Klänge und Musik zum An- und Ausschalten.";

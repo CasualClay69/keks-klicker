@@ -316,9 +316,18 @@ function zeigeSicherungInfo() {
   info.classList.toggle("alt", !zeit || tage >= 7);
 }
 
+// Die beiden Schalter im Optionen-Menü
 function zeigeTonStatus() {
-  ui.tonBtn.textContent = spiel.tonAn ? "🔊" : "🔇";
-  ui.musikBtn.classList.toggle("aus", !spiel.musikAn);
+  for (const [knopf, an, iconAn, iconAus, name] of [
+    [ui.tonBtn, spiel.tonAn, "🔊", "🔇", "Klänge"],
+    [ui.musikBtn, spiel.musikAn, "🎵", "🔕", "Musik"],
+  ]) {
+    knopf.textContent = "";
+    knopf.append(span("icon", an ? iconAn : iconAus), span("name", name),
+      span("schalterKnopf", ""), span("beispiel", an ? "An" : "Aus"));
+    knopf.classList.toggle("aus", !an);
+    knopf.setAttribute("aria-checked", String(an));
+  }
 }
 
 function zeigeAlles() {

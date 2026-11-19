@@ -329,8 +329,8 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   100% { transform: translateY(0) scale(1); }
 }
 
-/* ----- Obere Zeile: Ton – Titel – Installieren ----- */
-#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn, #installBtn {
+/* ----- Obere Zeile: Optionen – Titel – Installieren ----- */
+#optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn, #installBtn {
   position: absolute; top: max(12px, env(safe-area-inset-top));
   z-index: 7;
   padding: 6px 12px;
@@ -339,13 +339,13 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-#tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
-/* Links untereinander: Ton, Musik, Aufgaben, Bestenliste */
-#musikBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
-#aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
-#bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 144px); }
-#spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 192px); }
-#adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 240px); }
+#optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn { left: max(12px, env(safe-area-inset-left)); font-size: 1.3rem; }
+
+/* Links untereinander: Optionen, Aufgaben, Bestenliste, Minispiele, (Dezember) Adventskalender */
+#aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 48px); }
+#bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 96px); }
+#spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 144px); }
+#adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 192px); }
 #aufgabenBtn.feiern { animation: feiern 0.9s ease-out; }
 
 /* Grüne Zahl: so viele Belohnungen liegen zum Abholen bereit */
@@ -970,9 +970,9 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   to   { background-position: 0 0, 300% 50%; }
 }
 /* Ausgeschaltet: blass und durchgestrichen */
-#musikBtn.aus { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--akzent-dunkel); }
+
 /* Glücksrad- und Album-Knopf rechts, unter dem Season-Symbol */
-#radBtn, #albumBtn, #zimmerBtn, #optionenBtn {
+#radBtn, #albumBtn, #zimmerBtn {
   position: absolute;
   top: calc(max(12px, env(safe-area-inset-top)) + 66px);
   right: max(12px, env(safe-area-inset-right));
@@ -988,7 +988,6 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 #albumBtn { top: calc(max(12px, env(safe-area-inset-top)) + 128px); }
 #zimmerBtn { top: calc(max(12px, env(safe-area-inset-top)) + 190px); }
-#optionenBtn { top: calc(max(12px, env(safe-area-inset-top)) + 252px); font-size: 1.5rem; }
 #albumBadge {
   position: absolute;
   right: -4px; top: -4px;
@@ -1019,7 +1018,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 }
 
 #installBtn {
-  top: calc(max(12px, env(safe-area-inset-top)) + 316px);   /* unter Season, Glücksrad, Album, Zimmer und Optionen */
+  top: calc(max(12px, env(safe-area-inset-top)) + 254px);   /* unter Season, Glücksrad, Album und Zimmer */
   right: 12px;
   border-color: var(--akzent);
   background: var(--akzent);
@@ -1309,6 +1308,22 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .optionenWahl button .name { font-weight: 900; }
 .optionenWahl button .beispiel { grid-column: 2; font-size: 0.8rem; color: var(--text-sanft); }
 .optionenWahl button .haken { grid-row: 1 / span 2; grid-column: 3; font-size: 1.2rem; color: var(--akzent-dunkel); }
+/* An/Aus-Schalter (Klänge, Musik) */
+.optionenWahl .schalter .schalterKnopf {
+  grid-row: 1 / span 2; grid-column: 3;
+  position: relative; width: 50px; height: 28px;
+  border-radius: 999px; background: var(--akzent);
+  transition: background 0.2s;
+}
+.optionenWahl .schalter .schalterKnopf::after {
+  content: ""; position: absolute; top: 3px; left: 25px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: left 0.2s;
+}
+.optionenWahl .schalter.aus .schalterKnopf { background: #cfc3cb; }
+.optionenWahl .schalter.aus .schalterKnopf::after { left: 3px; }
+.optionenWahl .schalter.aus .icon { opacity: 0.6; }
 .optionenWahl button.aktiv { border-color: var(--akzent); background: var(--karte-hover); box-shadow: 0 0 0 3px rgba(255, 95, 162, 0.2); }
 
 /* ----- Adventskalender ----- */
@@ -2429,18 +2444,16 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   .logo-krone   { font-size: 2rem; }
   #herzen       { font-size: 3.4rem; }
   #hps          { font-size: 1.25rem; }
-  #tonBtn, #musikBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn { font-size: 1.6rem; }
-  #musikBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
-  #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
-  #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
-  #spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 224px); }
-  #adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 280px); }
+  #optionenBtn, #aufgabenBtn, #bestenlisteBtn, #spieleBtn, #adventBtn { font-size: 1.6rem; }
+  #aufgabenBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 56px); }
+  #bestenlisteBtn { top: calc(max(12px, env(safe-area-inset-top)) + 112px); }
+  #spieleBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 168px); }
+  #adventBtn      { top: calc(max(12px, env(safe-area-inset-top)) + 224px); }
   #seasonBtn    { width: 64px; height: 64px; }
   #radBtn       { top: calc(max(12px, env(safe-area-inset-top)) + 78px); width: 64px; height: 64px; font-size: 2rem; }
   #albumBtn     { top: calc(max(12px, env(safe-area-inset-top)) + 150px); width: 64px; height: 64px; font-size: 2rem; }
   #zimmerBtn    { top: calc(max(12px, env(safe-area-inset-top)) + 222px); width: 64px; height: 64px; font-size: 2rem; }
-  #optionenBtn  { top: calc(max(12px, env(safe-area-inset-top)) + 294px); width: 64px; height: 64px; font-size: 1.8rem; }
-  #installBtn   { top: calc(max(12px, env(safe-area-inset-top)) + 368px); }
+  #installBtn   { top: calc(max(12px, env(safe-area-inset-top)) + 296px); }
   #seasonBtnIcon { font-size: 2rem; }
 
   #marie {

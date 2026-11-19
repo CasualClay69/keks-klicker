@@ -69,8 +69,8 @@
 
   <!-- Linke Seite: Zähler und Marie -->
   <main id="spielfeld">
-    <button id="tonBtn" type="button" title="Klänge an/aus" aria-label="Klänge an/aus">🔊</button>
-    <button id="musikBtn" type="button" title="Musik an/aus" aria-label="Musik an/aus">🎵</button>
+    <!-- Optionen: Klänge, Musik, Zahlen (optionen-ui.js) -->
+    <button id="optionenBtn" type="button" title="Optionen" aria-label="Optionen öffnen">⚙️</button>
     <button id="aufgabenBtn" type="button" title="Tagesaufgaben" aria-label="Tagesaufgaben öffnen">📋<b id="aufgabenBadge" hidden></b></button>
     <button id="bestenlisteBtn" type="button" title="Bestenliste" aria-label="Bestenliste öffnen" hidden>🏅</button>
     <button id="spieleBtn" type="button" title="Minispiele" aria-label="Minispiele öffnen">🎮</button>
@@ -95,8 +95,6 @@
     <button id="albumBtn" type="button" title="Sticker-Album" aria-label="Sticker-Album öffnen">📒<b id="albumBadge" hidden></b></button>
     <!-- Zimmer einrichten -->
     <button id="zimmerBtn" type="button" title="Zimmer" aria-label="Zimmer öffnen">🏠</button>
-    <!-- Optionen (optionen-ui.js) -->
-    <button id="optionenBtn" type="button" title="Optionen" aria-label="Optionen öffnen">⚙️</button>
 
     <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
     <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
@@ -574,6 +572,11 @@
       <div class="spielKopf">
         <h2 id="optionenTitel">⚙️ Optionen</h2>
         <button id="optionenZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <h3 class="optionenUeberschrift">🔊 Ton</h3>
+      <div class="optionenWahl">
+        <button id="tonBtn" type="button" class="schalter" role="switch" aria-checked="true"></button>
+        <button id="musikBtn" type="button" class="schalter" role="switch" aria-checked="true"></button>
       </div>
       <h3 class="optionenUeberschrift">🔢 So sehen große Zahlen aus</h3>
       <div id="zahlenWahl" class="optionenWahl" role="radiogroup" aria-label="Zahlen-Schreibweise"></div>
