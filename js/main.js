@@ -1403,6 +1403,7 @@ function starte() {
   richteWunderEin();
   richteAusfluegeEin();
   richteAdventEin();
+  richteOptionenEin();
   richteFeiertageEin(ergebnis => {
     for (const stufe of ergebnis.stufen) meldeSeasonStufe(stufe);
     if (ergebnis.sticker && (ergebnis.sticker.neu || ergebnis.sticker.seiteFertig)) albumSymbolFeiern();

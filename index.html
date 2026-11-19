@@ -57,6 +57,7 @@
   <script src="js/spielhalle.js" defer></script>
   <script src="js/verwaltung-ui.js" defer></script>
   <script src="js/feiertage-ui.js" defer></script>
+  <script src="js/optionen-ui.js" defer></script>
   <script src="js/advent-ui.js" defer></script>
   <script src="js/ausfluege-ui.js" defer></script>
   <script src="js/wunder-ui.js" defer></script>
@@ -94,6 +95,8 @@
     <button id="albumBtn" type="button" title="Sticker-Album" aria-label="Sticker-Album öffnen">📒<b id="albumBadge" hidden></b></button>
     <!-- Zimmer einrichten -->
     <button id="zimmerBtn" type="button" title="Zimmer" aria-label="Zimmer öffnen">🏠</button>
+    <!-- Optionen (optionen-ui.js) -->
+    <button id="optionenBtn" type="button" title="Optionen" aria-label="Optionen öffnen">⚙️</button>
 
     <!-- Season-Pass: nur sichtbar, solange eine Season läuft. Ring = Fortschritt zur nächsten Stufe -->
     <button id="seasonBtn" type="button" title="Season-Pass" aria-label="Season-Pass öffnen" hidden>
@@ -562,6 +565,18 @@
       <p id="postInfo" class="seitenInfo"></p>
       <div id="postRaster" class="albumRaster postRaster"></div>
       <p id="postStatus" class="postStatus" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <!-- Optionen -->
+  <div id="optionenOverlay" class="overlay" hidden>
+    <div class="spielKarte optionenKarte" role="dialog" aria-modal="true" aria-labelledby="optionenTitel">
+      <div class="spielKopf">
+        <h2 id="optionenTitel">⚙️ Optionen</h2>
+        <button id="optionenZu" type="button" class="spielZu" aria-label="Schließen">✕</button>
+      </div>
+      <h3 class="optionenUeberschrift">🔢 So sehen große Zahlen aus</h3>
+      <div id="zahlenWahl" class="optionenWahl" role="radiogroup" aria-label="Zahlen-Schreibweise"></div>
     </div>
   </div>
 

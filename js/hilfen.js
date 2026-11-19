@@ -4,7 +4,46 @@
 // =====================================================
 
 // Große Zahlen lesbar machen: 1500000 -> "1,5 Mio."
+// ----- Wie große Zahlen aussehen (Optionen-Menü ⚙️) -----
+//  "worte": 1,5 Mio. · 2,3 Mrd.   "kurz": 1,5k · 2,3m · 4b · 7t   "wiss": 1,5e3 · 2,3e9
+const ZAHLEN_ARTEN = ["worte", "kurz", "wiss"];
+const ZAHLEN_SPEICHER = "marieClicker-zahlen";   // Einstellung des Geräts (bleibt auch beim "Spielstand löschen")
+const KURZ_ENDUNGEN = ["k", "m", "b", "t", "qa", "qi", "sx", "sp", "oc", "no", "dc"];
+
+let zahlenArt = (() => {
+  try { const a = localStorage.getItem(ZAHLEN_SPEICHER); return ZAHLEN_ARTEN.includes(a) ? a : "worte"; } catch (e) { return "worte"; }
+})();
+
+function setzeZahlenArt(art) {
+  zahlenArt = ZAHLEN_ARTEN.includes(art) ? art : "worte";
+  try { localStorage.setItem(ZAHLEN_SPEICHER, zahlenArt); } catch (e) { /* egal */ }
+}
+
+// Ab welcher Größe abgekürzt wird (darunter: ganze Zahl mit Tausenderpunkt)
+function abkuerzenAb() {
+  return zahlenArt === "worte" ? 1e6 : 1e3;
+}
+
+const zweiStellen = x => x.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+
+function formatKurz(zahl) {
+  let stufe = Math.min(KURZ_ENDUNGEN.length, Math.floor(Math.log10(zahl) / 3));
+  let wert = Math.round(zahl / 10 ** (stufe * 3) * 100) / 100;
+  if (wert >= 1000 && stufe < KURZ_ENDUNGEN.length) { stufe++; wert = Math.round(wert / 10) / 100; }   // 999,999k -> 1m
+  return zweiStellen(wert) + KURZ_ENDUNGEN[stufe - 1];
+}
+
+function formatWissenschaftlich(zahl) {
+  let exp = Math.floor(Math.log10(zahl));
+  let wert = Math.round(zahl / 10 ** exp * 100) / 100;
+  if (wert >= 10) { exp++; wert = Math.round(wert * 10) / 100; }   // 9,999e5 -> 1e6
+  return zweiStellen(wert) + "e" + exp;
+}
+
 function format(zahl) {
+  if (!Number.isFinite(zahl)) return "∞";
+  if (zahl >= 1e3 && zahlenArt === "kurz") return formatKurz(zahl);
+  if (zahl >= 1e3 && zahlenArt === "wiss") return formatWissenschaftlich(zahl);
   const stufen = [[1e18, " Trill."], [1e15, " Brd."], [1e12, " Bio."], [1e9, " Mrd."], [1e6, " Mio."]];
   for (const [wert, name] of stufen) {
     if (zahl >= wert) {
@@ -16,7 +55,7 @@ function format(zahl) {
 
 // Wie format(), aber kleine Zahlen mit einer Nachkommastelle: 0.1 -> "0,1"
 function formatKomma(zahl) {
-  return zahl < 1e6
+  return zahl < abkuerzenAb()
     ? zahl.toLocaleString("de-DE", { maximumFractionDigits: 1 })
     : format(zahl);
 }

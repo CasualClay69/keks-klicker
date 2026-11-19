@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.67";
-const APP_NEU = "Neu: Zu Besuch! Tippe in der Bestenliste auf einen Namen – dann siehst du das Zimmer, die Figur und die Haustiere der anderen.";
+const APP_VERSION = "1.68";
+const APP_NEU = "Neu: Optionen ⚙️ – du kannst jetzt wählen, wie große Zahlen aussehen: 1,5 Mio., 1,5m oder 1,5e6.";

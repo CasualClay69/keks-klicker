@@ -57,6 +57,7 @@ const DATEIEN = [
   "js/spielhalle.js",
   "js/verwaltung-ui.js",
   "js/feiertage-ui.js",
+  "js/optionen-ui.js",
   "js/advent-ui.js",
   "js/ausfluege-ui.js",
   "js/wunder-ui.js",
