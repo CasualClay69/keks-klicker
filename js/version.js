@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.84";
-const APP_NEU = "Neu: Wolken-Monster! ☁️ Ab und zu taucht eine Wolke auf – kitzel sie in 30 Sekunden weg, dann gibt es Belohnungen. Mit vielen Fingern geht es noch schneller!";
+const APP_VERSION = "1.85";
+const APP_NEU = "Die Wolken-Monster sind jetzt viel größer – so kann man sie mit allen Fingern gut kitzeln!";

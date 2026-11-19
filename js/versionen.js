@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.85", datum: "2026-11-19", neu: ["Die Wolken-Monster sind jetzt viel größer – leichter mit vielen Fingern zu treffen"] },
   { v: "1.84", datum: "2026-11-19", neu: ["Wolken-Monster ☁️: Ab und zu taucht eine Wolke auf – in 30 Sekunden wegkitzeln!", "Belohnung: Herzen und ein Sticker, das seltene Regenbogen-Wölkchen bringt einen Zaubersamen", "⚡ Blitz-Bonus, wenn du es in der halben Zeit schaffst", "Drei neue Erfolge"] },
   { v: "1.83", datum: "2026-11-19", neu: ["5 neue Album-Seiten: 🚀 Weltraum, 🦕 Dinosaurier, 👩‍⚕️ Berufe, 🎵 Musik und 🚗 Fahrzeuge", "Die erste wird frei, wenn du 50 der 60 Grund-Sticker hast – dann geht es Seite für Seite weiter", "Zwei neue Erfolge"] },
   { v: "1.82", datum: "2026-11-19", neu: ["Der Fortschritts-Ring dreht sich jetzt in einem perfekten Kreis um Marie"] },
