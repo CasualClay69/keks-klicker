@@ -335,38 +335,65 @@ function adminZielZeigen(inhalt) {
     } catch (e) { aktuell.textContent = "⚠️ " + e.message; }
   };
 
-  let ziel = 1e12;
+  // Größe und Belohnung richten sich nach dem Durchschnitt der Bestenliste
+  let durchschnitt = 0;
+  let stufe = GEMEINSCHAFTSZIEL_STUFEN[1];
+  let art = GEMEINSCHAFTSZIEL_ARTEN[0];
+  const schnittInfo = el("p", "seitenInfo", "⏳ Durchschnitt wird geladen …");
   const groessen = el("div", "adminAuswahl");
-  for (const g of GEMEINSCHAFTSZIEL_GROESSEN) {
-    const k = knopf(format(g), () => { ziel = g; for (const x of groessen.children) x.classList.toggle("aktiv", x === k); }, "adminChip");
-    k.classList.toggle("aktiv", g === ziel);
-    groessen.append(k);
-  }
-  let belohnung = VERWALTUNG.codeBelohnungen[1];
   const belohnungen = el("div", "adminAuswahl");
-  for (const b of VERWALTUNG.codeBelohnungen) {
-    const k = knopf(b.text, () => { belohnung = b; for (const x of belohnungen.children) x.classList.toggle("aktiv", x === k); }, "adminChip");
-    k.classList.toggle("aktiv", b === belohnung);
-    belohnungen.append(k);
-  }
+  const vorschau = el("div", "adminAktuell", "");
+  const ziel = () => gemeinschaftszielFuer(durchschnitt, stufe);
+  const menge = () => stufe.belohnung[art.art];
+  const zeichneAuswahl = () => {
+    groessen.textContent = "";
+    for (const s of GEMEINSCHAFTSZIEL_STUFEN) {
+      const k = knopf(`${s.icon} ${s.name} · ${format(gemeinschaftszielFuer(durchschnitt, s))}`, () => { stufe = s; zeichneAuswahl(); }, "adminChip");
+      k.title = `${s.faktor}× der Durchschnitt`;
+      k.classList.toggle("aktiv", s === stufe);
+      groessen.append(k);
+    }
+    belohnungen.textContent = "";
+    for (const a of GEMEINSCHAFTSZIEL_ARTEN) {
+      const k = knopf(codeBelohnungText(a.art, stufe.belohnung[a.art]), () => { art = a; zeichneAuswahl(); }, "adminChip");
+      k.classList.toggle("aktiv", a === art);
+      belohnungen.append(k);
+    }
+    vorschau.textContent = `🎯 Ziel: ${format(ziel())} Herzen (${stufe.faktor}× Ø) · Belohnung: ${codeBelohnungText(art.art, menge())}`;
+  };
+  const ladeDurchschnitt = async () => {
+    try {
+      const eintraege = (await rufeBestenlisteAuf("hole_bestenliste", { p_gruppe: BESTENLISTE.gruppe })) || [];
+      durchschnitt = durchschnittHerzen(eintraege);
+      schnittInfo.textContent = `Ø ${format(durchschnitt)} Herzen aller Zeiten pro Spieler (${eintraege.length} in der Bestenliste). `
+        + "Je größer das Ziel, desto besser die Belohnung.";
+    } catch (e) {
+      schnittInfo.textContent = "⚠️ Durchschnitt nicht ladbar: " + e.message;
+    }
+    zeichneAuswahl();
+  };
+  zeichneAuswahl();
   const titel = el("input");
   titel.type = "text"; titel.maxLength = 60; titel.placeholder = "z.B. Zusammen zur Billion! (optional)";
   const titelFeld = el("label", "feld", "Titel");
   titelFeld.append(titel);
   const reihe = el("div", "knopfReihe");
   reihe.append(knopf("🎯 Gemeinschaftsziel starten", () => adminVersuche(inhalt, async () => {
-    if (!confirm(`Neues Gemeinschaftsziel: ${format(ziel)} Herzen?
+    if (!durchschnitt) { adminStatus(inhalt, "⚠️ Der Durchschnitt ist noch nicht geladen."); return; }
+    if (!confirm(`Neues Gemeinschaftsziel: ${format(ziel())} Herzen (${stufe.name})?
+Belohnung: ${codeBelohnungText(art.art, menge())}
 Ein laufendes Ziel wird dabei beendet.`)) { adminStatus(inhalt, ""); return; }
-    await adminGemeinschaftsziel(titel.value.trim() || `Zusammen ${format(ziel)} Herzen!`, ziel, belohnung.art, belohnung.menge);
+    await adminGemeinschaftsziel(titel.value.trim() || `Zusammen ${format(ziel())} Herzen!`, ziel(), art.art, menge());
     sound.erfolg();
     titel.value = "";
     adminStatus(inhalt, "✓ Gestartet!");
     await ladeAktuell();
   }), "knopf haupt"));
 
-  inhalt.append(aktuell, el("div", "feld", "Wie viele Herzen zusammen?"), groessen,
-                el("div", "feld", "Belohnung für alle"), belohnungen, titelFeld, reihe);
+  inhalt.append(aktuell, schnittInfo, el("div", "feld", "Wie groß soll das Ziel sein?"), groessen,
+                el("div", "feld", "Belohnung für alle"), belohnungen, vorschau, titelFeld, reihe);
   ladeAktuell();
+  ladeDurchschnitt();
 }
 
 // ----- 🏅 Bestenliste moderieren -----

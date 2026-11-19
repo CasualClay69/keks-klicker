@@ -65,7 +65,11 @@ function codeAnzeige(code) {
 
 function codeBelohnungText(art, menge) {
   const b = VERWALTUNG.codeBelohnungen.find(x => x.art === art && x.menge === menge);
-  return b ? b.text : `${art} ${menge}`;
+  if (b) return b.text;
+  if (art === "herzen") return `💖 ${format(menge)} ${menge === 1 ? "Stunde" : "Stunden"} Produktion`;
+  if (art === "sticker") return `📒 ${format(menge)} Sticker`;
+  if (art === "season") return `🎟️ ${format(menge)} Season-Punkte`;
+  return `${art} ${menge}`;
 }
 
 // ----- Für alle: Nachricht, Umfrage, Codes -----
@@ -146,8 +150,35 @@ const adminGemeinschaftsziel = (titel, ziel, art, menge) =>
   adminAufruf("admin_familienziel", { p_titel: titel, p_ziel: ziel, p_art: art, p_menge: menge });
 const adminGemeinschaftszielBeenden = () => adminAufruf("admin_familienziel_beenden");
 
-// Mögliche Zielgrößen im Admin-Menü
-const GEMEINSCHAFTSZIEL_GROESSEN = [1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
+// Zielgrößen im Admin-Menü – passend zum Durchschnitt der Bestenliste (Ø Herzen aller Zeiten pro Spieler).
+// Gezählt wird beim Ziel, was alle ab dem Start ZUSAMMEN dazusammeln. Die Belohnung wird mit
+// der Größe besser. "herzen" = Stunden der eigenen Produktion (passt also zu jedem Spielstand).
+const GEMEINSCHAFTSZIEL_STUFEN = [
+  { id: "leicht",   icon: "🌱", name: "Leicht",     faktor: 0.5,  belohnung: { herzen: 1,  sticker: 2,  season: 500 } },
+  { id: "mittel",   icon: "🌼", name: "Mittel",     faktor: 2,    belohnung: { herzen: 3,  sticker: 3,  season: 1000 } },
+  { id: "gross",    icon: "🌈", name: "Groß",       faktor: 10,   belohnung: { herzen: 6,  sticker: 5,  season: 2000 } },
+  { id: "riesig",   icon: "🏰", name: "Riesig",     faktor: 100,  belohnung: { herzen: 12, sticker: 8,  season: 4000 } },
+  { id: "gigant",   icon: "🚀", name: "Gigantisch", faktor: 1000, belohnung: { herzen: 24, sticker: 12, season: 8000 } },
+];
+const GEMEINSCHAFTSZIEL_ARTEN = [
+  { art: "herzen",  icon: "💖", name: "Herzen" },
+  { art: "sticker", icon: "📒", name: "Sticker" },
+  { art: "season",  icon: "🎟️", name: "Season-Punkte" },
+];
+
+// Ø Herzen aller Zeiten pro Spieler in der Bestenliste
+function durchschnittHerzen(eintraege) {
+  const werte = (eintraege || []).map(e => Number(e.herzen_gesamt) || 0).filter(x => x > 0);
+  if (!werte.length) return 0;
+  // erst teilen, dann addieren – so gibt es auch bei riesigen Zahlen keinen Überlauf
+  return Math.min(Number.MAX_VALUE, werte.reduce((summe, x) => summe + x / werte.length, 0));
+}
+
+// Ziel für eine Stufe: Ø × Faktor (mindestens 1.000, schön gerundet, nie über das Maximum)
+function gemeinschaftszielFuer(durchschnitt, stufe) {
+  const ziel = Math.max(1000, durchschnitt * stufe.faktor);
+  return Math.min(1e308, rundeHuebsch(Math.min(ziel, Number.MAX_VALUE)));
+}
 
 function gemeinschaftszielAbgeholt(z) {
   return (spiel.familienziele || []).includes(z.id);

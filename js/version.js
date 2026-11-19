@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.75";
-const APP_NEU = "Zimmer-Teile und Tier-Zubehör wachsen jetzt mit deinem Fortschritt mit – so bleiben sie tolle Sparziele.";
+const APP_VERSION = "1.76";
+const APP_NEU = "Gemeinschaftsziele passen sich jetzt an, wie viel alle in der Bestenliste schon gesammelt haben – je größer das Ziel, desto besser die Belohnung.";

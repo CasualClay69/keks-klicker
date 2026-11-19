@@ -389,7 +389,8 @@ declare
   v_id bigint;
 begin
   if f is not null then return json_build_object('fehler', f); end if;
-  if not (p_ziel >= 1000 and p_ziel <= 1e18) or p_art not in ('herzen', 'sticker', 'season')
+  -- Obergrenze: größte speicherbare Zahl (seit v1.76 – die Ziele richten sich nach dem Ø der Bestenliste)
+  if not (p_ziel >= 1000 and p_ziel <= 1.7976931348623157e308) or p_art not in ('herzen', 'sticker', 'season')
      or not (p_menge > 0 and p_menge <= 100000) then
     return json_build_object('fehler', 'Ungültiges Ziel oder ungültige Belohnung.');
   end if;
@@ -437,7 +438,9 @@ begin
   select z.id, spieler_id, herzen_gesamt from bestenliste where gruppe = 'marie-clicker'
   on conflict do nothing;
 
-  select coalesce(sum(greatest(0, b.herzen_gesamt - zb.basis)), 0) into v_summe
+  -- als numeric addieren (sehr große Zahlen würden sonst überlaufen), dann gedeckelt zurück
+  select least(coalesce(sum(greatest(0, b.herzen_gesamt - zb.basis)::numeric), 0), 1.7976931348623157e308)::double precision
+  into v_summe
   from bestenliste b join bl_ziel_basis zb on zb.spieler_id = b.spieler_id and zb.ziel_id = z.id
   where b.gruppe = 'marie-clicker';
 
