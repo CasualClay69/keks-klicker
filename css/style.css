@@ -1322,9 +1322,12 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
   /* mitten auf den rosa Rand (10 px breit, direkt außen am weißen Rand) */
   transform: rotate(var(--winkel)) translateY(calc(var(--marie-aussen, 316px) * -0.5 - 6px));
 }
+/* Mittig auf den Platz setzen – mit "translate" (nicht "transform"), denn das wird VOR der
+   Gegendrehung angewendet: So dreht sich jedes Symbol um seine eigene Mitte und läuft
+   sauber im Kreis (mit transform würde es zusätzlich eiern). */
 .ringSymbol {
   position: absolute; left: 0; top: 0;
-  display: block; transform: translate(-50%, -50%);
+  display: block; translate: -50% -50%;
   font-size: calc(var(--marie-breite, 300px) * 0.075);
   line-height: 1;
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));

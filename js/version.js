@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.81";
-const APP_NEU = "Der Fortschritts-Ring sitzt jetzt schön außen auf dem rosa Rand um Marie.";
+const APP_VERSION = "1.82";
+const APP_NEU = "Der Fortschritts-Ring dreht sich jetzt in einem perfekten Kreis um Marie.";
