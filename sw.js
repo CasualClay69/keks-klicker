@@ -79,6 +79,7 @@ const DATEIEN = [
   "js/wunder-ui.js",
   "js/stickerpost-ui.js",
   "js/besuch-ui.js",
+  "js/admin-automatik.js",
   "js/main.js",
   "icons/icon-192.png",
   "icons/icon-512.png",

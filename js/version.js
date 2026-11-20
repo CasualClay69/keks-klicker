@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.91";
-const APP_NEU = "Neu: ein Lauftext über dem Logo – für besondere Nachrichten an alle.";
+const APP_VERSION = "1.92";
+const APP_NEU = "Diverse kleinere Fehler beseitigt.";

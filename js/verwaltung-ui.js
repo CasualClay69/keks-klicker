@@ -67,7 +67,7 @@ function zeigeAdminReiter(reiter) {
   const inhalt = $("adminInhalt");
   inhalt.textContent = "";
   ({ ereignisse: adminEreignisse, codes: adminCodesZeigen, nachricht: adminNachrichtZeigen, lauftext: adminLauftextZeigen,
-     umfrage: adminUmfrageZeigen, ziel: adminZielZeigen, liste: adminListeZeigen })[reiter](inhalt);
+     umfrage: adminUmfrageZeigen, ziel: adminZielZeigen, liste: adminListeZeigen, automatik: adminAutomatikZeigen })[reiter](inhalt);
 }
 
 // Statuszeile unten im Admin-Bereich
