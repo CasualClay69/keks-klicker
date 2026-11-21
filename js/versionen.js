@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.93", datum: "2026-11-21", neu: ["Diverse kleinere Fehler beseitigt"] },
   { v: "1.92", datum: "2026-11-20", neu: ["Diverse kleinere Fehler beseitigt"] },
   { v: "1.91", datum: "2026-11-19", neu: ["Lauftext 📢 über dem Logo: Wenn es etwas Besonderes gibt, läuft hier eine Nachricht durch"] },
   { v: "1.90", datum: "2026-11-19", neu: ["Jeden Monat eine eigene Season – 12 im Jahr, Season 1 bis 36", "Neu: 🦋 Schmetterlingsgarten (April), 🧚 Feenwald (Juni) und 🧜‍♀️ Meerjungfrauen (August) – jeweils 2027, 2028 und 2029 mit eigenen Belohnungen", "Neue Season-Tiere: Schmetterlingsbaby, Rehkitz und Robbenbaby – dazu drei neue Melodien und drei neue Sticker-Seiten", "Ostern, Einhornwiese und Sommer dauern jetzt je einen Monat"] },

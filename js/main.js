@@ -1366,11 +1366,12 @@ async function aktualisiereApp() {
 
   try {
     const registrierungen = await navigator.serviceWorker?.getRegistrations() || [];
-    await Promise.all(registrierungen.map(r => r.unregister()));
+    const eigenerBereich = new URL("./", location.href).href;   // nur den eigenen Service Worker, nicht die anderer Spiele
+    await Promise.all(registrierungen.filter(r => r.scope === eigenerBereich).map(r => r.unregister()));
   } catch (e) { /* kein Service Worker */ }
   try {
     const namen = await caches.keys();
-    await Promise.all(namen.map(name => caches.delete(name)));
+    await Promise.all(namen.filter(name => name.startsWith("marie-clicker")).map(name => caches.delete(name)));   // nur die eigenen
   } catch (e) { /* kein Cache-Zugriff */ }
   location.reload();
 }

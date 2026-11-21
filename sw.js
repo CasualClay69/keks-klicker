@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 // =====================================================
 //  SERVICE WORKER – macht das Spiel offline spielbar
 //
@@ -103,7 +103,8 @@ self.addEventListener("activate", ereignis => {
   ereignis.waitUntil(
     caches.keys()
       .then(namen => Promise.all(
-        namen.filter(name => name !== CACHE).map(name => caches.delete(name))))
+        // nur eigene alte Caches löschen – andere Spiele auf derselben Adresse nicht anfassen
+        namen.filter(name => name.startsWith("marie-clicker") && name !== CACHE).map(name => caches.delete(name))))
       .then(() => self.clients.claim())
   );
 });
