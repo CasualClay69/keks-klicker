@@ -8,5 +8,5 @@
 //  "Neue Version verfügbar", das Spieler mit einer alten Version sehen.
 //  (Bitte nur normale Anführungszeichen "…" benutzen, keine im Text selbst.)
 // =====================================================
-const APP_VERSION = "1.94";
-const APP_NEU = "Große Zahlen als Wörter jetzt bis Unendlich – keine e24-Zahlen mehr bei der Einstellung Wörter.";
+const APP_VERSION = "1.95";
+const APP_NEU = "Große Zahlen jetzt bis Unendlich als Wörter oder kurz (uvg, tg, ce …) – kein e24 mehr.";

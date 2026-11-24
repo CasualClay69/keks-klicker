@@ -8,8 +8,14 @@
 //  "worte": 1,5 Mio. · 2,3 Mrd.   "kurz": 1,5k · 2,3m · 4b · 7t   "wiss": 1,5e3 · 2,3e9
 const ZAHLEN_ARTEN = ["worte", "kurz", "wiss"];
 const ZAHLEN_SPEICHER = "marieClicker-zahlen";   // Einstellung des Geräts (bleibt auch beim "Spielstand löschen")
-const KURZ_ENDUNGEN = ["k", "m", "b", "t", "qa", "qi", "sx", "sp", "oc", "no", "dc",
-  "ud", "dd", "td", "qad", "qid", "sxd", "spd", "ocd", "nod", "vg"];   // bis 10⁶³, danach wissenschaftlich
+// Kurzzeichen je Tausender-Stufe: k (10³), m, b, t, qa … dc (10³³), ud … vg (10⁶³), uvg … tg … ce (10³⁰³), uce (10³⁰⁶)
+const KURZ_ENDUNGEN = (() => {
+  const einer = ["", "u", "d", "t", "qa", "qi", "sx", "sp", "oc", "no"];
+  const zehner = ["", "d", "vg", "tg", "qag", "qig", "sxg", "spg", "ocg", "nog", "ce"];
+  const liste = ["k", "m", "b", "t", "qa", "qi", "sx", "sp", "oc", "no", "dc"];
+  for (let m = 11; 3 * m + 3 < 308; m++) liste.push(einer[m % 10] + zehner[Math.floor(m / 10)]);
+  return liste;
+})();
 
 let zahlenArt = (() => {
   try { const a = localStorage.getItem(ZAHLEN_SPEICHER); return ZAHLEN_ARTEN.includes(a) ? a : "worte"; } catch (e) { return "worte"; }
@@ -67,7 +73,7 @@ const ZAHL_WOERTER = (() => {
 function format(zahl) {
   if (zahl == null || Number.isNaN(zahl)) return "0";   // kaputte Zahl -> lieber 0 als ∞
   if (!Number.isFinite(zahl) || zahl >= 1e308) return "∞";
-  if (zahl >= 1e3 && zahlenArt === "kurz") return zahl < 1e66 ? formatKurz(zahl) : formatWissenschaftlich(zahl);
+  if (zahl >= 1e3 && zahlenArt === "kurz") return formatKurz(zahl);
   if (zahl >= 1e3 && zahlenArt === "wiss") return formatWissenschaftlich(zahl);
   for (const [wert, name] of ZAHL_WOERTER) {
     if (zahl >= wert) {

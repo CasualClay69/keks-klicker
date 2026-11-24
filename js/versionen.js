@@ -6,6 +6,7 @@
 // =====================================================
 
 const VERSIONEN = [
+  { v: "1.95", datum: "2026-11-24", neu: ["Auch die Einstellung ✂️ kurz geht jetzt bis Unendlich: nach vg kommen uvg, dvg … tg, qag, qig … nog, ce und uce statt e-Zahlen"] },
   { v: "1.94", datum: "2026-11-24", neu: ["Behoben: Mit der Einstellung 🔤 Wörter werden große Zahlen jetzt bis Unendlich als Wörter geschrieben (Quadrillion, Quintillion … Vigintillion … Unquinquagintillion) statt als e24", "Bei sehr langen Zahlwörtern wird der Herzen-Zähler etwas kleiner, damit alles in die Zeile passt"] },
   { v: "1.93", datum: "2026-11-21", neu: ["Diverse kleinere Fehler beseitigt"] },
   { v: "1.92", datum: "2026-11-20", neu: ["Diverse kleinere Fehler beseitigt"] },
