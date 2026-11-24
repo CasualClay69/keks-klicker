@@ -41,15 +41,35 @@ function formatWissenschaftlich(zahl) {
   return zweiStellen(wert) + "e" + exp;
 }
 
+// Deutsche Zahlwörter (lange Leiter): Million (10⁶), Milliarde (10⁹), Billion (10¹²), Billiarde …
+// Die n-te "-illion" ist 10^(6n), die "-illiarde" danach 10^(6n+3). Ab der 11. (Undezillion, 10⁶⁶) werden die
+// Namen aus lateinischen Vorsilben zusammengesetzt – bis zur Unquinquagintillion (10³⁰⁶), danach kommt ∞.
+const ZAHL_WOERTER = (() => {
+  const klein = [null, ["Mio.", "Mrd."], ["Bio.", "Brd."], ["Trill.", "Trd."], ["Quadrill.", "Quadrd."], ["Quintill.", "Quintd."],
+    ["Sextill.", "Sextd."], ["Septill.", "Septd."], ["Oktill.", "Oktd."], ["Nonill.", "Nond."], ["Dezill.", "Dezd."]];
+  const einer = ["", "Un", "Duo", "Tre", "Quat", "Quin", "Sex", "Sept", "Okt", "Nov"];
+  const zehner = ["", "dez", "vigint", "trigint", "quadrag", "quinquag"];
+  const liste = [];
+  for (let n = 1; n <= 51; n++) {
+    let paar = klein[n];
+    if (!paar) {
+      let stamm = einer[n % 10] + zehner[Math.floor(n / 10)];
+      stamm = stamm[0].toUpperCase() + stamm.slice(1);
+      paar = [stamm + "ill.", stamm + "d."];
+    }
+    liste.push([10 ** (6 * n), " " + paar[0]]);
+    if (6 * n + 3 < 308) liste.push([10 ** (6 * n + 3), " " + paar[1]]);
+  }
+  return liste.reverse();   // größte zuerst
+})();
+
 // Ab 10³⁰⁸ ist Schluss: Unendlich (siehe unendlich.js)
 function format(zahl) {
   if (zahl == null || Number.isNaN(zahl)) return "0";   // kaputte Zahl -> lieber 0 als ∞
   if (!Number.isFinite(zahl) || zahl >= 1e308) return "∞";
   if (zahl >= 1e3 && zahlenArt === "kurz") return zahl < 1e66 ? formatKurz(zahl) : formatWissenschaftlich(zahl);
   if (zahl >= 1e3 && zahlenArt === "wiss") return formatWissenschaftlich(zahl);
-  if (zahl >= 1e24) return formatWissenschaftlich(zahl);   // für noch größere Zahlen gibt es keine bekannten Wörter
-  const stufen = [[1e21, " Trd."], [1e18, " Trill."], [1e15, " Brd."], [1e12, " Bio."], [1e9, " Mrd."], [1e6, " Mio."]];
-  for (const [wert, name] of stufen) {
+  for (const [wert, name] of ZAHL_WOERTER) {
     if (zahl >= wert) {
       return (zahl / wert).toLocaleString("de-DE", { maximumFractionDigits: 2 }) + name;
     }

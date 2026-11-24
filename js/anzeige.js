@@ -203,6 +203,10 @@ function zeigeFortschrittsRing() {
 function zeigeKopf() {
   zeigeFortschrittsRing();
   setzeText(ui.herzen, `${format(spiel.herzen)} ${herz()}`);
+  // lange Zahlwörter (z. B. "Quatquadragill.") kleiner schreiben, damit alles in die Zeile passt
+  const laenge = format(spiel.herzen).length;
+  ui.herzen.classList.toggle("lang", laenge > 12 && laenge <= 16);
+  ui.herzen.classList.toggle("sehrLang", laenge > 16);
   setzeText(ui.hps, `${formatKomma(herzenProSekunde())} pro Sekunde · ${format(herzenProKlick())} pro Klick`);
   document.title = `${format(spiel.herzen)} ${waehrung().name} – ${figurName()} Clicker`;
 

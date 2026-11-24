@@ -2963,3 +2963,7 @@ body[data-hintergrund="emoji"][data-bg-richtung="steigen"] #spielfeld::after  { 
 .autoText { flex: 1; min-width: 0; }
 .autoSchalter { min-width: 58px; padding: 7px 10px; border: 2px solid var(--rand); border-radius: 999px; background: #fff; color: var(--text-sanft); font: inherit; font-weight: 800; cursor: pointer; }
 .autoSchalter.an { border-color: var(--akzent); background: var(--akzent); color: #fff; }
+
+/* Zähler mit langen Zahlwörtern (Undezill., Quatquadragill. …) kleiner, damit er in die Zeile passt */
+#herzen.lang { font-size: clamp(1.4rem, 6.6vw, 2.4rem); }
+#herzen.sehrLang { font-size: clamp(1.2rem, 5.6vw, 2.1rem); }
